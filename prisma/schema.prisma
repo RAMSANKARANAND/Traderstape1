@@ -8,6 +8,50 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  passwordHash String
+  role         Role          @default(CONTRIBUTOR)
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  marketLevels MarketLevel[]
+  newsPosts    NewsPost[]
+}
+
+model MarketLevel {
+  id          String    @id @default(cuid())
+  assetType   AssetType
+  symbol      String
+  level       Float
+  note        String?
+  direction   Direction
+  updatedBy   String
+  updatedAt   DateTime  @updatedAt
+  isPublished Boolean   @default(false)
+  updater     User      @relation(fields: [updatedBy], references: [id])
+}
+
+model NewsPost {
+  id             String       @id @default(cuid())
+  title          String
+  slug           String       @unique
+  category       NewsCategory
+  summary        String
+  body           String
+  authorId       String
+  publishedAt    DateTime?
+  isPublished    Boolean      @default(false)
+  seoTitle       String?
+  seoDescription String?
+  ogImageUrl     String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  author         User         @relation(fields: [authorId], references: [id])
+}
+
 enum Role {
   ADMIN
   EDITOR
@@ -30,51 +74,4 @@ enum NewsCategory {
   CRYPTO
   FOREX
   GEOPOLITICAL
-}
-
-model User {
-  id           String   @id @default(cuid())
-  name         String
-  email        String   @unique
-  passwordHash String
-  role         Role     @default(CONTRIBUTOR)
-  isActive     Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  newsPosts    NewsPost[]
-  marketLevels MarketLevel[]
-}
-
-model MarketLevel {
-  id          String     @id @default(cuid())
-  assetType   AssetType
-  symbol      String
-  level       Float
-  note        String?
-  direction   Direction
-  updatedBy   String
-  updatedAt   DateTime   @updatedAt
-  isPublished Boolean    @default(false)
-
-  updater     User       @relation(fields: [updatedBy], references: [id])
-}
-
-model NewsPost {
-  id             String       @id @default(cuid())
-  title          String
-  slug           String       @unique
-  category       NewsCategory
-  summary        String
-  body           String
-  authorId       String
-  publishedAt    DateTime?
-  isPublished    Boolean      @default(false)
-  seoTitle       String?
-  seoDescription String?
-  ogImageUrl     String?
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-
-  author         User         @relation(fields: [authorId], references: [id])
 }
