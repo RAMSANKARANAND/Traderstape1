@@ -1,5 +1,6 @@
 import { getSessionUser } from "@/lib/session";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { Card, SectionTitle, Button } from "@/components/ui";
 import type { Metadata } from "next";
@@ -171,9 +172,11 @@ export default async function NewNewsPage() {
             <Button type="submit" variant="primary">
               Create Post
             </Button>
-            <Button type="button" variant="secondary" onClick={() => redirect("/admin/news")}>
-              Cancel
-            </Button>
+            <Link href="/admin/news">
+              <Button type="button" variant="secondary">
+                Cancel
+              </Button>
+            </Link>
           </div>
         </form>
       </Card>
