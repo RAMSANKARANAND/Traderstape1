@@ -1,7 +1,7 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"main": ".open-next/worker.js",
-	"name": "traderstape",
+	"name": "traderstape1new",
 	"compatibility_date": "2026-07-23",
 	"compatibility_flags": [
 		"nodejs_compat",
@@ -16,12 +16,15 @@
 			// Self-reference service binding, the service name must match the worker name
 			// see https://opennext.js.org/cloudflare/caching
 			"binding": "WORKER_SELF_REFERENCE",
-			"service": "traderstape"
+			"service": "traderstape1new"
 		}
 	],
 	"images": {
 		// Enable image optimization
 		// see https://opennext.js.org/cloudflare/howtos/image
 		"binding": "IMAGES"
+	},
+	"vars": {
+		"TURSO_DATABASE_URL": "libsql://traderstape-ramsankaranand.aws-ap-south-1.turso.io"
 	}
 }
