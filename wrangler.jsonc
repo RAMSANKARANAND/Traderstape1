@@ -26,5 +26,13 @@
 	},
 	"vars": {
 		"TURSO_DATABASE_URL": "libsql://traderstape-ramsankaranand.aws-ap-south-1.turso.io"
-	}
+	},
+	"d1_databases": [
+		{
+			"binding": "traderstape",
+			"database_name": "traderstape",
+			"database_id": "4ae004b2-f472-4663-94ba-1968a2c644cc",
+			"remote": true
+		}
+	]
 }
