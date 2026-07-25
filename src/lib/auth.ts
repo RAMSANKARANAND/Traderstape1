@@ -3,6 +3,8 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { getDbAsync } from "./prisma";
 
+console.log("AUTH_URL VALUE:", JSON.stringify(process.env.AUTH_URL));
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
   providers: [
