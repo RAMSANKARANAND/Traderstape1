@@ -1,7 +1,7 @@
 import { getSessionUser } from "@/lib/session";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
+import { getDbAsync } from "@/lib/prisma";
 import { Card, SectionTitle, Button } from "@/components/ui";
 import type { Metadata } from "next";
 
@@ -36,7 +36,8 @@ export default async function NewNewsPage() {
             const title = formData.get("title") as string;
             const slug = slugify(title);
 
-            await prisma.newsPost.create({
+              const prisma = await getDbAsync();
+await prisma.newsPost.create({
               data: {
                 title,
                 slug,

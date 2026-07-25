@@ -1,6 +1,8 @@
-import { prisma } from "@/lib/prisma";
+import { getDbAsync } from "@/lib/prisma";
 import { SectionTitle, Badge, Card } from "@/components/ui";
 import type { Metadata } from "next";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Stock F&O Levels",
@@ -12,7 +14,9 @@ export const metadata: Metadata = {
 };
 
 export default async function StocksPage() {
-  const levels = await prisma.marketLevel.findMany({
+  const prisma = await getDbAsync();
+
+const levels = await prisma.marketLevel.findMany({
     where: { isPublished: true, assetType: "STOCK_FNO" },
     orderBy: { updatedAt: "desc" },
   });

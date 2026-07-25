@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { getDbAsync } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { Card, Badge, SectionTitle, Button } from "@/components/ui";
@@ -12,7 +12,8 @@ export default async function AdminUsersPage() {
   const user = await getSessionUser();
   if (!user || user.role !== "ADMIN") redirect("/admin");
 
-  const users = await prisma.user.findMany({
+    const prisma = await getDbAsync();
+const users = await prisma.user.findMany({
     orderBy: { createdAt: "desc" },
   });
 
@@ -62,7 +63,8 @@ export default async function AdminUsersPage() {
                           "use server";
                           const session = await getSessionUser();
                           if (!session || session.role !== "ADMIN") return;
-                          const { prisma: db } = await import("@/lib/prisma");
+                          const { getDbAsync } = await import("@/lib/prisma");
+                          const db = await getDbAsync();
                           await db.user.update({
                             where: { id: u.id },
                             data: { isActive: !u.isActive },

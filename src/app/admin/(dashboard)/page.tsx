@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { getDbAsync } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { Card, SectionTitle } from "@/components/ui";
@@ -13,7 +13,8 @@ export default async function AdminDashboardPage() {
   const user = await getSessionUser();
   if (!user) redirect("/admin/login");
 
-  const [levelCount, newsCount, userCount] = await Promise.all([
+    const prisma = await getDbAsync();
+const [levelCount, newsCount, userCount] = await Promise.all([
     prisma.marketLevel.count(),
     prisma.newsPost.count(),
     prisma.user.count(),

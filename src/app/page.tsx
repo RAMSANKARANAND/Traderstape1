@@ -1,9 +1,13 @@
-import { prisma } from "@/lib/prisma";
+import { getDbAsync } from "@/lib/prisma";
 import { Card, Panel, SectionTitle, Badge, NewsCard } from "@/components/ui";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
-  const [marketLevels, newsPosts] = await Promise.all([
+  const prisma = await getDbAsync();
+
+const [marketLevels, newsPosts] = await Promise.all([
     prisma.marketLevel.findMany({
       where: { isPublished: true },
       orderBy: { updatedAt: "desc" },

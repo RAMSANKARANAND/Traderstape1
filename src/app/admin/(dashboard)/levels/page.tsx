@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { getDbAsync } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { Card, Badge, SectionTitle } from "@/components/ui";
@@ -13,7 +13,8 @@ export default async function AdminLevelsPage() {
   const user = await getSessionUser();
   if (!user) redirect("/admin/login");
 
-  const levels = await prisma.marketLevel.findMany({
+    const prisma = await getDbAsync();
+const levels = await prisma.marketLevel.findMany({
     orderBy: { updatedAt: "desc" },
   });
 
@@ -90,7 +91,8 @@ export default async function AdminLevelsPage() {
                         <form
                           action={async () => {
                             "use server";
-                            const { prisma: db } = await import("@/lib/prisma");
+                            const { getDbAsync } = await import("@/lib/prisma");
+                          const db = await getDbAsync();
                             await db.marketLevel.update({
                               where: { id: level.id },
                               data: { isPublished: !level.isPublished },

@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { getDbAsync } from "@/lib/prisma";
 import { Badge, Card } from "@/components/ui";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -10,7 +10,8 @@ interface ArticlePageProps {
 
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = await prisma.newsPost.findUnique({
+    const prisma = await getDbAsync();
+const post = await prisma.newsPost.findUnique({
     where: { slug },
   });
 
@@ -39,7 +40,8 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
-  const post = await prisma.newsPost.findUnique({
+    const prisma = await getDbAsync();
+const post = await prisma.newsPost.findUnique({
     where: { slug, isPublished: true },
     include: { author: { select: { name: true } } },
   });

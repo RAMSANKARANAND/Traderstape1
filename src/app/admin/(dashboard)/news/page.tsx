@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { getDbAsync } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { Card, Badge, SectionTitle } from "@/components/ui";
@@ -13,7 +13,8 @@ export default async function AdminNewsPage() {
   const user = await getSessionUser();
   if (!user) redirect("/admin/login");
 
-  const posts = await prisma.newsPost.findMany({
+    const prisma = await getDbAsync();
+const posts = await prisma.newsPost.findMany({
     orderBy: { updatedAt: "desc" },
     include: { author: { select: { name: true } } },
   });
@@ -83,7 +84,8 @@ export default async function AdminNewsPage() {
                         <form
                           action={async () => {
                             "use server";
-                            const { prisma: db } = await import("@/lib/prisma");
+                            const { getDbAsync } = await import("@/lib/prisma");
+                          const db = await getDbAsync();
                             await db.newsPost.update({
                               where: { id: post.id },
                               data: {

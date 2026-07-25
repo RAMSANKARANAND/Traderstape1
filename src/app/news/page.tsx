@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { getDbAsync } from "@/lib/prisma";
 import { SectionTitle, Badge, NewsCard } from "@/components/ui";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -31,7 +31,8 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
     where.category = category;
   }
 
-  const posts = await prisma.newsPost.findMany({
+    const prisma = await getDbAsync();
+const posts = await prisma.newsPost.findMany({
     where,
     orderBy: { publishedAt: "desc" },
     include: { author: { select: { name: true } } },

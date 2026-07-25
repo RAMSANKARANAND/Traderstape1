@@ -1,5 +1,7 @@
-import { prisma } from "@/lib/prisma";
+import { getDbAsync } from "@/lib/prisma";
 import type { MetadataRoute } from "next";
+
+export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://traderstape.com";
@@ -15,6 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // Dynamic news pages
+  const prisma = await getDbAsync();
   const newsPosts = await prisma.newsPost.findMany({
     where: { isPublished: true },
     select: { slug: true, updatedAt: true },

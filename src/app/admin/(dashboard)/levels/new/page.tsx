@@ -1,6 +1,6 @@
 import { getSessionUser } from "@/lib/session";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
+import { getDbAsync } from "@/lib/prisma";
 import { Card, SectionTitle, Button } from "@/components/ui";
 import type { Metadata } from "next";
 
@@ -23,7 +23,8 @@ export default async function NewLevelPage() {
             const session = await getSessionUser();
             if (!session) redirect("/admin/login");
 
-            await prisma.marketLevel.create({
+              const prisma = await getDbAsync();
+await prisma.marketLevel.create({
               data: {
                 symbol: formData.get("symbol") as string,
                 assetType: formData.get("assetType") as "STOCK_FNO" | "FOREX",
