@@ -24,9 +24,6 @@
 		// see https://opennext.js.org/cloudflare/howtos/image
 		"binding": "IMAGES"
 	},
-	"vars": {
-		"TURSO_DATABASE_URL": "libsql://traderstape-ramsankaranand.aws-ap-south-1.turso.io"
-	},
 	"d1_databases": [
 		{
 			"binding": "traderstape",
