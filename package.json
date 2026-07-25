@@ -11,6 +11,7 @@
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx prisma/seed.ts",
+    "db:seed:remote": "wrangler d1 execute traderstape --remote --file prisma/seed-d1.sql",
     "db:studio": "prisma studio",
     "sitemap": "next-sitemap",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
