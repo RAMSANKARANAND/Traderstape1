@@ -19,6 +19,7 @@ model User {
   updatedAt    DateTime      @updatedAt
   marketLevels MarketLevel[]
   newsPosts    NewsPost[]
+  tapeViews    TapeView[]
 }
 
 model MarketLevel {
@@ -74,4 +75,49 @@ enum NewsCategory {
   CRYPTO
   FOREX
   GEOPOLITICAL
+}
+
+enum TapeViewCategory {
+  NSE
+  FOREX
+  CRYPTO
+  COMMODITIES
+  GLOBAL_MARKETS
+  WEEKLY_OUTLOOK
+  SPECIAL_REPORT
+}
+
+enum TapeViewBias {
+  BULLISH
+  BEARISH
+  NEUTRAL
+}
+
+model TapeView {
+  id                     String           @id @default(cuid())
+  title                  String
+  slug                   String           @unique
+  category               TapeViewCategory
+  instrument             String
+  bias                   TapeViewBias
+  support1               String?
+  support2               String?
+  support3               String?
+  resistance1            String?
+  resistance2            String?
+  resistance3            String?
+  keyLevelsToWatch       String?
+  todayView              String
+  riskFactors            String?
+  educationalDisclaimer  String?
+  body                   String
+  authorId               String
+  publishedAt            DateTime?
+  isPublished            Boolean          @default(false)
+  seoTitle               String?
+  seoDescription         String?
+  ogImageUrl             String?
+  createdAt              DateTime         @default(now())
+  updatedAt              DateTime         @updatedAt
+  author                 User             @relation(fields: [authorId], references: [id])
 }

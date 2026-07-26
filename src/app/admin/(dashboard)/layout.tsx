@@ -21,9 +21,13 @@ export default async function AdminDashboardLayout({
       <header className="bg-ink text-bg brutal-border-b border-b-3 border-ink">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <Link href="/admin" className="text-lg font-black uppercase tracking-tight">
+            <Link
+              href="/admin"
+              className="text-lg font-black uppercase tracking-tight"
+            >
               TradersTape Admin
             </Link>
+
             <nav className="hidden sm:flex items-center gap-4">
               <Link
                 href="/admin"
@@ -31,18 +35,28 @@ export default async function AdminDashboardLayout({
               >
                 Dashboard
               </Link>
+
               <Link
                 href="/admin/levels"
                 className="text-sm font-black uppercase hover:text-accent-yellow transition-colors"
               >
                 Levels
               </Link>
+
               <Link
                 href="/admin/news"
                 className="text-sm font-black uppercase hover:text-accent-yellow transition-colors"
               >
                 News
               </Link>
+
+              <Link
+                href="/admin/tape-views"
+                className="text-sm font-black uppercase hover:text-accent-yellow transition-colors"
+              >
+                Tape Views
+              </Link>
+
               {user.role === "ADMIN" && (
                 <Link
                   href="/admin/users"
@@ -51,6 +65,7 @@ export default async function AdminDashboardLayout({
                   Users
                 </Link>
               )}
+
               <Link
                 href="/"
                 className="text-sm font-black uppercase hover:text-accent-yellow transition-colors"
@@ -59,10 +74,12 @@ export default async function AdminDashboardLayout({
               </Link>
             </nav>
           </div>
+
           <div className="flex items-center gap-4">
             <span className="text-xs font-bold uppercase opacity-70">
               {user.name} ({user.role})
             </span>
+
             <form
               action={async () => {
                 "use server";
@@ -78,20 +95,30 @@ export default async function AdminDashboardLayout({
             </form>
           </div>
         </div>
+
         {/* Mobile nav */}
-        <div className="sm:hidden px-4 pb-3 flex gap-3">
+        <div className="sm:hidden px-4 pb-3 flex gap-3 flex-wrap">
           <Link
             href="/admin/levels"
             className="text-xs font-black uppercase hover:text-accent-yellow transition-colors"
           >
             Levels
           </Link>
+
           <Link
             href="/admin/news"
             className="text-xs font-black uppercase hover:text-accent-yellow transition-colors"
           >
             News
           </Link>
+
+          <Link
+            href="/admin/tape-views"
+            className="text-xs font-black uppercase hover:text-accent-yellow transition-colors"
+          >
+            Tape Views
+          </Link>
+
           {user.role === "ADMIN" && (
             <Link
               href="/admin/users"
@@ -100,6 +127,7 @@ export default async function AdminDashboardLayout({
               Users
             </Link>
           )}
+
           <Link
             href="/"
             className="text-xs font-black uppercase hover:text-accent-yellow transition-colors ml-auto"

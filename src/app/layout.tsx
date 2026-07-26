@@ -114,7 +114,7 @@ export default function RootLayout({
             </div>
             <div className="mt-8 pt-6 brutal-border-t border-t-3 border-bg/20 text-center">
               <p className="text-xs font-bold opacity-60">
-                &copy; {new Date().getFullYear()} TradersTape. For educational purposes only.
+                &copy; 2026 TradersTape. For educational purposes only.
               </p>
             </div>
           </div>

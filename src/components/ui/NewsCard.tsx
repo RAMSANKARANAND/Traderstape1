@@ -27,12 +27,20 @@ export function NewsCard({ title, slug, category, summary, publishedAt, classNam
         <Badge variant="default">{category}</Badge>
         {publishedAt && (
           <span className="text-xs font-bold uppercase whitespace-nowrap">
-            {new Date(publishedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+            {new Intl.DateTimeFormat("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+              timeZone: "UTC",
+            }).format(new Date(publishedAt))}
           </span>
         )}
       </div>
-      <h3 className="text-lg font-black uppercase leading-tight mb-2">{title}</h3>
-      <p className="text-sm font-bold leading-snug opacity-80">{summary}</p>
+      <h3 className="text-lg font-black uppercase mb-2 leading-tight">{title}</h3>
+      <p className="text-sm font-bold opacity-80 mb-4 leading-relaxed">{summary}</p>
+      <span className="text-xs font-black uppercase opacity-60 hover:opacity-100 transition-opacity">
+        Read more →
+      </span>
     </Link>
   );
 }
