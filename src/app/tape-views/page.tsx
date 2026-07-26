@@ -38,6 +38,7 @@ const categoryLabels: Record<string, string> = {
 interface TapeViewArticle {
   id: string;
   title: string;
+  slug: string;
   category: string;
   instrument: string;
   bias: string;
@@ -70,6 +71,7 @@ export default async function TapeViewsPage({
     select: {
       id: true,
       title: true,
+      slug: true,
       category: true,
       instrument: true,
       bias: true,
@@ -81,6 +83,7 @@ export default async function TapeViewsPage({
   const articles: TapeViewArticle[] = tapeViews.map((tv) => ({
     id: tv.id,
     title: tv.title,
+    slug: tv.slug,
     category: tv.category,
     instrument: tv.instrument,
     bias: tv.bias,
@@ -133,11 +136,15 @@ export default async function TapeViewsPage({
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {articles.map((article) => (
-            <Card
+            <Link
               key={article.id}
-              accent="none"
-              className="page-enter"
+              href={`/tape-views/${article.slug}`}
+              className="block"
             >
+              <Card
+                accent="none"
+                className="page-enter"
+              >
               <div className="flex items-start justify-between mb-3">
                 <Badge
                   variant="default"
@@ -167,7 +174,8 @@ export default async function TapeViewsPage({
               <p className="text-sm font-bold opacity-70 mb-4 leading-relaxed">
                 {article.todayView}
               </p>
-            </Card>
+              </Card>
+            </Link>
           ))}
         </div>
       )}
