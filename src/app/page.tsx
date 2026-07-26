@@ -52,10 +52,10 @@ const [marketLevels, newsPosts] = await Promise.all([
           </p>
           <div className="flex flex-wrap gap-4">
             <Link
-              href="/stocks"
+              href="/the-tape"
               className="inline-block bg-accent-coral text-white brutal-border brutal-shadow px-8 py-3.5 font-black uppercase tracking-wide hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[4px_4px_0_#111] transition-all duration-100"
             >
-              View Stock Levels
+              🚀 ENTER THE TAPE
             </Link>
             <Link
               href="/news"

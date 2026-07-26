@@ -57,10 +57,9 @@ export default function RootLayout({
 
               {/* Desktop Nav */}
               <div className="hidden md:flex items-center gap-1">
-                <NavLink href="/stocks">Stocks</NavLink>
-                <NavLink href="/crypto">Crypto</NavLink>
-                <NavLink href="/forex">Forex</NavLink>
+                <NavLink href="/the-tape">The Tape</NavLink>
                 <NavLink href="/news">News</NavLink>
+                <NavLink href="/tape-views">Tape Views</NavLink>
                 <NavLink href="/about">About</NavLink>
               </div>
 
@@ -70,10 +69,9 @@ export default function RootLayout({
                   Menu
                 </summary>
                 <div className="absolute right-0 top-full mt-1 w-48 bg-bg brutal-border brutal-shadow z-50 flex flex-col">
-                  <MobileNavLink href="/stocks">Stocks</MobileNavLink>
-                  <MobileNavLink href="/crypto">Crypto</MobileNavLink>
-                  <MobileNavLink href="/forex">Forex</MobileNavLink>
+                  <MobileNavLink href="/the-tape">The Tape</MobileNavLink>
                   <MobileNavLink href="/news">News</MobileNavLink>
+                  <MobileNavLink href="/tape-views">Tape Views</MobileNavLink>
                   <MobileNavLink href="/about">About</MobileNavLink>
                 </div>
               </details>
@@ -99,10 +97,9 @@ export default function RootLayout({
               <div>
                 <h3 className="font-black text-lg uppercase mb-3 text-accent-yellow">Quick Links</h3>
                 <ul className="space-y-2">
-                  <li><FooterLink href="/stocks">Stocks & F&O</FooterLink></li>
-                  <li><FooterLink href="/crypto">Crypto</FooterLink></li>
-                  <li><FooterLink href="/forex">Forex</FooterLink></li>
+                  <li><FooterLink href="/the-tape">The Tape</FooterLink></li>
                   <li><FooterLink href="/news">News</FooterLink></li>
+                  <li><FooterLink href="/tape-views">Tape Views</FooterLink></li>
                   <li><FooterLink href="/about">About</FooterLink></li>
                 </ul>
               </div>
