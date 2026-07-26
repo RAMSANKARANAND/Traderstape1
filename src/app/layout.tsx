@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Link from "next/link";
+import WelcomeDisclaimerModal from "@/components/WelcomeDisclaimerModal";
 
 export const metadata: Metadata = {
   title: {
@@ -44,12 +45,7 @@ export default function RootLayout({
           Skip to main content
         </a>
 
-        {/* Disclaimer Banner */}
-        <div className="bg-accent-coral text-white text-center px-4 py-3 brutal-border-b border-b-3 border-ink">
-          <p className="text-xs sm:text-sm font-black uppercase tracking-wide">
-            ⚠ TradersTape is for educational purposes only. Nothing on this site is financial advice.
-          </p>
-        </div>
+        <WelcomeDisclaimerModal />
 
         {/* Navigation */}
         <header className="bg-accent-yellow brutal-border-b border-b-3 border-ink sticky top-0 z-40">

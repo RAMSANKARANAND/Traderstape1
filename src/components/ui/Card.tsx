@@ -18,7 +18,7 @@ const accentBorders: Record<string, string> = {
 export function Card({ children, className = "", accent = "none" }: CardProps) {
   return (
     <div
-      className={`brutal-card p-5 ${accentBorders[accent]} ${className}`}
+      className={`brutal-card p-5 card-lift ${accentBorders[accent]} ${className}`}
     >
       {children}
     </div>

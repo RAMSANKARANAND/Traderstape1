@@ -1,0 +1,3 @@
+﻿UPDATE User SET passwordHash = '$2a$12$sc40gkZD95SKeqnfYju8ZeS8u4tVEni8IORact0eXzp7NG5wSYeC2' WHERE email = 'admin@traderstape.com';
+UPDATE User SET passwordHash = '$2a$12$iLjoJ47s3Rrlz0/fW1G0uuJPyOuMqpdM1MZ4G8uAS1WuiOlcSaZva' WHERE email = 'editor@traderstape.com';
+UPDATE User SET passwordHash = '$2a$12$bNPjUVxkvKXb/wIrpVIglu6xfsVQFcpnzWbGhJsl1CRvdH.GBM7pK' WHERE email = 'contributor@traderstape.com';

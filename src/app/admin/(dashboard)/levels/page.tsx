@@ -106,6 +106,25 @@ const levels = await prisma.marketLevel.findMany({
                             {level.isPublished ? "Unpub" : "Publish"}
                           </button>
                         </form>
+                        {(user.role === "ADMIN" || user.role === "EDITOR") && (
+                          <form
+                            action={async () => {
+                              "use server";
+                              const session = await getSessionUser();
+                              if (!session || (session.role !== "ADMIN" && session.role !== "EDITOR")) return;
+                              const { getDbAsync } = await import("@/lib/prisma");
+                              const db = await getDbAsync();
+                              await db.marketLevel.delete({ where: { id: level.id } });
+                            }}
+                          >
+                            <button
+                              type="submit"
+                              className="text-xs font-black uppercase bg-accent-coral text-white px-2 py-1 brutal-border border-2 border-ink"
+                            >
+                              Delete
+                            </button>
+                          </form>
+                        )}
                       </div>
                     </td>
                   </tr>

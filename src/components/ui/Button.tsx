@@ -31,7 +31,7 @@ export function Button({
 }: ButtonProps) {
   return (
     <button
-      className={`font-black uppercase tracking-wide transition-all duration-100 ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
+      className={`font-black uppercase tracking-wide btn-press ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
       {...props}
     >
       {children}
