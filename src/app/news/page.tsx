@@ -2,6 +2,7 @@ import { getDbAsync } from "@/lib/prisma";
 import { SectionTitle, Badge, NewsCard } from "@/components/ui";
 import Link from "next/link";
 import type { Metadata } from "next";
+import type { NewsPost } from "@prisma/client";
 
 export const metadata: Metadata = {
   title: "Trading News",
@@ -24,6 +25,18 @@ const categories = [
   { value: "GEOPOLITICAL", label: "Geopolitical" },
 ];
 
+type PostWithAuthor = NewsPost & { author: { name: string } };
+
+function formatDate(date: Date | null): string {
+  if (!date) return "";
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(date));
+}
+
 export default async function NewsPage({ searchParams }: NewsPageProps) {
   const { category } = await searchParams;
   const where: Record<string, unknown> = { isPublished: true };
@@ -31,12 +44,27 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
     where.category = category;
   }
 
-    const prisma = await getDbAsync();
-const posts = await prisma.newsPost.findMany({
+  const prisma = await getDbAsync();
+  const posts = await prisma.newsPost.findMany({
     where,
     orderBy: { publishedAt: "desc" },
     include: { author: { select: { name: true } } },
   });
+
+  // Partition posts by editorial flags (deterministic, single query).
+  const breakingPost = posts.find((p) => p.isBreaking) ?? null;
+  const featuredPost = posts.find((p) => p.isFeatured) ?? null;
+
+  const breakingId = breakingPost?.id;
+  const featuredId = featuredPost?.id;
+  const excludeIds = [breakingId, featuredId].filter(Boolean) as string[];
+
+  const latest = excludeIds.length
+    ? posts.filter((p) => !excludeIds.includes(p.id))
+    : posts;
+
+  const trending = latest.filter((p) => p.isTrending);
+  const editorPicks = latest.filter((p) => p.isEditorPick);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -46,7 +74,7 @@ const posts = await prisma.newsPost.findMany({
       </p>
 
       {/* Category Filter */}
-      <div className="flex flex-wrap gap-3 mb-8">
+      <div className="flex flex-wrap gap-3 mb-10">
         {categories.map((cat) => (
           <Link
             key={cat.value}
@@ -70,19 +98,153 @@ const posts = await prisma.newsPost.findMany({
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {posts.map((post) => (
-            <NewsCard
-              key={post.id}
-              title={post.title}
-              slug={post.slug}
-              category={post.category}
-              summary={post.summary}
-              publishedAt={post.publishedAt}
-            />
-          ))}
+        <div className="space-y-14">
+          {/* ── 1. Breaking News (Hero) ── */}
+          {breakingPost && (
+            <section>
+              <div className="flex items-center gap-3 mb-4">
+                <Badge variant="down">Breaking</Badge>
+                <h2 className="text-xl font-black uppercase tracking-wide">Breaking News</h2>
+              </div>
+              <BreakingHero post={breakingPost} />
+            </section>
+          )}
+
+          {/* ── 2. Featured Story ── */}
+          {featuredPost && (
+            <section>
+              <div className="flex items-center gap-3 mb-4">
+                <Badge variant="flat">Featured</Badge>
+                <h2 className="text-xl font-black uppercase tracking-wide">Featured Story</h2>
+              </div>
+              <FeaturedHero post={featuredPost} />
+            </section>
+          )}
+
+          {/* ── 3. Latest News ── */}
+          {latest.length > 0 && (
+            <section>
+              <h2 className="text-xl font-black uppercase tracking-wide mb-4 brutal-border-b border-b-3 border-ink pb-2">
+                Latest News
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {latest.map((post) => (
+                  <NewsCard
+                    key={post.id}
+                    title={post.title}
+                    slug={post.slug}
+                    category={post.category}
+                    summary={post.summary}
+                    publishedAt={post.publishedAt}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* ── 4. Trending ── */}
+          {trending.length > 0 && (
+            <section>
+              <div className="flex items-center gap-3 mb-4">
+                <Badge variant="up">Trending</Badge>
+                <h2 className="text-xl font-black uppercase tracking-wide brutal-border-b border-b-3 border-ink pb-2 flex-1">
+                  Trending
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {trending.map((post) => (
+                  <NewsCard
+                    key={post.id}
+                    title={post.title}
+                    slug={post.slug}
+                    category={post.category}
+                    summary={post.summary}
+                    publishedAt={post.publishedAt}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* ── 5. Editor's Picks ── */}
+          {editorPicks.length > 0 && (
+            <section>
+              <div className="flex items-center gap-3 mb-4">
+                <Badge variant="default">Editor's Picks</Badge>
+                <h2 className="text-xl font-black uppercase tracking-wide brutal-border-b border-b-3 border-ink pb-2 flex-1">
+                  Editor's Picks
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {editorPicks.map((post) => (
+                  <NewsCard
+                    key={post.id}
+                    title={post.title}
+                    slug={post.slug}
+                    category={post.category}
+                    summary={post.summary}
+                    publishedAt={post.publishedAt}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       )}
     </div>
+  );
+}
+
+/* ───────────────────────── Hero components ───────────────────────── */
+
+function BreakingHero({ post }: { post: PostWithAuthor }) {
+  return (
+    <Link
+      href={`/news/${post.slug}`}
+      className="block brutal-card brutal-shadow p-6 md:p-8 bg-accent-coral/10 border-accent-coral hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[6px_6px_0_#111] transition-all duration-100"
+    >
+      <div className="flex flex-wrap items-center gap-3 mb-4">
+        <Badge variant="down">Breaking</Badge>
+        <Badge variant="default">{post.category}</Badge>
+        <span className="text-xs font-bold uppercase opacity-60 ml-auto">
+          {formatDate(post.publishedAt)}
+        </span>
+      </div>
+      <h3 className="text-2xl md:text-4xl font-black uppercase leading-tight mb-3">
+        {post.title}
+      </h3>
+      <p className="text-sm md:text-base font-bold opacity-80 leading-relaxed max-w-3xl mb-4">
+        {post.summary}
+      </p>
+      <span className="text-xs font-black uppercase opacity-60 hover:opacity-100 transition-opacity">
+        Read full story →
+      </span>
+    </Link>
+  );
+}
+
+function FeaturedHero({ post }: { post: PostWithAuthor }) {
+  return (
+    <Link
+      href={`/news/${post.slug}`}
+      className="block brutal-card brutal-shadow p-6 md:p-8 bg-accent-yellow/20 border-accent-yellow hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[6px_6px_0_#111] transition-all duration-100"
+    >
+      <div className="flex flex-wrap items-center gap-3 mb-4">
+        <Badge variant="flat">Featured</Badge>
+        <Badge variant="default">{post.category}</Badge>
+        <span className="text-xs font-bold uppercase opacity-60 ml-auto">
+          {formatDate(post.publishedAt)}
+        </span>
+      </div>
+      <h3 className="text-2xl md:text-3xl font-black uppercase leading-tight mb-3">
+        {post.title}
+      </h3>
+      <p className="text-sm md:text-base font-bold opacity-80 leading-relaxed max-w-3xl mb-4">
+        {post.summary}
+      </p>
+      <span className="text-xs font-black uppercase opacity-60 hover:opacity-100 transition-opacity">
+        Read full story →
+      </span>
+    </Link>
   );
 }

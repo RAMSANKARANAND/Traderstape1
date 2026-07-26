@@ -45,6 +45,10 @@ model NewsPost {
   authorId       String
   publishedAt    DateTime?
   isPublished    Boolean      @default(false)
+  isBreaking     Boolean      @default(false)
+  isFeatured     Boolean      @default(false)
+  isTrending     Boolean      @default(false)
+  isEditorPick   Boolean      @default(false)
   seoTitle       String?
   seoDescription String?
   ogImageUrl     String?
