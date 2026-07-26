@@ -26,6 +26,12 @@ export default async function AdminDashboardLayout({
             </Link>
             <nav className="hidden sm:flex items-center gap-4">
               <Link
+                href="/admin"
+                className="text-sm font-black uppercase hover:text-accent-yellow transition-colors"
+              >
+                Dashboard
+              </Link>
+              <Link
                 href="/admin/levels"
                 className="text-sm font-black uppercase hover:text-accent-yellow transition-colors"
               >
@@ -45,6 +51,12 @@ export default async function AdminDashboardLayout({
                   Users
                 </Link>
               )}
+              <Link
+                href="/"
+                className="text-sm font-black uppercase hover:text-accent-yellow transition-colors"
+              >
+                View Site
+              </Link>
             </nav>
           </div>
           <div className="flex items-center gap-4">
