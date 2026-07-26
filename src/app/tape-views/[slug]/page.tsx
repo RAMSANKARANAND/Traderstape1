@@ -50,6 +50,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     notFound();
   }
 
+  const wordCount = post.body.split(/\s+/).filter(Boolean).length;
+  const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -77,34 +80,36 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         ← Back to Tape Views
       </Link>
 
-      <div className="flex items-center gap-3 mb-4">
-        <Badge variant="default">{post.category}</Badge>
-        <Badge variant={post.bias === "BULLISH" ? "up" : post.bias === "BEARISH" ? "flat" : "default"}>
-          {post.bias}
-        </Badge>
-        {post.publishedAt && (
-          <span className="text-xs font-bold uppercase">
-            {new Intl.DateTimeFormat("en-GB", {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-              timeZone: "UTC",
-            }).format(new Date(post.publishedAt))}
-          </span>
-        )}
-      </div>
-
       <h1 className="text-3xl md:text-4xl font-black uppercase leading-tight mb-4">
         {post.title}
       </h1>
 
-      <p className="text-lg font-bold opacity-70 mb-2">
-        By {post.author.name}
-      </p>
+      <div className="flex flex-wrap items-center gap-3 mb-5">
+        <Badge variant="default">{post.category}</Badge>
+        <span className="text-sm font-black uppercase">{post.instrument}</span>
+        <Badge variant={post.bias === "BULLISH" ? "up" : post.bias === "BEARISH" ? "flat" : "default"}>
+          {post.bias}
+        </Badge>
+      </div>
 
-      <p className="text-sm font-bold opacity-60 mb-8 uppercase">
-        Instrument: {post.instrument}
-      </p>
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm font-bold opacity-70 mb-8">
+        <span>By {post.author.name}</span>
+        {post.publishedAt && (
+          <>
+            <span className="hidden sm:inline opacity-40">|</span>
+            <span>
+              {new Intl.DateTimeFormat("en-GB", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+                timeZone: "UTC",
+              }).format(new Date(post.publishedAt))}
+            </span>
+            <span className="hidden sm:inline opacity-40">|</span>
+            <span>{readingTime} min read</span>
+          </>
+        )}
+      </div>
 
       <Card className="mb-8">
         <h2 className="text-xl font-black uppercase mb-3">Today's Market View</h2>
