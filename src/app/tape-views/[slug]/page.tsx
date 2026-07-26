@@ -53,6 +53,27 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const wordCount = post.body.split(/\s+/).filter(Boolean).length;
   const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 
+  const relatedPosts = await prisma.tapeView.findMany({
+    where: {
+      category: post.category,
+      isPublished: true,
+      id: { not: post.id },
+    },
+    take: 3,
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      category: true,
+      instrument: true,
+      bias: true,
+      todayView: true,
+    },
+  });
+
+  const shareUrl = `https://traderstape.com/tape-views/${slug}`;
+  const shareTitle = encodeURIComponent(post.title);
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -183,6 +204,85 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           <h2 className="text-xl font-black uppercase mb-3">Educational Disclaimer</h2>
           <p className="text-base font-bold leading-relaxed">{post.educationalDisclaimer}</p>
         </Card>
+      )}
+
+      <Card className="mb-8">
+        <h2 className="text-xl font-black uppercase mb-4">Share Analysis</h2>
+        <div className="flex flex-wrap gap-3">
+          <a
+            href={`https://wa.me/?text=${shareTitle}%20-%20${shareUrl}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-4 py-2 font-black uppercase text-xs brutal-border bg-bg hover:bg-accent-yellow transition-colors"
+          >
+            WhatsApp
+          </a>
+          <a
+            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-4 py-2 font-black uppercase text-xs brutal-border bg-bg hover:bg-accent-yellow transition-colors"
+          >
+            Facebook
+          </a>
+          <a
+            href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${shareTitle}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-4 py-2 font-black uppercase text-xs brutal-border bg-bg hover:bg-accent-yellow transition-colors"
+          >
+            X / Twitter
+          </a>
+          <a
+            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-4 py-2 font-black uppercase text-xs brutal-border bg-bg hover:bg-accent-yellow transition-colors"
+          >
+            LinkedIn
+          </a>
+          <a
+            href="https://www.instagram.com/traderstape"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-4 py-2 font-black uppercase text-xs brutal-border bg-bg hover:bg-accent-yellow transition-colors"
+          >
+            Instagram
+          </a>
+        </div>
+      </Card>
+
+      {relatedPosts.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-xl font-black uppercase mb-4">Related Research</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {relatedPosts.map((related) => (
+              <Link key={related.id} href={`/tape-views/${related.slug}`} className="block">
+                <Card accent="none" className="page-enter">
+                  <div className="flex flex-wrap items-center gap-2 mb-3">
+                    <Badge variant="default" className="text-[10px] px-2 py-0.5">
+                      {related.category}
+                    </Badge>
+                    <Badge
+                      variant={
+                        related.bias === "BULLISH"
+                          ? "up"
+                          : related.bias === "BEARISH"
+                          ? "flat"
+                          : "default"
+                      }
+                      className="text-[10px] px-2 py-0.5"
+                    >
+                      {related.bias}
+                    </Badge>
+                  </div>
+                  <h3 className="text-base font-black uppercase mb-2 leading-tight">{related.title}</h3>
+                  <p className="text-xs font-bold opacity-60">{related.instrument}</p>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </div>
       )}
 
       <div className="mt-12 pt-8 brutal-border-t border-t-3 border-ink">
