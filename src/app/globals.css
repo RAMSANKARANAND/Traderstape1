@@ -1,23 +1,32 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #F5F5F2;
-  --ink: #0F1419;
-  --accent-yellow: #C9D6E8;
-  --accent-coral: #DC2626;
-  --accent-teal: #16A34A;
-  --accent-blue: #2563EB;
-  --accent-pink: #E2E8F0;
+  --bg: #F7F4EE;
+  --bg-section: #F0ECE4;
+  --bg-hero: #E7EEF7;
+  --bg-featured: #F5EFE2;
+  --bg-cta: #E8F5F0;
+  --ink: #111317;
+  
+  --accent-bullish: #2E8B57;
+  --accent-bearish: #D94B45;
+  --accent-neutral: #6B7280;
+  --accent-gold: #D9AA3B;
+  --accent-info: #4B74D8;
 }
 
 @theme inline {
   --color-bg: var(--bg);
+  --color-bg-section: var(--bg-section);
+  --color-bg-hero: var(--bg-hero);
+  --color-bg-featured: var(--bg-featured);
+  --color-bg-cta: var(--bg-cta);
   --color-ink: var(--ink);
-  --color-accent-yellow: var(--accent-yellow);
-  --color-accent-coral: var(--accent-coral);
-  --color-accent-teal: var(--accent-teal);
-  --color-accent-blue: var(--accent-blue);
-  --color-accent-pink: var(--accent-pink);
+  --color-accent-bullish: var(--accent-bullish);
+  --color-accent-bearish: var(--accent-bearish);
+  --color-accent-neutral: var(--accent-neutral);
+  --color-accent-gold: var(--accent-gold);
+  --color-accent-info: var(--accent-info);
   --font-sans: Arial, Helvetica, sans-serif;
   --font-mono: "Courier New", monospace;
 }
@@ -27,38 +36,57 @@
 }
 
 body {
-  background: var(--bg);
+  background-color: var(--bg);
   color: var(--ink);
   font-family: Arial, Helvetica, sans-serif;
   margin: 0;
   padding: 0;
+  position: relative;
+}
+
+/* Subtle financial texture overlay */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(var(--ink) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ink) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: -1;
 }
 
 /* Neo-brutalist utility classes */
 .brutal-border {
-  border: 3px solid var(--ink);
+  border: 4px solid var(--ink);
 }
 
 .brutal-shadow {
-  box-shadow: 7px 7px 0 var(--ink);
+  box-shadow: 8px 8px 0 var(--ink);
 }
 
 .brutal-card {
-  border: 3px solid var(--ink);
-  box-shadow: 7px 7px 0 var(--ink);
-  background: var(--bg);
+  border: 4px solid var(--ink);
+  box-shadow: 8px 8px 0 var(--ink);
+  background: white;
+  border-radius: 0;
 }
 
 .section-title {
   display: inline-block;
   background: var(--ink);
-  color: var(--bg);
+  color: white;
   padding: 8px 20px;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 2px;
   font-size: 1.25rem;
-  border: 3px solid var(--ink);
+  border: 4px solid var(--ink);
 }
 
 /* Ticker animation */
@@ -130,7 +158,7 @@ body {
 }
 
 .animate-fade-in-up {
-  animation: fade-in-up 250ms ease-out;
+  animation: fade-in-up 200ms ease-out;
 }
 
 .animate-scale-in {
@@ -161,14 +189,14 @@ body {
   animation: count-up 300ms ease-out;
 }
 
-/* Card lift */
+/* Card lift - NeoBrutalist style */
 .card-lift {
   transition: transform 200ms ease-out, box-shadow 200ms ease-out;
 }
 
 .card-lift:hover {
-  transform: translateY(-4px);
-  box-shadow: 9px 9px 0 var(--ink);
+  transform: translate(-4px, -4px);
+  box-shadow: 12px 12px 0 var(--ink);
 }
 
 /* Button press */
@@ -177,8 +205,8 @@ body {
 }
 
 .btn-press:active {
-  transform: translateY(2px);
-  box-shadow: 3px 3px 0 var(--ink);
+  transform: translate(2px, 2px);
+  box-shadow: 4px 4px 0 var(--ink);
 }
 
 /* Table row hover */
@@ -187,7 +215,7 @@ body {
 }
 
 .table-row-hover:hover {
-  background-color: var(--accent-yellow);
+  background-color: var(--bg-featured);
 }
 
 /* Checkbox smooth */

@@ -7,10 +7,10 @@ interface BadgeProps {
 }
 
 const variantStyles: Record<string, string> = {
-  up: "bg-accent-teal text-ink",
-  down: "bg-accent-coral text-white",
-  flat: "bg-accent-yellow text-ink",
-  default: "bg-ink text-bg",
+  up: "bg-accent-bullish text-ink",
+  down: "bg-accent-bearish text-white",
+  flat: "bg-accent-neutral text-white",
+  default: "bg-ink text-white",
 };
 
 export function Badge({ children, variant = "default", className = "" }: BadgeProps) {

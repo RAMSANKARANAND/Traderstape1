@@ -10,10 +10,10 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
-  primary: "bg-accent-coral text-white brutal-border brutal-shadow hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[4px_4px_0_#111]",
-  secondary: "bg-accent-yellow text-ink brutal-border brutal-shadow hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[4px_4px_0_#111]",
-  danger: "bg-accent-coral text-white brutal-border brutal-shadow hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[4px_4px_0_#111]",
-  ghost: "bg-transparent text-ink brutal-border hover:bg-accent-yellow",
+  primary: "bg-ink text-white brutal-border brutal-shadow hover:bg-white hover:text-ink hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[12px_12px_0_#111]",
+  secondary: "bg-bg-featured text-ink brutal-border brutal-shadow hover:bg-white hover:text-ink hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[12px_12px_0_#111]",
+  danger: "bg-accent-bearish text-white brutal-border brutal-shadow hover:bg-white hover:text-ink hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[12px_12px_0_#111]",
+  ghost: "bg-transparent text-ink brutal-border hover:bg-bg-featured",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
@@ -31,7 +31,7 @@ export function Button({
 }: ButtonProps) {
   return (
     <button
-      className={`font-black uppercase tracking-wide btn-press ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
+      className={`font-black uppercase tracking-wide btn-press transition-all duration-200 ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
       {...props}
     >
       {children}

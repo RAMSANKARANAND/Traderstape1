@@ -7,11 +7,11 @@ interface CardProps {
 }
 
 const accentBorders: Record<string, string> = {
-  yellow: "border-accent-yellow",
-  coral: "border-accent-coral",
-  teal: "border-accent-teal",
-  blue: "border-accent-blue",
-  pink: "border-accent-pink",
+  yellow: "border-accent-gold",
+  coral: "border-accent-bearish",
+  teal: "border-accent-bullish",
+  blue: "border-accent-info",
+  pink: "border-accent-neutral",
   none: "border-ink",
 };
 

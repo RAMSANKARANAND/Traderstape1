@@ -1,37 +1,29 @@
 import React from "react";
-import { StatusBadge } from "./StatusBadge";
+import { Card } from "../ui/Card";
+import { Badge } from "../ui/Badge";
 
 interface MarketCardProps {
   name: string;
   price: string;
   change: string;
-  trend: "bullish" | "bearish" | "neutral";
-  className?: string;
+  trend: "up" | "down" | "flat";
 }
 
-export function MarketCard({ name, price, change, trend, className = "" }: MarketCardProps) {
+export function MarketCard({ name, price, change, trend }: MarketCardProps) {
   return (
-    <div
-      className={`brutal-card p-5 card-lift cursor-default ${className}`}
-    >
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="font-black text-sm uppercase tracking-wide">{name}</h3>
-        <StatusBadge variant={trend} />
+    <Card className="flex flex-col justify-between h-full group">
+      <div className="flex justify-between items-start mb-4">
+        <span className="font-black uppercase tracking-tighter text-lg">{name}</span>
+        <Badge variant={trend === "up" ? "up" : trend === "down" ? "down" : "flat"}>
+          {trend === "up" ? "Bullish" : trend === "down" ? "Bearish" : "Neutral"}
+        </Badge>
       </div>
-      <div className="space-y-1">
-        <p className="text-2xl font-black font-mono tracking-tight">{price}</p>
-        <p
-          className={`text-xs font-black font-mono ${
-            trend === "bullish"
-              ? "text-accent-teal"
-              : trend === "bearish"
-              ? "text-accent-coral"
-              : "text-ink/60"
-          }`}
-        >
+      <div>
+        <div className="text-3xl font-black tracking-tighter mb-1">{price}</div>
+        <div className={`text-sm font-bold ${trend === "up" ? "text-accent-bullish" : trend === "down" ? "text-accent-bearish" : "text-accent-neutral"}`}>
           {change}
-        </p>
+        </div>
       </div>
-    </div>
+    </Card>
   );
 }

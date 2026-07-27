@@ -1,10 +1,6 @@
 import React from "react";
-import { StatusBadge } from "./StatusBadge";
-
-interface Level {
-  label: string;
-  value: string;
-}
+import { Card } from "../ui/Card";
+import { Badge } from "../ui/Badge";
 
 interface InstrumentCardProps {
   name: string;
@@ -14,9 +10,8 @@ interface InstrumentCardProps {
   pivot: string;
   resistance: { r1: string; r2: string; r3: string };
   support: { s1: string; s2: string; s3: string };
-  trend: "bullish" | "bearish" | "neutral";
+  trend: "Bullish" | "Bearish" | "Neutral";
   aiInsight: string;
-  className?: string;
 }
 
 export function InstrumentCard({
@@ -29,70 +24,59 @@ export function InstrumentCard({
   support,
   trend,
   aiInsight,
-  className = "",
 }: InstrumentCardProps) {
   return (
-    <div
-      className={`brutal-card p-5 card-lift cursor-default ${className}`}
-    >
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4 pb-3 brutal-border-b border-b-3 border-ink">
-        <h3 className="font-black text-base uppercase tracking-wide">{name}</h3>
-        <StatusBadge variant={trend} />
+    <Card className="flex flex-col h-full group">
+      <div className="flex justify-between items-start mb-6">
+        <span className="font-black uppercase tracking-tighter text-xl">{name}</span>
+        <Badge variant={trend === "Bullish" ? "up" : trend === "Bearish" ? "down" : "flat"}>
+          {trend}
+        </Badge>
       </div>
 
-      {/* Price */}
-      <div className="mb-4">
-        <p className="text-3xl font-black font-mono tracking-tight">{price}</p>
-        <div className="flex gap-4 mt-1 text-xs font-bold font-mono">
-          <span className="text-accent-teal">H: {high}</span>
-          <span className="text-accent-coral">L: {low}</span>
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="flex flex-col">
+          <span className="text-[10px] uppercase font-bold text-ink/50">Price</span>
+          <span className="text-2xl font-black tracking-tighter">{price}</span>
+        </div>
+        <div className="flex flex-col">
+          <span className="text-[10px] uppercase font-bold text-ink/50">Pivot</span>
+          <span className="text-2xl font-black tracking-tighter">{pivot}</span>
+        </div>
+        <div className="flex flex-col">
+          <span className="text-[10px] uppercase font-bold text-ink/50">High</span>
+          <span className="text-lg font-bold">{high}</span>
+        </div>
+        <div className="flex flex-col">
+          <span className="text-[10px] uppercase font-bold text-ink/50">Low</span>
+          <span className="text-lg font-bold">{low}</span>
         </div>
       </div>
 
-      {/* Pivot */}
-      <div className="mb-3 pb-3 brutal-border-b border-b-3 border-ink">
-        <span className="text-[10px] font-black uppercase tracking-wider opacity-50">Pivot</span>
-        <p className="font-black font-mono text-sm">{pivot}</p>
-      </div>
-
-      {/* Resistance & Support */}
-      <div className="grid grid-cols-2 gap-3 mb-3 pb-3 brutal-border-b border-b-3 border-ink">
-        <div>
-          <span className="text-[10px] font-black uppercase tracking-wider text-accent-teal">Resistance</span>
-          <div className="mt-1 space-y-0.5">
-            <LevelRow label="R1" value={resistance.r1} />
-            <LevelRow label="R2" value={resistance.r2} />
-            <LevelRow label="R3" value={resistance.r3} />
-          </div>
+      <div className="grid grid-cols-2 gap-4 mb-6 p-3 bg-bg-featured brutal-border">
+        <div className="space-y-1">
+          <span className="text-[10px] uppercase font-black block mb-1 text-accent-bullish">Resistance</span>
+          <div className="text-xs font-bold flex justify-between"><span>R1:</span> <span>{resistance.r1}</span></div>
+          <div className="text-xs font-bold flex justify-between"><span>R2:</span> <span>{resistance.r2}</span></div>
+          <div className="text-xs font-bold flex justify-between"><span>R3:</span> <span>{resistance.r3}</span></div>
         </div>
-        <div>
-          <span className="text-[10px] font-black uppercase tracking-wider text-accent-coral">Support</span>
-          <div className="mt-1 space-y-0.5">
-            <LevelRow label="S1" value={support.s1} />
-            <LevelRow label="S2" value={support.s2} />
-            <LevelRow label="S3" value={support.s3} />
-          </div>
+        <div className="space-y-1">
+          <span className="text-[10px] uppercase font-black block mb-1 text-accent-bearish">Support</span>
+          <div className="text-xs font-bold flex justify-between"><span>S1:</span> <span>{support.s1}</span></div>
+          <div className="text-xs font-bold flex justify-between"><span>S2:</span> <span>{support.s2}</span></div>
+          <div className="text-xs font-bold flex justify-between"><span>S3:</span> <span>{support.s3}</span></div>
         </div>
       </div>
 
-      {/* AI Insight */}
-      <div className="bg-accent-blue/10 brutal-border p-3 border-accent-blue">
-        <div className="flex items-center gap-1.5 mb-1">
-          <span className="text-[10px] font-black uppercase tracking-wider text-accent-blue">AI Insight</span>
-          <StatusBadge variant="ai" />
+      <div className="mt-auto">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-[10px] uppercase font-black text-ink">AI Insight</span>
+          <span className="text-[8px] bg-ink text-white px-1 brutal-border">AI</span>
         </div>
-        <p className="text-xs font-bold opacity-80 leading-relaxed">{aiInsight}</p>
+        <p className="text-xs font-medium leading-relaxed text-ink/80 italic">
+          "{aiInsight}"
+        </p>
       </div>
-    </div>
-  );
-}
-
-function LevelRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between">
-      <span className="text-[10px] font-black uppercase opacity-50">{label}</span>
-      <span className="text-xs font-black font-mono">{value}</span>
-    </div>
+    </Card>
   );
 }
