@@ -1,3 +1,4 @@
+import React from "react";
 import { getDbAsync } from "@/lib/prisma";
 import { SectionTitle, Badge, NewsCard } from "@/components/ui";
 import Link from "next/link";
@@ -18,14 +19,14 @@ const TICKER_ITEMS = [
 ];
 
 const dirColor: Record<"up" | "down" | "flat", string> = {
-  up: "text-accent-teal",
-  down: "text-accent-coral",
-  flat: "text-accent-yellow",
+  up: "text-[#2E8B57]",
+  down: "text-[#D94B45]",
+  flat: "text-[#6B7280]",
 };
 const dirArrow: Record<"up" | "down" | "flat", string> = {
   up: "▲",
   down: "▼",
-  flat: "◆",
+  flat: "•",
 };
 
 function formatDate(date: Date | null): string {
@@ -78,21 +79,38 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
       />
 
-      {/* ───────────────────────── 1. Live Market Ticker ───────────────────────── */}
-      <div className="bg-ink text-bg brutal-border-b border-b-3 border-ink overflow-hidden py-3">
-        <div className="flex ticker-track whitespace-nowrap">
-          {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
-            <span
-              key={`${item.symbol}-${i}`}
-              className="inline-flex items-center gap-2 mx-6 text-sm font-black uppercase"
-            >
-              {item.symbol}
-              <span className={dirColor[item.dir]}>{item.price}</span>
-              <span className={dirColor[item.dir]}>{dirArrow[item.dir]}</span>
-            </span>
-          ))}
-        </div>
-      </div>
+       {/* ───────────────────────── 1. Live Market Ticker ───────────────────────── */}
+       <div className="relative bg-[#111317] text-white brutal-border-b border-b-[4px] border-black overflow-hidden py-4">
+         {/* Subtle Financial Grid Texture */}
+         <div 
+           className="absolute inset-0 pointer-events-none opacity-[0.03]" 
+           style={{ 
+             backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`, 
+             backgroundSize: '40px 40px' 
+           }} 
+         />
+         
+         <div className="relative flex ticker-track whitespace-nowrap items-center">
+           {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
+             <React.Fragment key={`${item.symbol}-${i}`}>
+               <div className="inline-flex items-center gap-4 mx-8">
+                 <span className="text-[10px] font-semibold uppercase text-gray-400 tracking-wider">
+                   {item.symbol}
+                 </span>
+                 <span className="text-lg font-bold text-white">
+                   {item.price}
+                 </span>
+                 <span className={`text-sm font-bold flex items-center gap-1 ${dirColor[item.dir]}`}>
+                   {dirArrow[item.dir]} 
+                   {item.dir === 'up' ? '+' : ''}{Math.abs(parseFloat(item.price.replace(/[^0-9.-]+/g, ""))).toFixed(2)}%
+                 </span>
+               </div>
+               {/* Vertical Separator */}
+               <div className="h-6 w-[1px] bg-[#2A2A2A]" />
+             </React.Fragment>
+           ))}
+         </div>
+       </div>
 
       {/* ───────────────────────── 2. Breaking News Hero ───────────────────────── */}
       {breakingPost && (

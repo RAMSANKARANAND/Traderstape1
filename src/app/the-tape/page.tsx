@@ -158,9 +158,9 @@ export default function TheTapePage() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-4">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-6xl md:text-8xl font-black uppercase tracking-tighter leading-none">
-                The Tape
-              </h1>
+               <h1 className="text-4xl sm:text-6xl md:text-8xl font-black uppercase tracking-tighter leading-none">
+                 The Tape
+               </h1>
               <StatusBadge label="LIVE" variant="live" />
             </div>
             <p className="text-xl md:text-2xl font-bold text-ink/60 uppercase tracking-wide">

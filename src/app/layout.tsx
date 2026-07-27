@@ -37,7 +37,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen flex flex-col">
+      <body className="min-h-screen flex flex-col overflow-x-hidden">
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-accent-yellow focus:text-ink focus:p-3 focus:font-black focus:brutal-border"
@@ -48,15 +48,15 @@ export default function RootLayout({
         <WelcomeDisclaimerModal />
 
         {/* Navigation */}
-        <header className="bg-accent-yellow brutal-border-b border-b-3 border-ink sticky top-0 z-40">
-          <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Main navigation">
-            <div className="flex items-center justify-between h-16">
-              <Link href="/" className="font-black text-2xl uppercase tracking-tighter brutal-border px-3 py-1 bg-bg">
+        <header className="bg-[#F4F5F6] border-b-[4px] border-black sticky top-0 z-40 h-[72px] flex items-center">
+          <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full" aria-label="Main navigation">
+            <div className="flex items-center justify-between h-full">
+              <Link href="/" className="font-black text-2xl uppercase tracking-tighter brutal-border px-3 py-1 bg-white hover:bg-ink hover:text-white transition-colors duration-100">
                 TradersTape
               </Link>
 
               {/* Desktop Nav */}
-              <div className="hidden md:flex items-center gap-1">
+              <div className="hidden md:flex items-center gap-6">
                 <NavLink href="/the-tape">The Tape</NavLink>
                 <NavLink href="/news">News</NavLink>
                 <NavLink href="/tape-views">Tape Views</NavLink>
@@ -128,9 +128,10 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   return (
     <Link
       href={href}
-      className="px-3 py-2 font-black uppercase text-sm hover:bg-ink hover:text-bg transition-colors duration-100"
+      className="relative px-1 py-2 font-black uppercase text-sm text-ink transition-colors duration-200 group"
     >
       {children}
+      <span className="absolute bottom-0 left-0 w-full h-1 bg-ink transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left" />
     </Link>
   );
 }
