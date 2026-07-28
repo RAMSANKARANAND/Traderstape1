@@ -72,7 +72,7 @@ const levels = await prisma.marketLevel.findMany({
                     </td>
                     <td className="py-3 px-4">
                       {level.isPublished ? (
-                        <span className="text-accent-teal font-black">YES</span>
+                        <span className="text-accent-mint font-black">YES</span>
                       ) : (
                         <span className="opacity-40 font-bold">DRAFT</span>
                       )}
@@ -84,7 +84,7 @@ const levels = await prisma.marketLevel.findMany({
                       <div className="flex gap-2">
                         <Link
                           href={`/admin/levels/${level.id}/edit`}
-                          className="text-xs font-black uppercase bg-accent-blue text-white px-2 py-1 brutal-border border-2 border-ink"
+                          className="text-xs font-black uppercase bg-accent-sky text-ink px-2 py-1 brutal-border border-2 border-ink"
                         >
                           Edit
                         </Link>
@@ -119,7 +119,7 @@ const levels = await prisma.marketLevel.findMany({
                           >
                             <button
                               type="submit"
-                              className="text-xs font-black uppercase bg-accent-coral text-white px-2 py-1 brutal-border border-2 border-ink"
+                              className="text-xs font-black uppercase bg-accent-peach text-ink px-2 py-1 brutal-border border-2 border-ink"
                             >
                               Delete
                             </button>

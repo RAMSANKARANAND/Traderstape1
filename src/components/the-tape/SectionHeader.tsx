@@ -8,11 +8,11 @@ interface SectionHeaderProps {
 export function SectionHeader({ title, description }: SectionHeaderProps) {
   return (
     <div className="mb-8 animate-fade-in-up">
-      <div className="section-title mb-3">
+      <div className="inline-block bg-ink text-white px-4 py-2 font-black uppercase tracking-tighter text-xl brutal-border mb-3">
         {title}
       </div>
       {description && (
-        <p className="text-ink/70 font-medium max-w-2xl leading-relaxed">
+        <p className="text-text-secondary font-medium max-w-2xl">
           {description}
         </p>
       )}

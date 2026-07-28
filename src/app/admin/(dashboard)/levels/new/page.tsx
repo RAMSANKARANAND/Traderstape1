@@ -1,7 +1,9 @@
 import { getSessionUser } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { getDbAsync } from "@/lib/prisma";
-import { Card, SectionTitle, Button } from "@/components/ui";
+import { Card, SectionTitle } from "@/components/ui";
+import { Button } from "@/components/ui/Button";
+import { CancelButton } from "./CancelButton";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -129,9 +131,7 @@ await prisma.marketLevel.create({
             <Button type="submit" variant="primary">
               Create Level
             </Button>
-            <Button type="button" variant="secondary" onClick={() => redirect("/admin/levels")}>
-              Cancel
-            </Button>
+            <CancelButton />
           </div>
         </form>
       </Card>

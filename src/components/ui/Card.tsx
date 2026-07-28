@@ -3,15 +3,15 @@ import React from "react";
 interface CardProps {
   children: React.ReactNode;
   className?: string;
-  accent?: "yellow" | "coral" | "teal" | "blue" | "pink" | "none";
+  accent?: "yellow" | "mint" | "sky" | "lavender" | "peach" | "none";
 }
 
 const accentBorders: Record<string, string> = {
-  yellow: "border-accent-gold",
-  coral: "border-accent-bearish",
-  teal: "border-accent-bullish",
-  blue: "border-accent-info",
-  pink: "border-accent-neutral",
+  yellow: "border-accent-yellow",
+  mint: "border-accent-mint",
+  sky: "border-accent-sky",
+  lavender: "border-accent-lavender",
+  peach: "border-accent-peach",
   none: "border-ink",
 };
 

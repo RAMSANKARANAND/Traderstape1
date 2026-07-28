@@ -10,10 +10,10 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
-  primary: "bg-ink text-white brutal-border brutal-shadow hover:bg-white hover:text-ink hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[12px_12px_0_#111]",
-  secondary: "bg-bg-featured text-ink brutal-border brutal-shadow hover:bg-white hover:text-ink hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[12px_12px_0_#111]",
-  danger: "bg-accent-bearish text-white brutal-border brutal-shadow hover:bg-white hover:text-ink hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[12px_12px_0_#111]",
-  ghost: "bg-transparent text-ink brutal-border hover:bg-bg-featured",
+  primary: "bg-ink text-white brutal-border brutal-shadow hover:bg-white hover:text-ink hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[9px_9px_0_#000]",
+  secondary: "bg-accent-yellow text-ink brutal-border brutal-shadow hover:bg-white hover:text-ink hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[9px_9px_0_#000]",
+  danger: "bg-accent-peach text-ink brutal-border brutal-shadow hover:bg-white hover:text-ink hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[9px_9px_0_#000]",
+  ghost: "bg-transparent text-ink brutal-border hover:bg-bg-surface",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {

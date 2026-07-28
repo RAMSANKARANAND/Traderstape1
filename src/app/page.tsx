@@ -80,37 +80,37 @@ export default async function HomePage() {
       />
 
        {/* ───────────────────────── 1. Live Market Ticker ───────────────────────── */}
-       <div className="relative bg-[#111317] text-white brutal-border-b border-b-[4px] border-black overflow-hidden py-4">
-         {/* Subtle Financial Grid Texture */}
-         <div 
-           className="absolute inset-0 pointer-events-none opacity-[0.03]" 
-           style={{ 
-             backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`, 
-             backgroundSize: '40px 40px' 
-           }} 
-         />
-         
-         <div className="relative flex ticker-track whitespace-nowrap items-center">
-           {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
-             <React.Fragment key={`${item.symbol}-${i}`}>
-               <div className="inline-flex items-center gap-4 mx-8">
-                 <span className="text-[10px] font-semibold uppercase text-gray-400 tracking-wider">
-                   {item.symbol}
-                 </span>
-                 <span className="text-lg font-bold text-white">
-                   {item.price}
-                 </span>
-                 <span className={`text-sm font-bold flex items-center gap-1 ${dirColor[item.dir]}`}>
-                   {dirArrow[item.dir]} 
-                   {item.dir === 'up' ? '+' : ''}{Math.abs(parseFloat(item.price.replace(/[^0-9.-]+/g, ""))).toFixed(2)}%
-                 </span>
-               </div>
-               {/* Vertical Separator */}
-               <div className="h-6 w-[1px] bg-[#2A2A2A]" />
-             </React.Fragment>
-           ))}
-         </div>
-       </div>
+       <div className="relative bg-[#111317] text-white brutal-border-b border-b-[4px] border-black overflow-hidden py-1.5">
+          {/* Subtle Financial Grid Texture */}
+          <div 
+            className="absolute inset-0 pointer-events-none opacity-[0.03]" 
+            style={{ 
+              backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`, 
+              backgroundSize: '40px 40px' 
+            }} 
+          />
+          
+          <div className="relative flex ticker-track whitespace-nowrap items-center">
+            {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
+              <React.Fragment key={`${item.symbol}-${i}`}>
+                <div className="inline-flex items-center gap-3 mx-5">
+                  <span className="text-[10px] font-bold uppercase text-gray-400 tracking-wider">
+                    {item.symbol}
+                  </span>
+                  <span className="text-sm font-bold text-white tabular-nums">
+                    {item.price}
+                  </span>
+                  <span className={`text-xs font-bold flex items-center gap-1 ${dirColor[item.dir]}`}>
+                    {dirArrow[item.dir]} 
+                    {item.dir === 'up' ? '+' : ''}{Math.abs(parseFloat(item.price.replace(/[^0-9.-]+/g, ""))).toFixed(2)}%
+                  </span>
+                </div>
+                {/* Vertical Separator */}
+                <div className="h-4 w-[1px] bg-[#2A2A2A]" />
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
 
       {/* ───────────────────────── 2. Breaking News Hero ───────────────────────── */}
       {breakingPost && (

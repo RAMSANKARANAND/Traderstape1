@@ -35,7 +35,7 @@ const levels = await prisma.marketLevel.findMany({
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {levels.map((level) => (
-            <Card key={level.id} accent={level.direction === "UP" ? "teal" : level.direction === "DOWN" ? "coral" : "yellow"}>
+            <Card key={level.id} accent={level.direction === "UP" ? "mint" : level.direction === "DOWN" ? "peach" : "yellow"}>
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-xl font-black uppercase">{level.symbol}</h3>
                 <Badge variant={level.direction.toLowerCase() as "up" | "down" | "flat"}>

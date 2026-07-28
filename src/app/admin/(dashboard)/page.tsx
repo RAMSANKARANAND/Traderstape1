@@ -26,20 +26,20 @@ const [levelCount, newsCount, userCount] = await Promise.all([
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
         <Link href="/admin/levels">
-          <Card accent="teal" className="hover:translate-x-1 hover:translate-y-1 transition-transform">
+          <Card accent="mint" className="hover:translate-x-1 hover:translate-y-1 transition-transform">
             <p className="text-4xl font-black">{levelCount}</p>
             <p className="font-black uppercase mt-2">Market Levels</p>
           </Card>
         </Link>
         <Link href="/admin/news">
-          <Card accent="blue" className="hover:translate-x-1 hover:translate-y-1 transition-transform">
+          <Card accent="sky" className="hover:translate-x-1 hover:translate-y-1 transition-transform">
             <p className="text-4xl font-black">{newsCount}</p>
             <p className="font-black uppercase mt-2">News Posts</p>
           </Card>
         </Link>
         {user.role === "ADMIN" && (
           <Link href="/admin/users">
-            <Card accent="pink" className="hover:translate-x-1 hover:translate-y-1 transition-transform">
+            <Card accent="peach" className="hover:translate-x-1 hover:translate-y-1 transition-transform">
               <p className="text-4xl font-black">{userCount}</p>
               <p className="font-black uppercase mt-2">Users</p>
             </Card>
@@ -70,7 +70,7 @@ const [levelCount, newsCount, userCount] = await Promise.all([
           <h2 className="font-black uppercase mb-4">Your Role</h2>
           <p className="font-bold">
             You are logged in as <strong className="uppercase">{user.name}</strong> with role{" "}
-            <strong className="uppercase text-accent-coral">{user.role}</strong>.
+            <strong className="uppercase text-accent-peach">{user.role}</strong>.
           </p>
           <ul className="mt-4 space-y-2 text-sm font-bold">
             <li>• {user.role === "CONTRIBUTOR" ? "Create and edit your own drafts" : "Create, edit, and publish content"}</li>

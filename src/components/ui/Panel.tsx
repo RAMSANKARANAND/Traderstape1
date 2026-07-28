@@ -3,16 +3,16 @@ import React from "react";
 interface PanelProps {
   children: React.ReactNode;
   className?: string;
-  accent?: "yellow" | "coral" | "teal" | "blue" | "pink" | "none";
+  accent?: "yellow" | "mint" | "sky" | "lavender" | "peach" | "none";
 }
 
 const accentStyles: Record<string, string> = {
   yellow: "bg-accent-yellow",
-  coral: "bg-accent-coral",
-  teal: "bg-accent-teal",
-  blue: "bg-accent-blue",
-  pink: "bg-accent-pink",
-  none: "bg-bg",
+  mint: "bg-accent-mint",
+  sky: "bg-accent-sky",
+  lavender: "bg-accent-lavender",
+  peach: "bg-accent-peach",
+  none: "bg-bg-surface",
 };
 
 export function Panel({ children, className = "", accent = "none" }: PanelProps) {

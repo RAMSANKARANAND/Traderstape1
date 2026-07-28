@@ -1,5 +1,6 @@
 import React from "react";
 import { Card } from "../ui/Card";
+import { Badge } from "../ui/Badge";
 
 interface InsightCardProps {
   title: string;
@@ -8,22 +9,21 @@ interface InsightCardProps {
 
 export function InsightCard({ title, content }: InsightCardProps) {
   return (
-    <Card className="relative overflow-hidden bg-ink text-white brutal-border brutal-shadow">
-      <div className="absolute top-0 right-0 p-4">
-        <span className="text-[10px] font-black bg-accent-gold text-ink px-2 py-1 brutal-border uppercase tracking-widest">
+    <Card className="p-6 bg-accent-lavender/20 border-4 border-ink relative overflow-hidden">
+      <div className="absolute top-0 right-0 p-2">
+        <Badge variant="default" className="bg-ink text-white">
           AI Powered
-        </span>
+        </Badge>
       </div>
-      <div className="relative z-10">
-        <h3 className="text-2xl font-black uppercase tracking-tighter mb-4 flex items-center gap-2">
-          {title}
-          <span className="w-2 h-2 rounded-full bg-accent-bullish animate-pulse" />
-        </h3>
-        <p className="text-lg font-medium leading-relaxed text-white/80 italic">
-          "{content}"
-        </p>
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-8 h-8 bg-ink text-white flex items-center justify-center font-black text-xs">
+          AI
+        </div>
+        <h3 className="font-black uppercase tracking-tighter text-xl">{title}</h3>
       </div>
-      <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/5 rounded-full blur-3xl" />
+      <p className="text-text-secondary font-medium leading-relaxed italic">
+        "{content}"
+      </p>
     </Card>
   );
 }

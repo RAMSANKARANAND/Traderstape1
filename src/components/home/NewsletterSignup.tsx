@@ -4,7 +4,7 @@ import { Card } from "@/components/ui";
 
 export default function NewsletterSignup() {
   return (
-    <Card accent="teal" className="text-center">
+    <Card accent="mint" className="text-center">
       <h2 className="text-2xl md:text-3xl font-black uppercase mb-3">Stay On The Tape</h2>
       <p className="text-sm md:text-base font-bold opacity-80 max-w-xl mx-auto mb-6">
         Get curated market intelligence and breaking news delivered to your inbox.

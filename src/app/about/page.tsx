@@ -17,7 +17,7 @@ export default function AboutPage() {
 
       <div className="space-y-8">
         {/* Mission */}
-        <Panel accent="pink">
+        <Panel accent="peach">
           <h2 className="text-2xl font-black uppercase mb-4">Our Mission</h2>
           <p className="text-lg font-bold leading-relaxed">
             TradersTape was created to provide traders and market enthusiasts with a clean,
@@ -30,14 +30,14 @@ export default function AboutPage() {
         <div>
           <h2 className="text-xl font-black uppercase mb-4">What We Cover</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Card accent="blue">
+            <Card accent="sky">
               <h3 className="font-black uppercase mb-2">📈 Stocks & F&O</h3>
               <p className="text-sm font-bold">
                 Key support and resistance levels for Nifty, Bank Nifty, and major stocks.
                 Futures and options data for educational analysis.
               </p>
             </Card>
-            <Card accent="teal">
+            <Card accent="mint">
               <h3 className="font-black uppercase mb-2">💱 Forex</h3>
               <p className="text-sm font-bold">
                 Major currency pair levels including EUR/USD, GBP/USD, USD/JPY, and more.
@@ -51,7 +51,7 @@ export default function AboutPage() {
                 Track the volatile crypto markets.
               </p>
             </Card>
-            <Card accent="coral">
+            <Card accent="peach">
               <h3 className="font-black uppercase mb-2">🌍 Geopolitical News</h3>
               <p className="text-sm font-bold">
                 Curated news on geopolitical events that impact global markets.
@@ -62,7 +62,7 @@ export default function AboutPage() {
         </div>
 
         {/* Disclaimer */}
-        <div className="bg-accent-coral brutal-border brutal-shadow p-8">
+        <div className="bg-accent-peach brutal-border brutal-shadow p-8">
           <h2 className="text-2xl font-black uppercase mb-4 text-white">⚠ Important Disclaimer</h2>
           <div className="space-y-4 text-white font-bold">
             <p>
@@ -90,7 +90,7 @@ export default function AboutPage() {
           <h2 className="text-xl font-black uppercase mb-2">Get In Touch</h2>
           <p className="font-bold opacity-70">
             Have questions or feedback? Reach out to us at{" "}
-            <a href="mailto:hello@traderstape.com" className="underline hover:text-accent-coral">
+            <a href="mailto:hello@traderstape.com" className="underline hover:text-accent-peach">
               hello@traderstape.com
             </a>
           </p>

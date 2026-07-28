@@ -96,7 +96,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
       <Link
         href="/tape-views"
-        className="inline-block mb-4 md:mb-6 font-black uppercase text-xs md:text-sm hover:text-accent-coral transition-colors duration-100"
+        className="inline-block mb-4 md:mb-6 font-black uppercase text-xs md:text-sm hover:text-accent-peach transition-colors duration-100"
       >
         ← Back to Tape Views
       </Link>
@@ -147,7 +147,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
-        <Card accent="teal">
+        <Card accent="mint">
           <h2 className="text-lg md:text-xl font-black uppercase mb-3 md:mb-4">Support Levels</h2>
           <div className="space-y-2 md:space-y-3">
             {post.support1 && (
@@ -171,7 +171,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </div>
         </Card>
 
-        <Card accent="coral">
+        <Card accent="peach">
           <h2 className="text-lg md:text-xl font-black uppercase mb-3 md:mb-4">Resistance Levels</h2>
           <div className="space-y-2 md:space-y-3">
             {post.resistance1 && (

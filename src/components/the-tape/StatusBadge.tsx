@@ -1,21 +1,24 @@
 import React from "react";
+import { Badge } from "../ui/Badge";
+
+type StatusType = "bullish" | "bearish" | "neutral";
 
 interface StatusBadgeProps {
-  label: string;
-  variant?: "live" | "delayed" | "closed";
+  status: StatusType;
 }
 
-const variantStyles = {
-  live: "bg-accent-bullish text-white",
-  delayed: "bg-accent-gold text-ink",
-  closed: "bg-accent-neutral text-white",
-};
+export function StatusBadge({ status }: StatusBadgeProps) {
+  const config = {
+    bullish: { variant: "up" as const, label: "Bullish" },
+    bearish: { variant: "down" as const, label: "Bearish" },
+    neutral: { variant: "flat" as const, label: "Neutral" },
+  };
 
-export function StatusBadge({ label, variant = "live" }: StatusBadgeProps) {
+  const { variant, label } = config[status];
+
   return (
-    <div className={`inline-flex items-center gap-2 px-3 py-1 brutal-border font-black uppercase text-[10px] tracking-widest ${variantStyles[variant]} animate-pulse`}>
-      <span className="w-2 h-2 rounded-full bg-white animate-ping" />
+    <Badge variant={variant}>
       {label}
-    </div>
+    </Badge>
   );
 }

@@ -1,45 +1,47 @@
 import React from "react";
-import { StatusBadge } from "@/components/the-tape/StatusBadge";
 import { SectionHeader } from "@/components/the-tape/SectionHeader";
 import { MarketCard } from "@/components/the-tape/MarketCard";
 import { InstrumentCard } from "@/components/the-tape/InstrumentCard";
-import { TapeCard } from "@/components/the-tape/FeedCard";
+import { FeedCard } from "@/components/the-tape/FeedCard";
 import { InsightCard } from "@/components/the-tape/InsightCard";
+import { Badge } from "@/components/ui/Badge";
 
 export default function TheTapePage() {
-  const liveMarkets = [
-    { name: "NIFTY 50", price: "24,323.45", change: "+1.24%", trend: "up" as const },
-    { name: "BANK NIFTY", price: "52,104.10", change: "-0.45%", trend: "down" as const },
-    { name: "SENSEX", price: "75,643.20", change: "+0.88%", trend: "up" as const },
-    { name: "INDIA VIX", price: "12.45", change: "+2.10%", trend: "down" as const },
-    { name: "BTC", price: "67,432.10", change: "+4.12%", trend: "up" as const },
-    { name: "ETH", price: "3,452.12", change: "+1.15%", trend: "up" as const },
-    { name: "USD/INR", price: "83.42", change: "+0.05%", trend: "flat" as const },
-    { name: "GOLD", price: "72,450.00", change: "-0.22%", trend: "down" as const },
+  const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  const tapeLiveMarkets = [
+    { name: "NIFTY 50", price: "24,321.45", change: "+1.24%", status: "bullish" as const },
+    { name: "BANK NIFTY", price: "52,104.10", change: "-0.45%", status: "bearish" as const },
+    { name: "SENSEX", price: "75,842.20", change: "+0.12%", status: "neutral" as const },
+    { name: "INDIA VIX", price: "12.45", change: "-2.10%", status: "bullish" as const },
+    { name: "BTC", price: "67,432.10", change: "+4.52%", status: "bullish" as const },
+    { name: "ETH", price: "3,451.20", change: "+1.15%", status: "bullish" as const },
+    { name: "USD/INR", price: "83.42", change: "+0.05%", status: "neutral" as const },
+    { name: "GOLD", price: "72,450.00", change: "-0.88%", status: "bearish" as const },
   ];
 
   const nseInstruments = [
     {
-      name: "NIFTY 50",
-      price: "24,323",
-      high: "24,400",
-      low: "24,210",
-      pivot: "24,300",
-      resistance: { r1: "24,450", r2: "24,520", r3: "24,600" },
-      support: { s1: "24,250", s2: "24,180", s3: "24,100" },
-      trend: "Bullish" as const,
-      aiInsight: "Strong momentum observed above pivot. Target R1 with tight stop loss at S1.",
+      name: "Reliance Ind",
+      price: "2,945.00",
+      high: "2,980.00",
+      low: "2,910.00",
+      pivot: "2,940.00",
+      resistance: { r1: "2,960", r2: "2,985", r3: "3,010" },
+      support: { s1: "2,920", s2: "2,890", s3: "2,860" },
+      trend: "bullish" as const,
+      aiInsight: "Strong accumulation seen at 2,910 levels. Target R2 if volume persists."
     },
     {
-      name: "BANK NIFTY",
-      price: "52,104",
-      high: "52,300",
-      low: "51,900",
-      pivot: "52,150",
-      resistance: { r1: "52,400", r2: "52,600", r3: "52,800" },
-      support: { s1: "52,000", s2: "51,800", s3: "51,600" },
-      trend: "Bearish" as const,
-      aiInsight: "Price struggling to cross pivot. Expect consolidation between S1 and Pivot.",
+      name: "HDFC Bank",
+      price: "1,642.10",
+      high: "1,655.00",
+      low: "1,630.00",
+      pivot: "1,640.00",
+      resistance: { r1: "1,650", r2: "1,665", r3: "1,680" },
+      support: { s1: "1,635", s2: "1,620", s3: "1,600" },
+      trend: "neutral" as const,
+      aiInsight: "Consolidating in a tight range. Breakout above 1,655 could trigger rally."
     },
   ];
 
@@ -50,21 +52,21 @@ export default function TheTapePage() {
       high: "83.50",
       low: "83.35",
       pivot: "83.40",
-      resistance: { r1: "83.55", r2: "83.65", r3: "83.80" },
-      support: { s1: "83.30", s2: "83.20", s3: "83.10" },
-      trend: "Neutral" as const,
-      aiInsight: "Range-bound movement. Watch for breakout above 83.55 for bullish continuation.",
+      resistance: { r1: "83.45", r2: "83.55", r3: "83.65" },
+      support: { s1: "83.38", s2: "83.30", s3: "83.20" },
+      trend: "neutral" as const,
+      aiInsight: "Range-bound movement expected. Key support at 83.30."
     },
     {
       name: "EUR/USD",
-      price: "1.0845",
-      high: "1.0890",
-      low: "1.0810",
-      pivot: "1.0850",
-      resistance: { r1: "1.0910", r2: "1.0950", r3: "1.1000" },
-      support: { s1: "1.0820", s2: "1.0780", s3: "1.0750" },
-      trend: "Bullish" as const,
-      aiInsight: "Positive divergence on 1H chart. Support holding strong at 1.0820.",
+      price: "1.0842",
+      high: "1.0860",
+      low: "1.0820",
+      pivot: "1.0830",
+      resistance: { r1: "1.0850", r2: "1.0870", r3: "1.0890" },
+      support: { s1: "1.0825", s2: "1.0810", s3: "1.0790" },
+      trend: "bearish" as const,
+      aiInsight: "Downward pressure continuing. Watch for 1.0810 support."
     },
   ];
 
@@ -76,20 +78,20 @@ export default function TheTapePage() {
       low: "66,100",
       pivot: "67,000",
       resistance: { r1: "68,500", r2: "69,200", r3: "71,000" },
-      support: { s1: "66,500", s2: "65,000", s3: "64,000" },
-      trend: "Bullish" as const,
-      aiInsight: "Accumulation phase ending. High probability of test towards 70k.",
+      support: { s1: "66,500", s2: "65,000", s3: "63,000" },
+      trend: "bullish" as const,
+      aiInsight: "Strong momentum. Holding above 67k pivot is key for next leg up."
     },
     {
       name: "Ethereum",
-      price: "3,452",
-      high: "3,510",
+      price: "3,451",
+      high: "3,520",
       low: "3,380",
       pivot: "3,420",
-      resistance: { r1: "3,550", r2: "3,620", r3: "3,800" },
-      support: { s1: "3,350", s2: "3,200", s3: "3,100" },
-      trend: "Neutral" as const,
-      aiInsight: "Following BTC lead. Watch for 3,550 breakout for aggressive longs.",
+      resistance: { r1: "3,480", r2: "3,550", r3: "3,620" },
+      support: { s1: "3,400", s2: "3,350", s3: "3,300" },
+      trend: "bullish" as const,
+      aiInsight: "Following BTC lead. Resistance at 3,520 needs to break for new highs."
     },
   ];
 
@@ -100,82 +102,79 @@ export default function TheTapePage() {
       high: "72,800",
       low: "72,100",
       pivot: "72,300",
-      resistance: { r1: "72,700", r2: "73,100", r3: "73,500" },
-      support: { s1: "72,000", s2: "71,600", s3: "71,200" },
-      trend: "Bearish" as const,
-      aiInsight: "Profit booking at highs. Support at 72,000 is critical for bulls.",
+      resistance: { r1: "72,600", r2: "72,900", r3: "73,500" },
+      support: { s1: "72,200", s2: "71,800", s3: "71,500" },
+      trend: "bearish" as const,
+      aiInsight: "Profit booking at highs. Support at 72,100 is critical."
     },
     {
-      name: "Silver",
-      price: "84,120",
-      high: "84,500",
-      low: "83,800",
-      pivot: "84,000",
-      resistance: { r1: "84,600", r2: "85,100", r3: "85,800" },
-      support: { s1: "83,700", s2: "83,200", s3: "82,500" },
-      trend: "Neutral" as const,
-      aiInsight: "Correlated with Gold. Expect volatility around US CPI data.",
+      name: "Crude Oil",
+      price: "84.20",
+      high: "85.10",
+      low: "83.50",
+      pivot: "84.00",
+      resistance: { r1: "84.80", r2: "85.50", r3: "86.20" },
+      support: { s1: "83.80", s2: "83.20", s3: "82.50" },
+      trend: "neutral" as const,
+      aiInsight: "Geopolitical tensions balancing supply cuts. Range 83.5-85.1."
     },
   ];
 
   const globalMarkets = [
     {
       name: "S&P 500",
-      price: "5,432",
-      high: "5,450",
-      low: "5,410",
-      pivot: "5,420",
-      resistance: { r1: "5,460", r2: "5,480", r3: "5,500" },
-      support: { s1: "5,400", s2: "5,380", s3: "5,350" },
-      trend: "Bullish" as const,
-      aiInsight: "Tech heavy rally continuing. Overbought conditions on daily RSI.",
+      price: "5,432.10",
+      high: "5,450.00",
+      low: "5,410.00",
+      pivot: "5,420.00",
+      resistance: { r1: "5,440", r2: "5,460", r3: "5,480" },
+      support: { s1: "5,415", s2: "5,400", s3: "5,380" },
+      trend: "bullish" as const,
+      aiInsight: "Tech earnings driving growth. Bullish bias remains."
     },
     {
       name: "NASDAQ",
-      price: "17,843",
-      high: "17,900",
-      low: "17,750",
-      pivot: "17,800",
-      resistance: { r1: "17,950", r2: "18,100", r3: "18,300" },
-      support: { s1: "17,700", s2: "17,500", s3: "17,300" },
-      trend: "Bullish" as const,
-      aiInsight: "AI narrative driving prices. Strong support at 17,700.",
+      price: "17,842.50",
+      high: "17,900.00",
+      low: "17,750.00",
+      pivot: "17,800.00",
+      resistance: { r1: "17,880", r2: "17,950", r3: "18,100" },
+      support: { s1: "17,780", s2: "17,700", s3: "17,600" },
+      trend: "bullish" as const,
+      aiInsight: "AI hype continuing to support levels. Watch 17,800 pivot."
     },
   ];
 
   const newsFeed = [
-    { category: "Macro", headline: "Federal Reserve hints at potential rate cuts in Q4", time: "10m ago" },
-    { category: "NSE", headline: "Nifty faces resistance at 24,500; Option chain shows heavy calls", time: "25m ago" },
-    { category: "Crypto", headline: "Institutional inflows into BTC ETFs reach record highs", time: "1h ago" },
-    { category: "Forex", headline: "USD/INR breaks key resistance, eyes 83.60", time: "2h ago" },
-    { category: "Commodities", headline: "Gold prices dip as dollar strengthens", time: "3h ago" },
+    { category: "BREAKING", headline: "RBI maintains repo rate, focus remains on inflation control", time: "2m ago" },
+    { category: "FOREX", headline: "USD/INR hits 3-month high amid dollar strength", time: "15m ago" },
+    { category: "CRYPTO", headline: "Ethereum ETF inflows reach record highs in weekly report", time: "1h ago" },
+    { category: "GLOBAL", headline: "US Fed signals potential rate cuts in late Q3", time: "3h ago" },
+    { category: "NSE", headline: "Nifty faces resistance at 24,500; support at 24,100", time: "5h ago" },
   ];
 
   return (
-    <div className="min-h-screen bg-bg-main text-ink p-4 md:p-8 lg:p-12">
+    <div className="min-h-screen bg-bg p-4 md:p-8 page-enter">
       {/* Page Header */}
-      <header className="mb-16 animate-fade-in">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-4">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-               <h1 className="text-4xl sm:text-6xl md:text-8xl font-black uppercase tracking-tighter leading-none">
-                 The Tape
-               </h1>
-              <StatusBadge label="LIVE" variant="live" />
-            </div>
-            <p className="text-xl md:text-2xl font-bold text-ink/60 uppercase tracking-wide">
-              Real-time Market Intelligence
-            </p>
-          </div>
-          <div className="text-right">
-            <span className="text-[10px] uppercase font-black text-ink/40 block mb-1">Last Updated</span>
-            <span className="font-mono font-bold text-lg">2026-07-27 17:42:10 UTC</span>
-          </div>
+      <header className="mb-12 max-w-7xl mx-auto">
+        <div className="flex flex-wrap items-center gap-4 mb-2">
+          <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none">
+            The Tape
+          </h1>
+          <Badge variant="default" className="bg-red-600 text-white animate-pulse">
+            LIVE
+          </Badge>
         </div>
-        <div className="h-4 bg-ink brutal-border w-full" />
+        <p className="text-xl md:text-2xl font-medium text-text-secondary mb-6">
+          Real-time Market Intelligence
+        </p>
+        <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-text-secondary">
+          <span className="w-2 h-2 bg-accent-bullish rounded-full animate-pulse" />
+          Last Updated: {currentTime}
+        </div>
       </header>
 
-      <div className="space-y-24">
+      <main className="max-w-7xl mx-auto space-y-16">
         {/* Section 1: Tape Live */}
         <section>
           <SectionHeader 
@@ -183,48 +182,48 @@ export default function TheTapePage() {
             description="A real-time snapshot of today's major financial markets." 
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {liveMarkets.map((m) => (
-              <MarketCard key={m.name} {...m} />
+            {tapeLiveMarkets.map((m, i) => (
+              <MarketCard key={i} {...m} />
             ))}
           </div>
         </section>
 
         {/* Section 2: NSE */}
         <section>
-          <SectionHeader title="NSE Intelligence" description="Detailed technical levels for Indian benchmarks." />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {nseInstruments.map((i) => (
-              <InstrumentCard key={i.name} {...i} />
+          <SectionHeader title="NSE Markets" description="Detailed analysis of Indian equity benchmarks." />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {nseInstruments.map((inst, i) => (
+              <InstrumentCard key={i} {...inst} />
             ))}
           </div>
         </section>
 
         {/* Section 3: Forex */}
         <section>
-          <SectionHeader title="Forex Tape" description="Global currency pair dynamics and pivot levels." />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {forexInstruments.map((i) => (
-              <InstrumentCard key={i.name} {...i} />
+          <SectionHeader title="Forex Desk" description="Global currency pairs and volatility tracking." />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {forexInstruments.map((inst, i) => (
+              <InstrumentCard key={i} {...inst} />
             ))}
           </div>
         </section>
 
         {/* Section 4: Crypto */}
         <section>
-          <SectionHeader title="Crypto Intelligence" description="Digital asset momentum and AI-driven insights." />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {cryptoInstruments.map((i) => (
-              <InstrumentCard key={i.name} {...i} />
+          <SectionHeader title="Crypto Tape" description="Digital asset movements and on-chain sentiment." />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {cryptoInstruments.map((inst, i) => (
+              <InstrumentCard key={i} {...inst} />
             ))}
           </div>
         </section>
 
         {/* Section 5: Commodities */}
         <section>
-          <SectionHeader title="Commodities Tape" description="Hard assets and energy market snapshots." />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {commodities.map((i) => (
-              <InstrumentCard key={i.name} {...i} />
+          <SectionHeader title="Commodities" description="Hard assets and energy market intelligence." />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {commodities.map((inst, i) => (
+              <InstrumentCard key={i} {...inst} />
             ))}
           </div>
         </section>
@@ -232,43 +231,32 @@ export default function TheTapePage() {
         {/* Section 6: Global Markets */}
         <section>
           <SectionHeader title="Global Markets" description="Key indices from the world's leading exchanges." />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {globalMarkets.map((i) => (
-              <InstrumentCard key={i.name} {...i} />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {globalMarkets.map((inst, i) => (
+              <InstrumentCard key={i} {...inst} />
             ))}
           </div>
         </section>
 
         {/* Section 7: Tape Feed */}
         <section>
-          <SectionHeader title="Tape Feed" description="Curated high-impact headlines affecting market sentiment." />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {newsFeed.map((news, idx) => (
-              <TapeCard key={idx}>
-                <div className="p-4">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-[10px] font-black uppercase bg-bg-featured px-2 py-1 brutal-border">
-                      {news.category}
-                    </span>
-                    <span className="text-[10px] font-bold text-ink/40">{news.time}</span>
-                  </div>
-                  <h4 className="font-black text-lg leading-tight hover:underline cursor-pointer">
-                    {news.headline}
-                  </h4>
-                </div>
-              </TapeCard>
+          <SectionHeader title="Tape Feed" description="Latest high-impact headlines across all asset classes." />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {newsFeed.map((item, i) => (
+              <FeedCard key={i} {...item} />
             ))}
           </div>
         </section>
 
         {/* Section 8: Tape Insight */}
         <section className="pb-20">
+          <SectionHeader title="Tape Insight" description="AI-driven synthesis of current market conditions." />
           <InsightCard 
-            title="Tape Insight" 
-            content="AI-generated market commentary will appear here once live data is connected. Currently analyzing cross-asset correlations between Nifty 50 and US Treasury yields." 
+            title="Market Sentiment Analysis" 
+            content="AI-generated market commentary will appear here once live data is connected. Currently, the tape suggests a bullish bias in equities offset by volatility in the currency markets." 
           />
         </section>
-      </div>
+      </main>
     </div>
   );
 }
