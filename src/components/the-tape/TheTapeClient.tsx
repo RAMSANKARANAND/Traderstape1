@@ -3,10 +3,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { SectionHeader } from "@/components/the-tape/SectionHeader";
 import { MarketDetailCard } from "@/components/the-tape/MarketDetailCard";
+import { MarketPulseCard } from "@/components/the-tape/MarketPulseCard";
 import { FeedCard } from "@/components/the-tape/FeedCard";
 import { InsightCard } from "@/components/the-tape/InsightCard";
 import { Badge } from "@/components/ui/Badge";
 import type { MarketQuote } from "@/lib/market/types";
+import { computeMarketPulse } from "@/lib/market/pulse";
+import type { MarketPulse } from "@/lib/market/pulse";
 
 const INDIAN_INDICES = ["NIFTY 50", "BANK NIFTY", "SENSEX", "INDIA VIX"];
 const FOREX = ["USD/INR", "EUR/USD", "GBP/USD", "XAU/USD", "XAG/USD"];
@@ -22,6 +25,8 @@ export function TheTapeClient({ initialQuotes }: TheTapeClientProps) {
   const [countdown, setCountdown] = useState(30);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+
+  const pulse: MarketPulse = useMemo(() => computeMarketPulse(quotes), [quotes]);
 
   // Friendly relative timestamp
   const lastUpdated = useMemo(() => {
@@ -128,6 +133,11 @@ export function TheTapeClient({ initialQuotes }: TheTapeClientProps) {
       )}
 
       <main className="max-w-7xl mx-auto space-y-16">
+        {/* Market Pulse */}
+        <section>
+          <MarketPulseCard pulse={pulse} />
+        </section>
+
         {/* Section 1: Tape Live */}
         <section>
           <SectionHeader title="📡 Tape Live" description="A real-time snapshot of today's major financial markets." />
