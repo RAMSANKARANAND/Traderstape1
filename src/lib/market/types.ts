@@ -6,6 +6,14 @@ export interface MarketQuote {
   changePercent: number;
   direction: "up" | "down" | "flat";
   updatedAt: string;
+  provider: string;
+  open?: number;
+  previousClose?: number;
+  dayHigh?: number;
+  dayLow?: number;
+  volume?: number;
+  currency?: string;
+  marketState?: "OPEN" | "CLOSED";
 }
 
 export interface MarketProvider {

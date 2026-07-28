@@ -2,8 +2,10 @@ import type { MarketQuote, MarketProvider } from "../types";
 
 const FOREX_PAIRS = [
   { symbol: "USDINR=X", name: "USD/INR" },
-  { symbol: "EURINR=X", name: "EUR/USD" },
-  { symbol: "GBPINR=X", name: "GBP/USD" },
+  { symbol: "EURUSD=X", name: "EUR/USD" },
+  { symbol: "GBPUSD=X", name: "GBP/USD" },
+  { symbol: "XAUUSD=X", name: "XAU/USD" },
+  { symbol: "XAGUSD=X", name: "XAG/USD" },
 ];
 
 function mapDirection(change: number): "up" | "down" | "flat" {
@@ -39,6 +41,8 @@ export const frankfurterProvider: MarketProvider = {
         USDINR: { symbol: "USD/INR", name: "USD/INR", rate: rates["INR"] ?? 0 },
         EURUSD: { symbol: "EUR/USD", name: "EUR/USD", rate: rates["EUR"] ?? 0 },
         GBPUSD: { symbol: "GBP/USD", name: "GBP/USD", rate: rates["GBP"] ?? 0 },
+        XAUUSD: { symbol: "XAU/USD", name: "XAU/USD", rate: rates["XAU"] ?? 0 },
+        XAGUSD: { symbol: "XAG/USD", name: "XAG/USD", rate: rates["XAG"] ?? 0 },
       };
 
       for (const key of Object.keys(pairMap)) {
@@ -56,6 +60,7 @@ export const frankfurterProvider: MarketProvider = {
           changePercent: 0,
           direction: "flat",
           updatedAt: date,
+          provider: "Frankfurter",
         });
       }
     } catch (error) {
