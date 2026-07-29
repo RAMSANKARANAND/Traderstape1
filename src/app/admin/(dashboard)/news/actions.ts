@@ -2,7 +2,7 @@
 
 import { getSessionUser } from "@/lib/session";
 import { redirect } from "next/navigation";
-import { getDbAsync } from "@/lib/prisma";
+import { toggleNewsPublish as toggleNewsPublishDb, bulkDeleteNews as bulkDeleteNewsDb } from "@/lib/db-raw";
 
 export async function toggleNewsPublish(id: string) {
   const session = await getSessionUser();
@@ -15,27 +15,15 @@ export async function toggleNewsPublish(id: string) {
   }
 
   try {
-    const db = await getDbAsync();
-    const post = await db.newsPost.findUnique({
-      where: { id: id.trim() },
-      select: { isPublished: true },
-    });
+    const result = await toggleNewsPublishDb(id.trim());
 
-    if (!post) {
+    if (!result) {
       return { success: false, error: "Post not found." };
     }
 
-    const updated = await db.newsPost.update({
-      where: { id: id.trim() },
-      data: {
-        isPublished: !post.isPublished,
-        publishedAt: !post.isPublished ? new Date() : null,
-      },
-    });
-
     return {
       success: true,
-      isPublished: updated.isPublished,
+      isPublished: result.isPublished,
     };
   } catch (error) {
     console.error("Toggle publish failed:", error);
@@ -62,18 +50,11 @@ export async function bulkDeleteNews(ids: string[]) {
   }
 
   try {
-    const db = await getDbAsync();
-    const result = await db.newsPost.deleteMany({
-      where: {
-        id: {
-          in: validIds,
-        },
-      },
-    });
+    const deletedCount = await bulkDeleteNewsDb(validIds);
 
     return {
       success: true,
-      deletedCount: result.count,
+      deletedCount,
     };
   } catch (error) {
     console.error("Bulk delete failed:", error);

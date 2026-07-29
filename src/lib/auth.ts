@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import { getDbAsync } from "./prisma";
+import { getUserByEmail } from "./db-raw";
 
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -16,10 +16,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-          const prisma = await getDbAsync();
-const user = await prisma.user.findUnique({
-          where: { email: credentials.email as string },
-        });
+          const user = await getUserByEmail(credentials.email as string);
 
         if (!user || !user.isActive) return null;
 

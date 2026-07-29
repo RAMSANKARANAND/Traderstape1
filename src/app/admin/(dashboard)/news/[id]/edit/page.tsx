@@ -1,6 +1,6 @@
 import { getSessionUser } from "@/lib/session";
 import { redirect, notFound } from "next/navigation";
-import { getDbAsync } from "@/lib/prisma";
+import { getNewsPostById, updateNewsPost } from "@/lib/db-raw";
 import { Card, SectionTitle, Button } from "@/components/ui";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -18,8 +18,7 @@ export default async function EditNewsPage({
   if (!user) redirect("/admin/login");
 
   const { id } = await params;
-  const prisma = await getDbAsync();
-  const post = await prisma.newsPost.findUnique({ where: { id } });
+  const post = await getNewsPostById(id);
   if (!post) notFound();
 
   return (
@@ -32,21 +31,17 @@ export default async function EditNewsPage({
             "use server";
             const session = await getSessionUser();
             if (!session) redirect("/admin/login");
-            const db = await getDbAsync();
 
-            await db.newsPost.update({
-              where: { id },
-              data: {
-                title: formData.get("title") as string,
-                category: formData.get("category") as "STOCKS" | "CRYPTO" | "FOREX" | "GEOPOLITICAL",
-                summary: formData.get("summary") as string,
-                body: formData.get("body") as string,
-                seoTitle: (formData.get("seoTitle") as string) || null,
-                seoDescription: (formData.get("seoDescription") as string) || null,
-                ogImageUrl: (formData.get("ogImageUrl") as string) || null,
-                isPublished: formData.get("isPublished") === "on",
-                publishedAt: formData.get("isPublished") === "on" ? (post.publishedAt || new Date()) : null,
-              },
+            await updateNewsPost(id, {
+              title: formData.get("title") as string,
+              category: formData.get("category") as "STOCKS" | "CRYPTO" | "FOREX" | "GEOPOLITICAL",
+              summary: formData.get("summary") as string,
+              body: formData.get("body") as string,
+              seoTitle: (formData.get("seoTitle") as string) || null,
+              seoDescription: (formData.get("seoDescription") as string) || null,
+              ogImageUrl: (formData.get("ogImageUrl") as string) || null,
+              isPublished: formData.get("isPublished") === "on",
+              publishedAt: formData.get("isPublished") === "on" ? (post.publishedAt || new Date()) : null,
             });
             redirect("/admin/news");
           }}

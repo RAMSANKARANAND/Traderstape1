@@ -2,7 +2,7 @@
 
 import { getSessionUser } from "@/lib/session";
 import { redirect } from "next/navigation";
-import { getDbAsync } from "@/lib/prisma";
+import { toggleTapeViewPublish as toggleTapeViewPublishDb, bulkDeleteTapeViews as bulkDeleteTapeViewsDb } from "@/lib/db-raw";
 
 export async function toggleTapeViewPublish(id: string) {
   const session = await getSessionUser();
@@ -15,27 +15,15 @@ export async function toggleTapeViewPublish(id: string) {
   }
 
   try {
-    const db = await getDbAsync();
-    const tapeView = await db.tapeView.findUnique({
-      where: { id: id.trim() },
-      select: { isPublished: true },
-    });
+    const result = await toggleTapeViewPublishDb(id.trim());
 
-    if (!tapeView) {
+    if (!result) {
       return { success: false, error: "Tape view not found." };
     }
 
-    const updated = await db.tapeView.update({
-      where: { id: id.trim() },
-      data: {
-        isPublished: !tapeView.isPublished,
-        publishedAt: !tapeView.isPublished ? new Date() : null,
-      },
-    });
-
     return {
       success: true,
-      isPublished: updated.isPublished,
+      isPublished: result.isPublished,
     };
   } catch (error) {
     console.error("Toggle publish failed:", error);
@@ -62,18 +50,11 @@ export async function bulkDeleteTapeViews(ids: string[]) {
   }
 
   try {
-    const db = await getDbAsync();
-    const result = await db.tapeView.deleteMany({
-      where: {
-        id: {
-          in: validIds,
-        },
-      },
-    });
+    const deletedCount = await bulkDeleteTapeViewsDb(validIds);
 
     return {
       success: true,
-      deletedCount: result.count,
+      deletedCount,
     };
   } catch (error) {
     console.error("Bulk delete failed:", error);

@@ -1,4 +1,4 @@
-import { getDbAsync } from "@/lib/prisma";
+import { getAllMarketLevels, updateMarketLevelPublish, deleteMarketLevel } from "@/lib/db-raw";
 import { getSessionUser } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { Card, Badge, SectionTitle } from "@/components/ui";
@@ -13,10 +13,7 @@ export default async function AdminLevelsPage() {
   const user = await getSessionUser();
   if (!user) redirect("/admin/login");
 
-    const prisma = await getDbAsync();
-const levels = await prisma.marketLevel.findMany({
-    orderBy: { updatedAt: "desc" },
-  });
+  const levels = await getAllMarketLevels();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -91,12 +88,7 @@ const levels = await prisma.marketLevel.findMany({
                         <form
                           action={async () => {
                             "use server";
-                            const { getDbAsync } = await import("@/lib/prisma");
-                          const db = await getDbAsync();
-                            await db.marketLevel.update({
-                              where: { id: level.id },
-                              data: { isPublished: !level.isPublished },
-                            });
+                            await updateMarketLevelPublish(level.id, !level.isPublished);
                           }}
                         >
                           <button
@@ -112,9 +104,7 @@ const levels = await prisma.marketLevel.findMany({
                               "use server";
                               const session = await getSessionUser();
                               if (!session || (session.role !== "ADMIN" && session.role !== "EDITOR")) return;
-                              const { getDbAsync } = await import("@/lib/prisma");
-                              const db = await getDbAsync();
-                              await db.marketLevel.delete({ where: { id: level.id } });
+                              await deleteMarketLevel(level.id);
                             }}
                           >
                             <button

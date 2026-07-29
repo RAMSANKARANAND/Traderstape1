@@ -17,8 +17,8 @@ interface CfRunResponse {
 }
 
 async function callCloudflareAI(messages: CfMessage[]): Promise<string> {
-  const accountId = process.env.CF_WORKERS_AI_ACCOUNT_ID;
-  const apiToken = process.env.CF_WORKERS_AI_API_TOKEN;
+  const accountId = process.env.WORKERS_AI_ACCOUNT_ID;
+  const apiToken = process.env.WORKERS_AI_API_TOKEN;
 
   if (!accountId || !apiToken) {
     throw new Error("Cloudflare credentials are not configured");

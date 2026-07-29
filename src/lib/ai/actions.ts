@@ -7,39 +7,27 @@ export const AVAILABLE_AI_ACTIONS: Array<{
   fields: string[];
 }> = [
   {
-    id: "generate-news-draft",
-    label: "News Draft",
-    description: "Generate a full news article draft from title and category",
-    fields: ["body"],
+    id: "generate-tape-view",
+    label: "Generate Analysis",
+    description: "Generate a full market analysis from title and category",
+    fields: ["body", "todayView"],
   },
   {
     id: "rewrite",
-    label: "Rewrite",
-    description: "Rewrite existing content for clarity and professionalism",
+    label: "Rewrite Analysis",
+    description: "Rewrite existing analysis for clarity and professionalism",
     fields: ["body"],
-  },
-  {
-    id: "generate-seo",
-    label: "SEO",
-    description: "Generate SEO title and meta description",
-    fields: ["seoTitle", "seoDescription"],
-  },
-  {
-    id: "generate-tags",
-    label: "Tags",
-    description: "Generate relevant tags for the article",
-    fields: ["tags"],
   },
   {
     id: "summarize",
-    label: "Summary",
-    description: "Generate a concise summary of the article",
-    fields: ["summary"],
+    label: "Summarize",
+    description: "Generate a concise summary of the analysis",
+    fields: ["todayView"],
   },
   {
-    id: "generate-tape-view",
-    label: "Tape View",
-    description: "Generate a market analysis view",
-    fields: ["body"],
+    id: "generate-seo",
+    label: "Generate SEO",
+    description: "Generate SEO title and meta description",
+    fields: ["seoTitle", "seoDescription"],
   },
 ];

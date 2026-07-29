@@ -1,4 +1,4 @@
-import { getDbAsync } from "@/lib/prisma";
+import { getAllNewsPosts } from "@/lib/db-raw";
 import { getSessionUser } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { Card, Badge, SectionTitle, Button } from "@/components/ui";
@@ -14,11 +14,7 @@ export default async function AdminNewsPage() {
   const user = await getSessionUser();
   if (!user) redirect("/admin/login");
 
-  const prisma = await getDbAsync();
-  const posts = await prisma.newsPost.findMany({
-    orderBy: { updatedAt: "desc" },
-    include: { author: { select: { name: true } } },
-  });
+  const posts = await getAllNewsPosts();
 
   const normalizedPosts = posts.map((post) => ({
     id: post.id,

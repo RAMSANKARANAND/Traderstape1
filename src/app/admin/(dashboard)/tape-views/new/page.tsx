@@ -1,8 +1,9 @@
 import { getSessionUser } from "@/lib/session";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { getDbAsync } from "@/lib/prisma";
+import { createTapeView } from "@/lib/db-raw";
 import { Card, SectionTitle, Button } from "@/components/ui";
+import { TapeViewsEditorWithAI } from "@/components/admin/ai/TapeViewsEditorWithAI";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -56,10 +57,12 @@ export default async function NewTapeViewPage() {
   if (!user) redirect("/admin/login");
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <SectionTitle className="mb-8">New Tape View</SectionTitle>
 
-      <Card>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2">
+          <Card>
         <form
           action={async (formData: FormData) => {
             "use server";
@@ -69,32 +72,29 @@ export default async function NewTapeViewPage() {
             const title = formData.get("title") as string;
             const slug = slugify(title);
 
-            const prisma = await getDbAsync();
-            await prisma.tapeView.create({
-              data: {
-                title,
-                slug,
-                category: formData.get("category") as any,
-                instrument: formData.get("instrument") as string,
-                bias: formData.get("bias") as any,
-                support1: (formData.get("support1") as string) || null,
-                support2: (formData.get("support2") as string) || null,
-                support3: (formData.get("support3") as string) || null,
-                resistance1: (formData.get("resistance1") as string) || null,
-                resistance2: (formData.get("resistance2") as string) || null,
-                resistance3: (formData.get("resistance3") as string) || null,
-                keyLevelsToWatch: (formData.get("keyLevelsToWatch") as string) || null,
-                todayView: formData.get("todayView") as string,
-                riskFactors: (formData.get("riskFactors") as string) || null,
-                educationalDisclaimer: (formData.get("educationalDisclaimer") as string) || null,
-                body: formData.get("body") as string,
-                authorId: session.id,
-                seoTitle: (formData.get("seoTitle") as string) || null,
-                seoDescription: (formData.get("seoDescription") as string) || null,
-                ogImageUrl: (formData.get("ogImageUrl") as string) || null,
-                isPublished: formData.get("isPublished") === "on",
-                publishedAt: formData.get("isPublished") === "on" ? new Date() : null,
-              },
+            await createTapeView({
+              title,
+              slug,
+              category: formData.get("category") as any,
+              instrument: formData.get("instrument") as string,
+              bias: formData.get("bias") as any,
+              support1: (formData.get("support1") as string) || null,
+              support2: (formData.get("support2") as string) || null,
+              support3: (formData.get("support3") as string) || null,
+              resistance1: (formData.get("resistance1") as string) || null,
+              resistance2: (formData.get("resistance2") as string) || null,
+              resistance3: (formData.get("resistance3") as string) || null,
+              keyLevelsToWatch: (formData.get("keyLevelsToWatch") as string) || null,
+              todayView: formData.get("todayView") as string,
+              riskFactors: (formData.get("riskFactors") as string) || null,
+              educationalDisclaimer: (formData.get("educationalDisclaimer") as string) || null,
+              body: formData.get("body") as string,
+              authorId: session.id,
+              seoTitle: (formData.get("seoTitle") as string) || null,
+              seoDescription: (formData.get("seoDescription") as string) || null,
+              ogImageUrl: (formData.get("ogImageUrl") as string) || null,
+              isPublished: formData.get("isPublished") === "on",
+              publishedAt: formData.get("isPublished") === "on" ? new Date() : null,
             });
             redirect("/admin/tape-views");
           }}
@@ -378,7 +378,13 @@ export default async function NewTapeViewPage() {
             </Link>
           </div>
         </form>
-      </Card>
+          </Card>
+        </div>
+
+        <div className="lg:col-span-1">
+          <TapeViewsEditorWithAI />
+        </div>
+      </div>
     </div>
   );
 }

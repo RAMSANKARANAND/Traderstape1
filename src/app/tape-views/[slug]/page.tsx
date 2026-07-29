@@ -1,4 +1,4 @@
-import { getDbAsync } from "@/lib/prisma";
+import { getTapeViewBySlug, getRelatedTapeViews } from "@/lib/db-raw";
 import { Badge, Card } from "@/components/ui";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -10,10 +10,7 @@ interface ArticlePageProps {
 
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const prisma = await getDbAsync();
-  const post = await prisma.tapeView.findUnique({
-    where: { slug },
-  });
+  const post = await getTapeViewBySlug(slug);
 
   if (!post) return { title: "Article Not Found" };
 
@@ -40,36 +37,16 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
-  const prisma = await getDbAsync();
-  const post = await prisma.tapeView.findUnique({
-    where: { slug },
-    include: { author: { select: { name: true } } },
-  });
+  const post = await getTapeViewBySlug(slug, true);
 
-  if (!post || !post.isPublished) {
+  if (!post) {
     notFound();
   }
 
   const wordCount = post.body.split(/\s+/).filter(Boolean).length;
   const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 
-  const relatedPosts = await prisma.tapeView.findMany({
-    where: {
-      category: post.category,
-      isPublished: true,
-      id: { not: post.id },
-    },
-    take: 3,
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      category: true,
-      instrument: true,
-      bias: true,
-      todayView: true,
-    },
-  });
+  const relatedPosts = await getRelatedTapeViews(post.category, post.id, 3);
 
   const shareUrl = `https://traderstape.com/tape-views/${slug}`;
   const shareTitle = encodeURIComponent(post.title);

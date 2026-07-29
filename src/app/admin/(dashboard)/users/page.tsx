@@ -1,4 +1,4 @@
-import { getDbAsync } from "@/lib/prisma";
+import { getAllUsers, toggleUserActive } from "@/lib/db-raw";
 import { getSessionUser } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { Card, Badge, SectionTitle, Button } from "@/components/ui";
@@ -12,10 +12,7 @@ export default async function AdminUsersPage() {
   const user = await getSessionUser();
   if (!user || user.role !== "ADMIN") redirect("/admin");
 
-    const prisma = await getDbAsync();
-const users = await prisma.user.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+  const users = await getAllUsers();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -63,12 +60,7 @@ const users = await prisma.user.findMany({
                           "use server";
                           const session = await getSessionUser();
                           if (!session || session.role !== "ADMIN") return;
-                          const { getDbAsync } = await import("@/lib/prisma");
-                          const db = await getDbAsync();
-                          await db.user.update({
-                            where: { id: u.id },
-                            data: { isActive: !u.isActive },
-                          });
+                          await toggleUserActive(u.id, !u.isActive);
                         }}
                       >
                         <button

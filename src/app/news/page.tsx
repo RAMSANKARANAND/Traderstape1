@@ -1,8 +1,7 @@
-import { getDbAsync } from "@/lib/prisma";
+import { getPublishedNewsPosts, type NewsPostWithAuthor } from "@/lib/db-raw";
 import { SectionTitle, Badge, NewsCard } from "@/components/ui";
 import Link from "next/link";
 import type { Metadata } from "next";
-import type { NewsPost } from "@prisma/client";
 
 export const metadata: Metadata = {
   title: "Trading News",
@@ -25,7 +24,7 @@ const categories = [
   { value: "GEOPOLITICAL", label: "Geopolitical" },
 ];
 
-type PostWithAuthor = NewsPost & { author: { name: string } };
+type PostWithAuthor = NewsPostWithAuthor;
 
 function formatDate(date: Date | null): string {
   if (!date) return "";
@@ -44,12 +43,9 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
     where.category = category;
   }
 
-  const prisma = await getDbAsync();
-  const posts = await prisma.newsPost.findMany({
-    where,
-    orderBy: { publishedAt: "desc" },
-    include: { author: { select: { name: true } } },
-  });
+  const posts = await getPublishedNewsPosts(
+    category ? { category: category as any } : undefined,
+  );
 
   // Partition posts by editorial flags (deterministic, single query).
   const breakingPost = posts.find((p) => p.isBreaking) ?? null;

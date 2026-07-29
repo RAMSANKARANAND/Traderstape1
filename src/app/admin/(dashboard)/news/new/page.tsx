@@ -1,7 +1,7 @@
 import { getSessionUser } from "@/lib/session";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { getDbAsync } from "@/lib/prisma";
+import { createNewsPost } from "@/lib/db-raw";
 import { Card, SectionTitle, Button } from "@/components/ui";
 import { NewsEditorWithAI } from "@/components/admin/ai/NewsEditorWithAI";
 import type { Metadata } from "next";
@@ -39,21 +39,18 @@ export default async function NewNewsPage() {
                 const title = formData.get("title") as string;
                 const slug = slugify(title);
 
-                const prisma = await getDbAsync();
-                await prisma.newsPost.create({
-                  data: {
-                    title,
-                    slug,
-                    category: formData.get("category") as "STOCKS" | "CRYPTO" | "FOREX" | "GEOPOLITICAL",
-                    summary: formData.get("summary") as string,
-                    body: formData.get("body") as string,
-                    authorId: session.id,
-                    seoTitle: (formData.get("seoTitle") as string) || null,
-                    seoDescription: (formData.get("seoDescription") as string) || null,
-                    ogImageUrl: (formData.get("ogImageUrl") as string) || null,
-                    isPublished: formData.get("isPublished") === "on",
-                    publishedAt: formData.get("isPublished") === "on" ? new Date() : null,
-                  },
+                await createNewsPost({
+                  title,
+                  slug,
+                  category: formData.get("category") as "STOCKS" | "CRYPTO" | "FOREX" | "GEOPOLITICAL",
+                  summary: formData.get("summary") as string,
+                  body: formData.get("body") as string,
+                  authorId: session.id,
+                  seoTitle: (formData.get("seoTitle") as string) || null,
+                  seoDescription: (formData.get("seoDescription") as string) || null,
+                  ogImageUrl: (formData.get("ogImageUrl") as string) || null,
+                  isPublished: formData.get("isPublished") === "on",
+                  publishedAt: formData.get("isPublished") === "on" ? new Date() : null,
                 });
                 redirect("/admin/news");
               }}

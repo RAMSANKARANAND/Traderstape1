@@ -1,4 +1,4 @@
-import { getDbAsync } from "@/lib/prisma";
+import { getPublishedMarketLevels } from "@/lib/db-raw";
 import { SectionTitle, Badge, Card } from "@/components/ui";
 import type { Metadata } from "next";
 
@@ -16,12 +16,7 @@ export const metadata: Metadata = {
 export default async function CryptoPage() {
   // Crypto uses the same MarketLevel model with a crypto-specific asset type
   // For now, we show a placeholder since crypto levels can be added via admin
-    const prisma = await getDbAsync();
-const levels = await prisma.marketLevel.findMany({
-    where: { isPublished: true, assetType: "STOCK_FNO" },
-    orderBy: { updatedAt: "desc" },
-    take: 0, // No crypto levels in seed data yet
-  });
+  const levels = await getPublishedMarketLevels("STOCK_FNO");
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

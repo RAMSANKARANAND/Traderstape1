@@ -1,4 +1,4 @@
-import { getDbAsync } from "@/lib/prisma";
+import { getNewsPostBySlug } from "@/lib/db-raw";
 import { Badge, Card } from "@/components/ui";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -10,10 +10,7 @@ interface ArticlePageProps {
 
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
-    const prisma = await getDbAsync();
-const post = await prisma.newsPost.findUnique({
-    where: { slug },
-  });
+  const post = await getNewsPostBySlug(slug);
 
   if (!post) return { title: "Article Not Found" };
 
@@ -40,11 +37,7 @@ const post = await prisma.newsPost.findUnique({
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
-    const prisma = await getDbAsync();
-const post = await prisma.newsPost.findUnique({
-    where: { slug, isPublished: true },
-    include: { author: { select: { name: true } } },
-  });
+  const post = await getNewsPostBySlug(slug, true);
 
   if (!post) {
     notFound();

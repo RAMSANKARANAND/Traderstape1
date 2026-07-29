@@ -22,7 +22,7 @@ export function AiAssistantPanel({
   onInsertContent,
   onInsertTags,
 }: AiAssistantPanelProps) {
-  const [selectedAction, setSelectedAction] = useState<AiAction>("generate-news-draft");
+  const [selectedAction, setSelectedAction] = useState<AiAction>("generate-tape-view");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AiResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -74,6 +74,8 @@ export function AiAssistantPanel({
         onInsertContent("seoDescription", result.data.metaDescription as string);
       } else if (field === "summary" && result.data.summary) {
         onInsertContent("summary", result.data.summary as string);
+      } else if (field === "todayView" && result.data.summary) {
+        onInsertContent("todayView", result.data.summary as string);
       } else if (field === "body" && result.data.content) {
         onInsertContent("body", result.data.content as string);
       }

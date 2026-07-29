@@ -1,5 +1,5 @@
 import React from "react";
-import { getDbAsync } from "@/lib/prisma";
+import { getPublishedNewsPosts, getLatestTapeView } from "@/lib/db-raw";
 import { SectionTitle, Badge, NewsCard } from "@/components/ui";
 import Link from "next/link";
 import NewsletterSignup from "@/components/home/NewsletterSignup";
@@ -40,19 +40,9 @@ function formatDate(date: Date | null): string {
 }
 
 export default async function HomePage() {
-  const prisma = await getDbAsync();
-
   const [newsPosts, latestTapeView] = await Promise.all([
-    prisma.newsPost.findMany({
-      where: { isPublished: true },
-      orderBy: { publishedAt: "desc" },
-      take: 8,
-      include: { author: { select: { name: true } } },
-    }),
-    prisma.tapeView.findFirst({
-      where: { isPublished: true },
-      orderBy: { publishedAt: "desc" },
-    }),
+    getPublishedNewsPosts({ take: 8 }),
+    getLatestTapeView(),
   ]);
 
   // Partition news by editorial flags (deterministic, single query).

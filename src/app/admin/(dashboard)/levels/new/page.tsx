@@ -1,6 +1,6 @@
 import { getSessionUser } from "@/lib/session";
 import { redirect } from "next/navigation";
-import { getDbAsync } from "@/lib/prisma";
+import { createMarketLevel } from "@/lib/db-raw";
 import { Card, SectionTitle } from "@/components/ui";
 import { Button } from "@/components/ui/Button";
 import { CancelButton } from "./CancelButton";
@@ -25,9 +25,7 @@ export default async function NewLevelPage() {
             const session = await getSessionUser();
             if (!session) redirect("/admin/login");
 
-              const prisma = await getDbAsync();
-await prisma.marketLevel.create({
-              data: {
+              await createMarketLevel({
                 symbol: formData.get("symbol") as string,
                 assetType: formData.get("assetType") as "STOCK_FNO" | "FOREX",
                 level: parseFloat(formData.get("level") as string),
@@ -35,8 +33,7 @@ await prisma.marketLevel.create({
                 direction: formData.get("direction") as "UP" | "DOWN" | "FLAT",
                 updatedBy: session.id,
                 isPublished: formData.get("isPublished") === "on",
-              },
-            });
+              });
             redirect("/admin/levels");
           }}
           className="space-y-6"

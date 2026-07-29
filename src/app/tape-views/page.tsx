@@ -1,4 +1,4 @@
-import { getDbAsync } from "@/lib/prisma";
+import { getPublishedTapeViews, type TapeViewCategory } from "@/lib/db-raw";
 import { SectionTitle, Badge, Card } from "@/components/ui";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -53,32 +53,9 @@ export default async function TapeViewsPage({
 }) {
   const { category } = await searchParams;
 
-  const prisma = await getDbAsync();
-
-  const where: Record<string, unknown> = {
-    isPublished: true,
-  };
-
-  if (category) {
-    where.category = category;
-  }
-
-  const tapeViews = await prisma.tapeView.findMany({
-    where,
-    orderBy: {
-      publishedAt: "desc",
-    },
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      category: true,
-      instrument: true,
-      bias: true,
-      todayView: true,
-      publishedAt: true,
-    },
-  });
+  const tapeViews = await getPublishedTapeViews(
+    category ? { category: category as TapeViewCategory } : undefined,
+  );
 
   const articles: TapeViewArticle[] = tapeViews.map((tv) => ({
     id: tv.id,

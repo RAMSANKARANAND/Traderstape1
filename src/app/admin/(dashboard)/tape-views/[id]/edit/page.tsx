@@ -1,6 +1,6 @@
 import { getSessionUser } from "@/lib/session";
 import { redirect, notFound } from "next/navigation";
-import { getDbAsync } from "@/lib/prisma";
+import { getTapeViewById, updateTapeView } from "@/lib/db-raw";
 import { Card, SectionTitle, Button } from "@/components/ui";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -51,8 +51,7 @@ export default async function EditTapeViewPage({
   if (!user) redirect("/admin/login");
 
   const { id } = await params;
-  const prisma = await getDbAsync();
-  const tapeView = await prisma.tapeView.findUnique({ where: { id } });
+  const tapeView = await getTapeViewById(id);
   if (!tapeView) notFound();
 
   return (
@@ -65,32 +64,28 @@ export default async function EditTapeViewPage({
             "use server";
             const session = await getSessionUser();
             if (!session) redirect("/admin/login");
-            const db = await getDbAsync();
 
-            await db.tapeView.update({
-              where: { id },
-              data: {
-                title: formData.get("title") as string,
-                category: formData.get("category") as any,
-                instrument: formData.get("instrument") as string,
-                bias: formData.get("bias") as any,
-                support1: (formData.get("support1") as string) || null,
-                support2: (formData.get("support2") as string) || null,
-                support3: (formData.get("support3") as string) || null,
-                resistance1: (formData.get("resistance1") as string) || null,
-                resistance2: (formData.get("resistance2") as string) || null,
-                resistance3: (formData.get("resistance3") as string) || null,
-                keyLevelsToWatch: (formData.get("keyLevelsToWatch") as string) || null,
-                todayView: formData.get("todayView") as string,
-                riskFactors: (formData.get("riskFactors") as string) || null,
-                educationalDisclaimer: (formData.get("educationalDisclaimer") as string) || null,
-                body: formData.get("body") as string,
-                seoTitle: (formData.get("seoTitle") as string) || null,
-                seoDescription: (formData.get("seoDescription") as string) || null,
-                ogImageUrl: (formData.get("ogImageUrl") as string) || null,
-                isPublished: formData.get("isPublished") === "on",
-                publishedAt: formData.get("isPublished") === "on" ? (tapeView.publishedAt || new Date()) : null,
-              },
+            await updateTapeView(id, {
+              title: formData.get("title") as string,
+              category: formData.get("category") as any,
+              instrument: formData.get("instrument") as string,
+              bias: formData.get("bias") as any,
+              support1: (formData.get("support1") as string) || null,
+              support2: (formData.get("support2") as string) || null,
+              support3: (formData.get("support3") as string) || null,
+              resistance1: (formData.get("resistance1") as string) || null,
+              resistance2: (formData.get("resistance2") as string) || null,
+              resistance3: (formData.get("resistance3") as string) || null,
+              keyLevelsToWatch: (formData.get("keyLevelsToWatch") as string) || null,
+              todayView: formData.get("todayView") as string,
+              riskFactors: (formData.get("riskFactors") as string) || null,
+              educationalDisclaimer: (formData.get("educationalDisclaimer") as string) || null,
+              body: formData.get("body") as string,
+              seoTitle: (formData.get("seoTitle") as string) || null,
+              seoDescription: (formData.get("seoDescription") as string) || null,
+              ogImageUrl: (formData.get("ogImageUrl") as string) || null,
+              isPublished: formData.get("isPublished") === "on",
+              publishedAt: formData.get("isPublished") === "on" ? (tapeView.publishedAt || new Date()) : null,
             });
             redirect("/admin/tape-views");
           }}

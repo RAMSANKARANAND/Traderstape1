@@ -63,12 +63,13 @@ const MOCK_RESPONSES: Record<string, (req: AiRequest) => AiResponse> = {
 };
 
 export function getAiProvider() {
-  const cloudflareAccountId = process.env.CF_WORKERS_AI_ACCOUNT_ID;
-  const cloudflareApiToken = process.env.CF_WORKERS_AI_API_TOKEN;
+  const cloudflareAccountId = process.env.WORKERS_AI_ACCOUNT_ID;
+  const cloudflareApiToken = process.env.WORKERS_AI_API_TOKEN;
   const openaiApiKey = process.env.OPENAI_API_KEY;
 
   // Cloudflare Workers AI takes priority if configured
   if (cloudflareAccountId && cloudflareApiToken) {
+    console.log("Selected AI Provider: cloudflare (credentials detected)");
     return {
       name: "cloudflare" as const,
       async generate(req: AiRequest): Promise<AiResponse> {
@@ -91,6 +92,7 @@ export function getAiProvider() {
   }
 
   if (openaiApiKey) {
+    console.log("Selected AI Provider: openai (credentials detected)");
     return {
       name: "openai" as const,
       async generate(req: AiRequest): Promise<AiResponse> {
@@ -109,6 +111,7 @@ export function getAiProvider() {
     };
   }
 
+  console.log("Selected AI Provider: mock (no Cloudflare credentials detected)");
   return {
     name: "mock" as const,
     async generate(req: AiRequest): Promise<AiResponse> {

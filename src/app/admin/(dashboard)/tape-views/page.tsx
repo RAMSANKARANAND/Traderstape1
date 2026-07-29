@@ -1,4 +1,4 @@
-import { getDbAsync } from "@/lib/prisma";
+import { getAllTapeViews } from "@/lib/db-raw";
 import { getSessionUser } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { Card, SectionTitle } from "@/components/ui";
@@ -14,11 +14,7 @@ export default async function AdminTapeViewsPage() {
   const user = await getSessionUser();
   if (!user) redirect("/admin/login");
 
-  const prisma = await getDbAsync();
-  const tapeViews = await prisma.tapeView.findMany({
-    orderBy: { updatedAt: "desc" },
-    include: { author: { select: { name: true } } },
-  });
+  const tapeViews = await getAllTapeViews();
 
   const normalizedTapeViews = tapeViews.map((tv) => ({
     id: tv.id,
