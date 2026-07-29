@@ -1,4 +1,5 @@
 import type { AiRequest, AiResponse } from "./types";
+import { generateWithCloudflare } from "./cloudflare";
 
 const MOCK_RESPONSES: Record<string, (req: AiRequest) => AiResponse> = {
   "generate-news-draft": (req) => ({
@@ -62,42 +63,67 @@ const MOCK_RESPONSES: Record<string, (req: AiRequest) => AiResponse> = {
 };
 
 export function getAiProvider() {
-  const apiKey = process.env.OPENAI_API_KEY;
+  const cloudflareAccountId = process.env.CF_WORKERS_AI_ACCOUNT_ID;
+  const cloudflareApiToken = process.env.CF_WORKERS_AI_API_TOKEN;
+  const openaiApiKey = process.env.OPENAI_API_KEY;
 
-  if (!apiKey) {
+  // Cloudflare Workers AI takes priority if configured
+  if (cloudflareAccountId && cloudflareApiToken) {
     return {
-      name: "mock",
+      name: "cloudflare" as const,
       async generate(req: AiRequest): Promise<AiResponse> {
-        // Simulate network delay
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        try {
+          return await generateWithCloudflare(req);
+        } catch (err) {
+          console.error("Cloudflare AI failed, falling back to mock:", err);
+          const handler = MOCK_RESPONSES[req.action];
+          if (!handler) {
+            return {
+              success: false,
+              mode: "mock",
+              message: `Unknown action: ${req.action}`,
+            };
+          }
+          return handler(req);
+        }
+      },
+    };
+  }
 
+  if (openaiApiKey) {
+    return {
+      name: "openai" as const,
+      async generate(req: AiRequest): Promise<AiResponse> {
+        // Future: implement OpenAI integration here
+        // Only the provider.ts file needs to change
         const handler = MOCK_RESPONSES[req.action];
         if (!handler) {
           return {
             success: false,
-            mode: "mock",
+            mode: "openai",
             message: `Unknown action: ${req.action}`,
           };
         }
-
         return handler(req);
       },
     };
   }
 
   return {
-    name: "openai",
+    name: "mock" as const,
     async generate(req: AiRequest): Promise<AiResponse> {
-      // Future: implement OpenAI integration here
-      // Only the provider.ts file needs to change
+      // Simulate network delay
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       const handler = MOCK_RESPONSES[req.action];
       if (!handler) {
         return {
           success: false,
-          mode: "openai",
+          mode: "mock",
           message: `Unknown action: ${req.action}`,
         };
       }
+
       return handler(req);
     },
   };

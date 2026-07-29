@@ -16,7 +16,7 @@ export interface AiRequest {
 
 export interface AiResponse {
   success: boolean;
-  mode: "mock" | "openai";
+  mode: "mock" | "openai" | "cloudflare";
   message: string;
   data?: Record<string, string | string[]>;
 }
