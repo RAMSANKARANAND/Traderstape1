@@ -2,22 +2,30 @@ import React from "react";
 
 interface BadgeProps {
   children: React.ReactNode;
-  variant?: "up" | "down" | "flat" | "default";
+  variant?: "default" | "flat" | "up" | "down" | "bullish" | "bearish" | "neutral" | "ai" | "breaking" | "forex" | "crypto" | "gold";
   className?: string;
 }
 
-const variantStyles: Record<string, string> = {
-  up: "bg-accent-mint text-ink",
-  down: "bg-accent-peach text-ink",
-  flat: "bg-accent-lavender text-ink",
-  default: "bg-accent-yellow text-ink",
+const variantClasses: Record<string, string> = {
+  default: "bg-white text-ink border-ink",
+  flat: "bg-bg text-ink border-ink",
+  up: "bg-bull text-[#0a2e14] border-ink",
+  down: "bg-bear text-[#2a0a0d] border-ink",
+  bullish: "badge-bullish",
+  bearish: "badge-bearish",
+  neutral: "badge-neutral",
+  ai: "badge-ai",
+  breaking: "badge-breaking",
+  forex: "badge-forex",
+  crypto: "badge-crypto",
+  gold: "badge-gold",
 };
 
 export function Badge({ children, variant = "default", className = "" }: BadgeProps) {
+  const base = "inline-flex items-center px-2.5 py-1 border-[2px] font-bold text-[11px] uppercase tracking-wider";
+
   return (
-    <span
-      className={`inline-block px-3 py-1 text-xs font-black uppercase tracking-wider brutal-border animate-badge-pop ${variantStyles[variant]} ${className}`}
-    >
+    <span className={`${base} ${variantClasses[variant]} ${className}`}>
       {children}
     </span>
   );

@@ -1,39 +1,39 @@
 import React from "react";
 
-type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
-type ButtonSize = "sm" | "md" | "lg";
-
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  children: React.ReactNode;
+  variant?: "primary" | "secondary";
+  size?: "sm" | "md" | "lg";
+  href?: string;
 }
 
-const variantStyles: Record<ButtonVariant, string> = {
-  primary: "bg-ink text-white brutal-border brutal-shadow hover:bg-white hover:text-ink hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[9px_9px_0_#000]",
-  secondary: "bg-accent-yellow text-ink brutal-border brutal-shadow hover:bg-white hover:text-ink hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[9px_9px_0_#000]",
-  danger: "bg-accent-peach text-ink brutal-border brutal-shadow hover:bg-white hover:text-ink hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[9px_9px_0_#000]",
-  ghost: "bg-transparent text-ink brutal-border hover:bg-bg-surface",
-};
+export function Button({ variant = "primary", size = "md", href, className = "", children, ...props }: ButtonProps) {
+  const base =
+    "inline-flex items-center justify-center gap-2 font-bold uppercase tracking-wide transition-all duration-150 btn-press";
 
-const sizeStyles: Record<ButtonSize, string> = {
-  sm: "px-3 py-1.5 text-sm",
-  md: "px-5 py-2.5 text-base",
-  lg: "px-8 py-3.5 text-lg",
-};
+  const variants = {
+    primary: "bg-accent-mint text-ink border-[3px] border-ink shadow-[4px_4px_0_#1F1F1F] hover:shadow-[5px_5px_0_#1F1F1F] hover:translate-x-[-1px] hover:translate-y-[-1px] active:shadow-[2px_2px_0_#1F1F1F] active:translate-x-[2px] active:translate-y-[2px]",
+    secondary:
+      "bg-white text-ink border-[3px] border-ink shadow-[4px_4px_0_#1F1F1F] hover:shadow-[5px_5px_0_#1F1F1F] hover:translate-x-[-1px] hover:translate-y-[-1px] active:shadow-[2px_2px_0_#1F1F1F] active:translate-x-[2px] active:translate-y-[2px]",
+  };
 
-export function Button({
-  variant = "primary",
-  size = "md",
-  className = "",
-  children,
-  ...props
-}: ButtonProps) {
+  const sizes = {
+    sm: "px-3 py-1.5 text-xs",
+    md: "px-5 py-2.5 text-sm",
+    lg: "px-6 py-3 text-base",
+  };
+
+  const classes = `${base} ${variants[variant]} ${sizes[size]} ${className}`;
+
+  if (href) {
+    return (
+      <a href={href} className={classes}>
+        {children}
+      </a>
+    );
+  }
+
   return (
-    <button
-      className={`font-black uppercase tracking-wide btn-press transition-all duration-200 ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
-      {...props}
-    >
+    <button className={classes} {...props}>
       {children}
     </button>
   );

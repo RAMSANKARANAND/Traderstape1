@@ -4,6 +4,7 @@ interface CardProps {
   children: React.ReactNode;
   className?: string;
   accent?: "yellow" | "mint" | "sky" | "lavender" | "peach" | "none";
+  padding?: "none" | "sm" | "md" | "lg";
 }
 
 const accentBorders: Record<string, string> = {
@@ -15,10 +16,17 @@ const accentBorders: Record<string, string> = {
   none: "border-ink",
 };
 
-export function Card({ children, className = "", accent = "none" }: CardProps) {
+const paddingClasses = {
+  none: "p-0",
+  sm: "p-3",
+  md: "p-5",
+  lg: "p-6",
+};
+
+export function Card({ children, className = "", accent = "none", padding = "md" }: CardProps) {
   return (
     <div
-      className={`brutal-card p-5 card-lift ${accentBorders[accent]} ${className}`}
+      className={`brutal-card brutal-shadow card-lift ${accentBorders[accent]} ${paddingClasses[padding]} ${className}`}
     >
       {children}
     </div>
