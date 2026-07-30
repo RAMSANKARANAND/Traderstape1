@@ -1,31 +1,12 @@
 import React from "react";
 import { getPublishedNewsPosts, getLatestTapeView } from "@/lib/db-raw";
+import { getMarketQuotes } from "@/lib/market/service";
 import { SectionTitle, Badge, NewsCard, Button } from "@/components/ui";
+import { MarketCard } from "@/components/the-tape/MarketCard";
 import Link from "next/link";
 import NewsletterSignup from "@/components/home/NewsletterSignup";
 
 export const dynamic = "force-dynamic";
-
-const MARKET_ITEMS = [
-  { symbol: "NIFTY", price: "24,180.50", change: "+0.42%", dir: "up" as const },
-  { symbol: "BANKNIFTY", price: "52,340.10", change: "-0.28%", dir: "down" as const },
-  { symbol: "SENSEX", price: "79,450.20", change: "-0.15%", dir: "down" as const },
-  { symbol: "GOLD", price: "₹72,300", change: "+0.55%", dir: "up" as const },
-  { symbol: "BTC", price: "$67,250", change: "+1.82%", dir: "up" as const },
-  { symbol: "ETH", price: "$3,510", change: "-0.35%", dir: "flat" as const },
-  { symbol: "USD/INR", price: "83.42", change: "+0.08%", dir: "flat" as const },
-];
-
-const dirColor: Record<"up" | "down" | "flat", string> = {
-  up: "text-bull",
-  down: "text-bear",
-  flat: "text-text-muted",
-};
-const dirArrow: Record<"up" | "down" | "flat", string> = {
-  up: "▲",
-  down: "▼",
-  flat: "•",
-};
 
 const MARKET_FOCUS = [
   "Nifty consolidates near 24,200 ahead of weekly expiry",
@@ -44,9 +25,10 @@ function formatDate(date: Date | null): string {
 }
 
 export default async function HomePage() {
-  const [newsPosts, latestTapeView] = await Promise.all([
+  const [newsPosts, latestTapeView, marketQuotes] = await Promise.all([
     getPublishedNewsPosts({ take: 8 }),
     getLatestTapeView(),
+    getMarketQuotes(),
   ]);
 
   const breakingPost = newsPosts.find((p) => p.isBreaking) ?? null;
@@ -113,21 +95,9 @@ export default async function HomePage() {
               <h2 className="text-card-title font-black uppercase tracking-tight">Market Snapshot</h2>
               <Badge variant="flat" className="text-[10px]">Live</Badge>
             </div>
-            <div className="flex-1 grid grid-cols-1 gap-1">
-              {MARKET_ITEMS.map((item) => (
-                <div
-                  key={item.symbol}
-                  className="flex items-center justify-between px-2 py-1 rounded hover:bg-black/5 transition-colors"
-                >
-                  <span className="text-small font-black uppercase tracking-wide">{item.symbol}</span>
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-body font-bold tabular-nums">{item.price}</span>
-                    <span className={`text-small font-black flex items-center gap-0.5 w-[70px] justify-end ${dirColor[item.dir]}`}>
-                      <span>{dirArrow[item.dir]}</span>
-                      <span>{item.change}</span>
-                    </span>
-                  </div>
-                </div>
+            <div className="flex-1 grid grid-cols-1 gap-2">
+              {marketQuotes.slice(0, 5).map((quote) => (
+                <MarketCard key={quote.symbol} quote={quote} />
               ))}
             </div>
           </div>
