@@ -60,6 +60,14 @@ const MOCK_RESPONSES: Record<string, (req: AiRequest) => AiResponse> = {
       content: `[Mock Tape View] ${req.title || "Market Analysis"}\n\nMarket Overview:\nIndian markets are showing mixed signals with the Nifty consolidating near key resistance levels.\n\nKey Levels:\n- Support: 24,000\n- Resistance: 24,500\n- Pivot: 24,250\n\nSentiment: Neutral with a bullish bias\n\nRisk Factors:\n- Global interest rate decisions\n- Crude oil price movements\n- FII/DII flow data`,
     },
   }),
+  "generate-morning-brief": () => ({
+    success: true,
+    mode: "mock",
+    message: "Morning brief generated.",
+    data: {
+      content: `MARKET SENTIMENT\nBullish - Domestic equities are favoured amid easing yield pressures and upbeat earnings signals.\n\nAI CONFIDENCE\n78%\n\nTODAY'S FOCUS\n• RBI policy commentary\n• USD/INR stability\n• Banking stocks\n• Gold rally\n• IT earnings\n\nGLOBAL OVERVIEW\nUS Markets: Positive\nEurope: Cautious\nAsia: Mixed\n\nRISK EVENTS\nHigh: RBI policy\nMedium: US CPI\nLow: crude oil\n\nAI SUMMARY\nMarkets opened with a bullish undertone. Nifty holds above 24,000 with support building. RBI commentary will guide rates. Global cues are mixed but not disruptive.`,
+    },
+  }),
 };
 
 export function getAiProvider() {

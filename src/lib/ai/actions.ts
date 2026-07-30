@@ -7,6 +7,12 @@ export const AVAILABLE_AI_ACTIONS: Array<{
   fields: string[];
 }> = [
   {
+    id: "generate-morning-brief",
+    label: "Generate Morning Brief",
+    description: "Generate a complete morning brief draft",
+    fields: ["headline", "sentiment", "confidence", "focusPoints", "riskEvents", "globalUs", "globalEurope", "globalAsia", "summary", "body", "seoTitle", "seoDescription"],
+  },
+  {
     id: "generate-tape-view",
     label: "Generate Analysis",
     description: "Generate a full market analysis from title and category",
@@ -17,6 +23,12 @@ export const AVAILABLE_AI_ACTIONS: Array<{
     label: "Rewrite Analysis",
     description: "Rewrite existing analysis for clarity and professionalism",
     fields: ["body"],
+  },
+  {
+    id: "rewrite-summary",
+    label: "Rewrite Summary",
+    description: "Rewrite the summary for better impact",
+    fields: ["summary"],
   },
   {
     id: "summarize",

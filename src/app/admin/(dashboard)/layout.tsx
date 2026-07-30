@@ -57,6 +57,13 @@ export default async function AdminDashboardLayout({
                 Tape Views
               </Link>
 
+              <Link
+                href="/admin/morning-brief"
+                className="text-sm font-black uppercase hover:text-accent-yellow transition-colors"
+              >
+                Morning Brief
+              </Link>
+
               {user.role === "ADMIN" && (
                 <Link
                   href="/admin/users"
@@ -117,6 +124,13 @@ export default async function AdminDashboardLayout({
             className="text-xs font-black uppercase hover:text-accent-yellow transition-colors"
           >
             Tape Views
+          </Link>
+
+          <Link
+            href="/admin/morning-brief"
+            className="text-xs font-black uppercase hover:text-accent-yellow transition-colors"
+          >
+            Morning Brief
           </Link>
 
           {user.role === "ADMIN" && (

@@ -1,8 +1,9 @@
 import React from "react";
-import { getPublishedNewsPosts, getLatestTapeView } from "@/lib/db-raw";
+import { getPublishedNewsPosts, getLatestTapeView, getLatestPublishedMorningBrief } from "@/lib/db-raw";
 import { getMarketQuotes } from "@/lib/market/service";
 import { SectionTitle, Badge, NewsCard, Button } from "@/components/ui";
 import { MarketCard } from "@/components/the-tape/MarketCard";
+import { MorningMarketBriefCard } from "@/components/ai/MorningMarketBriefCard";
 import Link from "next/link";
 import NewsletterSignup from "@/components/home/NewsletterSignup";
 
@@ -25,10 +26,11 @@ function formatDate(date: Date | null): string {
 }
 
 export default async function HomePage() {
-  const [newsPosts, latestTapeView, marketQuotes] = await Promise.all([
+  const [newsPosts, latestTapeView, marketQuotes, latestBrief] = await Promise.all([
     getPublishedNewsPosts({ take: 8 }),
     getLatestTapeView(),
     getMarketQuotes(),
+    getLatestPublishedMorningBrief(),
   ]);
 
   const breakingPost = newsPosts.find((p) => p.isBreaking) ?? null;
@@ -38,6 +40,21 @@ export default async function HomePage() {
   const latestNews = heroIds.length
     ? newsPosts.filter((p) => !heroIds.includes(p.id))
     : newsPosts;
+
+  const morningBrief = latestBrief
+    ? {
+        sentiment: latestBrief.sentiment,
+        confidence: latestBrief.confidence,
+        focusPoints: latestBrief.focusPoints as readonly string[],
+        globalOverview: {
+          us: latestBrief.globalUs,
+          europe: latestBrief.globalEurope,
+          asia: latestBrief.globalAsia,
+        },
+        riskEvents: latestBrief.riskEvents as ReadonlyArray<{ level: "High" | "Medium" | "Low"; title: string; description: string }>,
+        summary: latestBrief.summary,
+      }
+    : null;
 
   const organizationJsonLd = {
     "@context": "https://schema.org",
@@ -58,36 +75,19 @@ export default async function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2 animate-fade-in-up">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
-          {/* ── Card 1: AI Market Brief ── */}
-          <div className="brutal-card brutal-shadow p-5 border-ink flex flex-col min-h-[220px]">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <Badge variant="ai" className="text-[10px]">AI</Badge>
-                <h2 className="text-card-title font-black uppercase tracking-tight">Market Brief</h2>
-              </div>
-              <span className="text-[10px] font-black uppercase opacity-50">Confidence 78%</span>
+          {/* ── Card 1: Morning Market Brief ── */}
+          {morningBrief ? (
+            <MorningMarketBriefCard
+              data={morningBrief}
+              lastUpdated={latestBrief?.publishedAt
+                ? new Date(latestBrief.publishedAt).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })
+                : undefined}
+            />
+          ) : (
+            <div className="brutal-card brutal-shadow p-5 border-ink flex flex-col min-h-[220px] items-center justify-center">
+              <p className="text-body font-black uppercase opacity-40 text-center">No brief available</p>
             </div>
-            <p className="text-small font-bold leading-relaxed opacity-80 mb-3 line-clamp-3">
-              Indian equity markets opened mixed; Nifty near 24,200. Banking sold off, IT/pharma held up. Global cues cautious.
-            </p>
-            <div className="mt-auto">
-              <p className="text-small font-black uppercase opacity-50 mb-1.5">Key Focus</p>
-              <ul className="space-y-1">
-                {MARKET_FOCUS.map((point, i) => (
-                  <li key={i} className="text-small font-bold leading-tight opacity-70 flex items-start gap-1.5">
-                    <span className="text-accent-coral mt-0.5 shrink-0">•</span>
-                    <span>{point}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="flex items-center justify-between mt-2">
-              <span className="text-[10px] font-black uppercase opacity-40">
-                Updated: {new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}
-              </span>
-              <Button variant="secondary" size="sm" href="#brief">Read Brief</Button>
-            </div>
-          </div>
+          )}
 
           {/* ── Card 2: Market Snapshot ── */}
           <div className="brutal-card brutal-shadow p-5 border-ink flex flex-col min-h-[220px]">

@@ -21,6 +21,7 @@ model User {
   marketLevels MarketLevel[]
   newsPosts    NewsPost[]
   tapeViews    TapeView[]
+  morningBriefs MorningBrief[]
 }
 
 model MarketLevel {
@@ -50,6 +51,30 @@ model NewsPost {
   isFeatured     Boolean      @default(false)
   isTrending     Boolean      @default(false)
   isEditorPick   Boolean      @default(false)
+  seoTitle       String?
+  seoDescription String?
+  ogImageUrl     String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  author         User         @relation(fields: [authorId], references: [id])
+}
+
+model MorningBrief {
+  id             String       @id @default(cuid())
+  headline       String
+  slug           String       @unique
+  sentiment      String       @default("Neutral")
+  confidence     Int          @default(0)
+  focusPoints    String       @default("[]")
+  riskEvents     String       @default("[]")
+  globalUs       String       @default("")
+  globalEurope   String       @default("")
+  globalAsia     String       @default("")
+  summary        String
+  body           String       @default("")
+  authorId       String
+  publishedAt    DateTime?
+  isPublished    Boolean      @default(false)
   seoTitle       String?
   seoDescription String?
   ogImageUrl     String?

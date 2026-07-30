@@ -4,7 +4,9 @@ export type AiAction =
   | "generate-seo"
   | "generate-tags"
   | "summarize"
-  | "generate-tape-view";
+  | "rewrite-summary"
+  | "generate-tape-view"
+  | "generate-morning-brief";
 
 export interface AiRequest {
   action: AiAction;
@@ -19,4 +21,21 @@ export interface AiResponse {
   mode: "mock" | "openai" | "cloudflare";
   message: string;
   data?: Record<string, string | string[]>;
+}
+
+export interface MorningBriefData {
+  sentiment: string;
+  confidence: number;
+  focusPoints: readonly string[];
+  globalOverview: {
+    us: string;
+    europe: string;
+    asia: string;
+  };
+  riskEvents: ReadonlyArray<{
+    level: "High" | "Medium" | "Low";
+    title: string;
+    description: string;
+  }>;
+  summary: string;
 }

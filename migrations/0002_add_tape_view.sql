@@ -1,4 +1,4 @@
-CREATE TABLE "TapeView" (
+CREATE TABLE IF NOT EXISTS "TapeView" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "title" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
@@ -30,4 +30,4 @@ CREATE TABLE "TapeView" (
       ON UPDATE CASCADE
 );
 
-CREATE UNIQUE INDEX "TapeView_slug_key" ON "TapeView"("slug");
+CREATE UNIQUE INDEX IF NOT EXISTS "TapeView_slug_key" ON "TapeView"("slug");

@@ -837,6 +837,261 @@ export async function bulkDeleteTapeViews(ids: string[]): Promise<number> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// MorningBrief queries
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface MorningBrief {
+  id: string;
+  headline: string;
+  slug: string;
+  sentiment: string;
+  confidence: number;
+  focusPoints: string[];
+  riskEvents: Array<{ level: string; title: string; description: string }>;
+  globalUs: string;
+  globalEurope: string;
+  globalAsia: string;
+  summary: string;
+  body: string;
+  authorId: string;
+  publishedAt: Date | null;
+  isPublished: boolean;
+  seoTitle: string | null;
+  seoDescription: string | null;
+  ogImageUrl: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface MorningBriefWithAuthor extends MorningBrief {
+  author: { name: string };
+}
+
+function normalizeMorningBrief(row: Record<string, unknown>): MorningBrief {
+  return {
+    id: row.id as string,
+    headline: row.headline as string,
+    slug: row.slug as string,
+    sentiment: row.sentiment as string,
+    confidence: row.confidence as number,
+    focusPoints: JSON.parse((row.focusPoints as string) || "[]"),
+    riskEvents: JSON.parse((row.riskEvents as string) || "[]"),
+    globalUs: (row.globalUs as string) || "",
+    globalEurope: (row.globalEurope as string) || "",
+    globalAsia: (row.globalAsia as string) || "",
+    summary: row.summary as string,
+    body: (row.body as string) || "",
+    authorId: row.authorId as string,
+    publishedAt: toDate(row.publishedAt),
+    isPublished: toBool(row.isPublished),
+    seoTitle: (row.seoTitle as string) || null,
+    seoDescription: (row.seoDescription as string) || null,
+    ogImageUrl: (row.ogImageUrl as string) || null,
+    createdAt: toDate(row.createdAt)!,
+    updatedAt: toDate(row.updatedAt)!,
+  };
+}
+
+export async function getLatestPublishedMorningBrief(): Promise<MorningBriefWithAuthor | null> {
+  const d1 = await getD1();
+  const row = await d1
+    .prepare(
+      `SELECT m.*, u.name as authorName
+       FROM MorningBrief m
+       LEFT JOIN User u ON m.authorId = u.id
+       WHERE m.isPublished = 1
+       ORDER BY m.publishedAt DESC LIMIT 1`,
+    )
+    .first();
+  if (!row) return null;
+  return { ...normalizeMorningBrief(row), author: { name: (row.authorName as string) || "Unknown" } };
+}
+
+export async function getPublishedMorningBriefs(options?: { take?: number; offset?: number }): Promise<MorningBriefWithAuthor[]> {
+  const d1 = await getD1();
+  const take = options?.take ?? 20;
+  const offset = options?.offset ?? 0;
+  const result = await d1
+    .prepare(
+      `SELECT m.*, u.name as authorName
+       FROM MorningBrief m
+       LEFT JOIN User u ON m.authorId = u.id
+       WHERE m.isPublished = 1
+       ORDER BY m.publishedAt DESC
+       LIMIT ? OFFSET ?`,
+    )
+    .bind(take, offset)
+    .all();
+  return (result.results || []).map((row) => ({
+    ...normalizeMorningBrief(row),
+    author: { name: (row.authorName as string) || "Unknown" },
+  }));
+}
+
+export async function getMorningBriefBySlug(slug: string, requirePublished = false): Promise<MorningBriefWithAuthor | null> {
+  const d1 = await getD1();
+  const sql = requirePublished
+    ? `SELECT m.*, u.name as authorName
+       FROM MorningBrief m
+       LEFT JOIN User u ON m.authorId = u.id
+       WHERE m.slug = ? AND m.isPublished = 1`
+    : `SELECT m.*, u.name as authorName
+       FROM MorningBrief m
+       LEFT JOIN User u ON m.authorId = u.id
+       WHERE m.slug = ?`;
+  const row = await d1.prepare(sql).bind(slug).first();
+  if (!row) return null;
+  return { ...normalizeMorningBrief(row), author: { name: (row.authorName as string) || "Unknown" } };
+}
+
+export async function getMorningBriefById(id: string): Promise<MorningBrief | null> {
+  const d1 = await getD1();
+  const row = await d1.prepare("SELECT * FROM MorningBrief WHERE id = ?").bind(id).first();
+  if (!row) return null;
+  return normalizeMorningBrief(row);
+}
+
+export async function getAllMorningBriefs(): Promise<MorningBriefWithAuthor[]> {
+  const d1 = await getD1();
+  const result = await d1
+    .prepare(
+      `SELECT m.*, u.name as authorName
+       FROM MorningBrief m
+       LEFT JOIN User u ON m.authorId = u.id
+       ORDER BY m.updatedAt DESC`,
+    )
+    .all();
+  return (result.results || []).map((row) => ({
+    ...normalizeMorningBrief(row),
+    author: { name: (row.authorName as string) || "Unknown" },
+  }));
+}
+
+export async function createMorningBrief(data: {
+  headline: string;
+  slug: string;
+  sentiment: string;
+  confidence: number;
+  focusPoints: string[];
+  riskEvents: Array<{ level: string; title: string; description: string }>;
+  globalUs: string;
+  globalEurope: string;
+  globalAsia: string;
+  summary: string;
+  body: string;
+  authorId: string;
+  seoTitle: string | null;
+  seoDescription: string | null;
+  ogImageUrl: string | null;
+  isPublished: boolean;
+  publishedAt: Date | null;
+}): Promise<void> {
+  const d1 = await getD1();
+  const id = generateId();
+  const now = new Date().toISOString();
+  await d1
+    .prepare(
+      `INSERT INTO MorningBrief (id, headline, slug, sentiment, confidence, focusPoints, riskEvents, globalUs, globalEurope, globalAsia, summary, body, authorId, publishedAt, isPublished, seoTitle, seoDescription, ogImageUrl, createdAt, updatedAt)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    )
+    .bind(
+      id,
+      data.headline,
+      data.slug,
+      data.sentiment,
+      data.confidence,
+      JSON.stringify(data.focusPoints),
+      JSON.stringify(data.riskEvents),
+      data.globalUs,
+      data.globalEurope,
+      data.globalAsia,
+      data.summary,
+      data.body,
+      data.authorId,
+      data.publishedAt ? data.publishedAt.toISOString() : null,
+      data.isPublished ? 1 : 0,
+      data.seoTitle,
+      data.seoDescription,
+      data.ogImageUrl,
+      now,
+      now,
+    )
+    .run();
+}
+
+export async function updateMorningBrief(
+  id: string,
+  data: {
+    headline: string;
+    sentiment: string;
+    confidence: number;
+    focusPoints: string[];
+    riskEvents: Array<{ level: string; title: string; description: string }>;
+    globalUs: string;
+    globalEurope: string;
+    globalAsia: string;
+    summary: string;
+    body: string;
+    seoTitle: string | null;
+    seoDescription: string | null;
+    ogImageUrl: string | null;
+    isPublished: boolean;
+    publishedAt: Date | null;
+  },
+): Promise<void> {
+  const d1 = await getD1();
+  const now = new Date().toISOString();
+  await d1
+    .prepare(
+      `UPDATE MorningBrief SET headline = ?, sentiment = ?, confidence = ?, focusPoints = ?, riskEvents = ?, globalUs = ?, globalEurope = ?, globalAsia = ?, summary = ?, body = ?, seoTitle = ?, seoDescription = ?, ogImageUrl = ?, isPublished = ?, publishedAt = ?, updatedAt = ? WHERE id = ?`,
+    )
+    .bind(
+      data.headline,
+      data.sentiment,
+      data.confidence,
+      JSON.stringify(data.focusPoints),
+      JSON.stringify(data.riskEvents),
+      data.globalUs,
+      data.globalEurope,
+      data.globalAsia,
+      data.summary,
+      data.body,
+      data.seoTitle,
+      data.seoDescription,
+      data.ogImageUrl,
+      data.isPublished ? 1 : 0,
+      data.publishedAt ? data.publishedAt.toISOString() : null,
+      now,
+      id,
+    )
+    .run();
+}
+
+export async function toggleMorningBriefPublish(id: string): Promise<{ isPublished: boolean } | null> {
+  const d1 = await getD1();
+  const row = await d1.prepare("SELECT isPublished FROM MorningBrief WHERE id = ?").bind(id).first();
+  if (!row) return null;
+  const current = toBool(row.isPublished);
+  const now = new Date().toISOString();
+  await d1
+    .prepare("UPDATE MorningBrief SET isPublished = ?, publishedAt = ?, updatedAt = ? WHERE id = ?")
+    .bind(current ? 0 : 1, current ? null : now, now, id)
+    .run();
+  return { isPublished: !current };
+}
+
+export async function deleteMorningBrief(id: string): Promise<void> {
+  const d1 = await getD1();
+  await d1.prepare("DELETE FROM MorningBrief WHERE id = ?").bind(id).run();
+}
+
+export async function countPublishedMorningBriefs(): Promise<number> {
+  const d1 = await getD1();
+  const row = await d1.prepare("SELECT COUNT(*) as count FROM MorningBrief WHERE isPublished = 1").first();
+  return (row?.count as number) || 0;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Internal: normalize a D1 row to a TapeView
 // ─────────────────────────────────────────────────────────────────────────────
 

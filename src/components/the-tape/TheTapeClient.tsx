@@ -25,22 +25,41 @@ export function TheTapeClient({ initialQuotes }: TheTapeClientProps) {
   const [countdown, setCountdown] = useState(30);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState("Updating...");
 
   const pulse: MarketPulse = useMemo(() => computeMarketPulse(quotes), [quotes]);
 
-  // Friendly relative timestamp
-  const lastUpdated = useMemo(() => {
-    if (!quotes.length) return "No data yet";
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
+    if (!quotes.length) {
+      setLastUpdated("No data yet");
+      return;
+    }
+
     const latest = quotes.reduce((a, b) => (a.updatedAt > b.updatedAt ? a : b)).updatedAt;
     const now = Date.now();
     const then = new Date(latest).getTime();
     const diffSec = Math.floor((now - then) / 1000);
-    if (diffSec < 10) return "Updated just now";
-    if (diffSec < 60) return `Updated ${diffSec} seconds ago`;
-    const diffMin = Math.floor(diffSec / 60);
-    if (diffMin < 60) return `Updated ${diffMin} min ago`;
-    return `Updated ${new Date(latest).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
-  }, [quotes]);
+
+    if (diffSec < 10) {
+      setLastUpdated("Updated just now");
+    } else if (diffSec < 60) {
+      setLastUpdated(`Updated ${diffSec} seconds ago`);
+    } else {
+      const diffMin = Math.floor(diffSec / 60);
+      if (diffMin < 60) {
+        setLastUpdated(`Updated ${diffMin} min ago`);
+      } else {
+        setLastUpdated(`Updated ${new Date(latest).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`);
+      }
+    }
+  }, [quotes, mounted]);
 
   useEffect(() => {
     let countdownTimer: ReturnType<typeof setInterval>;

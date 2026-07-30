@@ -14,6 +14,7 @@ export async function POST(request: NextRequest) {
       "generate-tags",
       "summarize",
       "generate-tape-view",
+      "generate-morning-brief",
     ];
 
     if (!body.action || !validActions.includes(body.action)) {

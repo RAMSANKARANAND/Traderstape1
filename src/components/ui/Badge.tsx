@@ -4,6 +4,7 @@ interface BadgeProps {
   children: React.ReactNode;
   variant?: "default" | "flat" | "up" | "down" | "bullish" | "bearish" | "neutral" | "ai" | "breaking" | "forex" | "crypto" | "gold";
   className?: string;
+  onClick?: () => void;
 }
 
 const variantClasses: Record<string, string> = {
@@ -21,11 +22,11 @@ const variantClasses: Record<string, string> = {
   gold: "badge-gold",
 };
 
-export function Badge({ children, variant = "default", className = "" }: BadgeProps) {
+export function Badge({ children, variant = "default", className = "", onClick }: BadgeProps) {
   const base = "inline-flex items-center px-2.5 py-1 border-[2px] font-bold text-[11px] uppercase tracking-wider";
 
   return (
-    <span className={`${base} ${variantClasses[variant]} ${className}`}>
+    <span className={`${base} ${variantClasses[variant]} ${className}`} onClick={onClick}>
       {children}
     </span>
   );

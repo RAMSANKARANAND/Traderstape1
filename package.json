@@ -23,6 +23,7 @@
     "@prisma/adapter-d1": "^6.19.3",
     "@prisma/client": "^6.0.0",
     "bcryptjs": "^2.4.3",
+    "lucide-react": "^1.28.0",
     "next": "16.2.11",
     "next-auth": "^5.0.0-beta.25",
     "next-sitemap": "^4.2.3",

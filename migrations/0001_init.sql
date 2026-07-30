@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "User" (
+CREATE TABLE IF NOT EXISTS "User" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
-CREATE TABLE "MarketLevel" (
+CREATE TABLE IF NOT EXISTS "MarketLevel" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "assetType" TEXT NOT NULL,
     "symbol" TEXT NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE "MarketLevel" (
 );
 
 -- CreateTable
-CREATE TABLE "NewsPost" (
+CREATE TABLE IF NOT EXISTS "NewsPost" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "title" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE "NewsPost" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+CREATE UNIQUE INDEX IF NOT EXISTS "User_email_key" ON "User"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "NewsPost_slug_key" ON "NewsPost"("slug");
+CREATE UNIQUE INDEX IF NOT EXISTS "NewsPost_slug_key" ON "NewsPost"("slug");

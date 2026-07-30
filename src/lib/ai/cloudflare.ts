@@ -2,6 +2,7 @@ import type { AiRequest, AiResponse } from "./types";
 import { NEWS_PROMPTS } from "./prompts/news";
 import { SEO_PROMPTS } from "./prompts/seo";
 import { TAPE_VIEW_PROMPTS } from "./prompts/tapeView";
+import { MORNING_BRIEF_PROMPT } from "@/lib/ai/prompts/morningBrief";
 
 const CF_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 
@@ -113,6 +114,13 @@ function buildMessages(req: AiRequest): CfMessage[] {
         },
       ];
     }
+    case "generate-morning-brief": {
+      const p = MORNING_BRIEF_PROMPT;
+      return [
+        { role: "system", content: p.system },
+        { role: "user", content: p.user() },
+      ];
+    }
     default:
       return [
         { role: "system", content: "You are a helpful assistant for TradersTape." },
@@ -199,6 +207,14 @@ export async function generateWithCloudflare(req: AiRequest): Promise<AiResponse
           message: "Failed to parse tags from AI response.",
         };
       }
+    }
+    case "generate-morning-brief": {
+      return {
+        success: true,
+        mode: "cloudflare",
+        message: "Morning brief generated.",
+        data: { content: raw },
+      };
     }
     default:
       return {

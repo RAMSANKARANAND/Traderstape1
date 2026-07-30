@@ -1,9 +1,9 @@
 import type { MarketQuote } from "./types";
 import { yahooProvider } from "./providers/yahoo";
 import { coingeckoProvider } from "./providers/coingecko";
-import { frankfurterProvider } from "./providers/frankfurter";
+import { cloudflareForexProvider } from "./providers/cloudflare-forex";
 
-const providers = [yahooProvider, coingeckoProvider, frankfurterProvider];
+const providers = [yahooProvider, coingeckoProvider, cloudflareForexProvider];
 
 export async function getMarketQuotes(): Promise<MarketQuote[]> {
   const results = await Promise.allSettled(providers.map((provider) => provider.fetchQuotes()));
