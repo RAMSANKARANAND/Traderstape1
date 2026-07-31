@@ -14,13 +14,23 @@ export interface AiRequest {
   title?: string;
   category?: string;
   tone?: string;
+  briefContext?: MorningBriefContext;
+}
+
+export interface AiAssistantResult {
+  content?: string;
+  summary?: string;
+  seoTitle?: string;
+  metaDescription?: string;
+  tags?: string[];
+  keywords?: string[];
 }
 
 export interface AiResponse {
   success: boolean;
   mode: "mock" | "openai" | "cloudflare";
   message: string;
-  data?: Record<string, string | string[]>;
+  data?: AiAssistantResult;
 }
 
 export interface MorningBriefData {
@@ -38,4 +48,32 @@ export interface MorningBriefData {
     description: string;
   }>;
   summary: string;
+}
+
+export interface MorningBriefContext {
+  marketSentiment: string;
+  marketPulse: string;
+  marketQuotes: ReadonlyArray<{
+    symbol: string;
+    name: string;
+    price: string;
+    changePercent: string;
+    direction: string;
+    marketState?: string;
+  }>;
+  latestNews: ReadonlyArray<{
+    title: string;
+    category: string;
+    summary: string;
+    publishedAt?: string;
+  }>;
+  latestTapeViews: ReadonlyArray<{
+    title: string;
+    category: string;
+    instrument: string;
+    bias: string;
+    todayView: string;
+    keyLevelsToWatch?: string | null;
+    riskFactors?: string | null;
+  }>;
 }
