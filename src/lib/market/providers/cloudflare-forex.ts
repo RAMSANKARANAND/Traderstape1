@@ -43,6 +43,17 @@ export const cloudflareForexProvider: MarketProvider = {
           provider: "Cloudflare Forex",
           currency: "JPY",
         },
+        {
+          symbol: "USDINR",
+          name: "USD/INR",
+          price: 82.34,
+          change: 0.12,
+          changePercent: 0.15,
+          direction: "up",
+          updatedAt: new Date().toISOString(),
+          provider: "Cloudflare Forex",
+          currency: "INR",
+        },
       ];
     } catch (error) {
       console.error("Cloudflare Forex provider failed:", error);

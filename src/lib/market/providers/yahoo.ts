@@ -59,8 +59,8 @@ function mapYahooMarketState(state?: string): MarketQuote["marketState"] {
     case "POSTPOST":
     case "CLOSED":
       return "CLOSED";
-    default:
-      return undefined;
+default:
+  return undefined;
   }
 }
 
