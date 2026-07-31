@@ -48,6 +48,22 @@ function mapDirection(change: number): "up" | "down" | "flat" {
   return "flat";
 }
 
+function mapYahooMarketState(state?: string): MarketQuote["marketState"] {
+  switch (state) {
+    case "REGULAR":
+      return "LIVE";
+    case "PRE":
+    case "PREPRE":
+      return "PRE-OPEN";
+    case "POST":
+    case "POSTPOST":
+    case "CLOSED":
+      return "CLOSED";
+    default:
+      return undefined;
+  }
+}
+
 export const yahooProvider: MarketProvider = {
   name: "yahoo",
   async fetchQuotes(): Promise<MarketQuote[]> {
@@ -95,7 +111,7 @@ export const yahooProvider: MarketProvider = {
           dayLow: meta?.dayLow ? Number(meta.dayLow.toFixed(2)) : undefined,
           volume: meta?.volume ? Number(meta.volume) : undefined,
           currency: meta?.currency,
-          marketState: meta?.marketState === "REGULAR" || meta?.marketState === "PRE" || meta?.marketState === "POST" ? "OPEN" : meta?.marketState ? "CLOSED" : undefined,
+          marketState: mapYahooMarketState(meta?.marketState),
         });
       } catch (error) {
         console.error(`Yahoo provider: failed for ${symbol}:`, error);
@@ -145,7 +161,7 @@ export const yahooProvider: MarketProvider = {
           dayLow: stockMeta?.dayLow ? Number(stockMeta.dayLow.toFixed(2)) : undefined,
           volume: stockMeta?.volume ? Number(stockMeta.volume) : undefined,
           currency: stockMeta?.currency,
-          marketState: stockMeta?.marketState === "REGULAR" || stockMeta?.marketState === "PRE" || stockMeta?.marketState === "POST" ? "OPEN" : stockMeta?.marketState ? "CLOSED" : undefined,
+          marketState: mapYahooMarketState(stockMeta?.marketState),
         });
       } catch (error) {
         console.error(`Yahoo provider: failed for stock ${symbol}:`, error);

@@ -2,7 +2,7 @@ import React from "react";
 import { Card } from "../ui/Card";
 import { StatusBadge } from "./StatusBadge";
 import type { MarketQuote } from "@/lib/market/types";
-import { formatPrice, formatChange, formatPercent, formatVolume, getStaleLevel } from "@/lib/market/utils";
+import { formatPrice, formatChange, formatPercent, formatVolume, getStaleLevel, formatTimestamp } from "@/lib/market/utils";
 
 interface MarketDetailCardProps {
   quote: MarketQuote;
@@ -18,7 +18,7 @@ export function MarketDetailCard({ quote }: MarketDetailCardProps) {
         <div className="flex flex-col items-end gap-1">
           <StatusBadge status={quote.direction === "up" ? "bullish" : quote.direction === "down" ? "bearish" : "neutral"} />
           {quote.marketState && (
-            <span className={`text-[10px] font-black uppercase ${quote.marketState === "OPEN" ? "text-accent-bullish" : "text-accent-neutral"}`}>
+            <span className={`text-[10px] font-black uppercase ${quote.marketState === "LIVE" ? "text-accent-bullish" : quote.marketState === "PRE-OPEN" ? "text-accent-neutral" : "text-text-muted"}`}>
               ● {quote.marketState}
             </span>
           )}
@@ -54,7 +54,7 @@ export function MarketDetailCard({ quote }: MarketDetailCardProps) {
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-2 text-[10px] font-black uppercase tracking-widest text-text-secondary">
-        <span>{new Date(quote.updatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+        <span>{formatTimestamp(quote.updatedAt)}</span>
         <BadgeProvider provider={quote.provider} />
       </div>
 

@@ -13,7 +13,7 @@ export interface MarketQuote {
   dayLow?: number;
   volume?: number;
   currency?: string;
-  marketState?: "OPEN" | "CLOSED";
+  marketState?: "PRE-OPEN" | "LIVE" | "CLOSED";
 }
 
 export interface MarketProvider {

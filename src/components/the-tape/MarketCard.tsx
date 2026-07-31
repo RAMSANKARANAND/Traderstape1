@@ -3,7 +3,7 @@ import { Card } from "../ui/Card";
 import { Badge } from "../ui/Badge";
 import { Sparkline } from "./Sparkline";
 import type { MarketQuote } from "@/lib/market/types";
-import { formatPrice, formatChange, formatPercent, getStaleLevel } from "@/lib/market/utils";
+import { formatPrice, formatChange, formatPercent, getStaleLevel, formatTimestamp } from "@/lib/market/utils";
 
 interface MarketCardProps {
   quote: MarketQuote;
@@ -14,7 +14,9 @@ export function MarketCard({ quote, aiInsight }: MarketCardProps) {
   const stale = getStaleLevel(quote.updatedAt);
   const isPositive = quote.direction === "up";
   const isNegative = quote.direction === "down";
-  const isOpen = quote.marketState === "OPEN";
+  const marketState = quote.marketState || "CLOSED";
+  const isLive = marketState === "LIVE";
+  const isPreOpen = marketState === "PRE-OPEN";
 
   return (
     <Card className="flex flex-col h-full p-4 gap-3 card-lift">
@@ -24,7 +26,9 @@ export function MarketCard({ quote, aiInsight }: MarketCardProps) {
           <div className="font-black uppercase text-sm tracking-tight">{quote.name}</div>
           <div className="text-[11px] font-bold uppercase opacity-60">{quote.symbol}</div>
         </div>
-        <Badge variant={isOpen ? "bullish" : "neutral"}>{isOpen ? "Open" : "Closed"}</Badge>
+        <Badge variant={isLive ? "bullish" : isPreOpen ? "default" : "neutral"}>
+          {marketState}
+        </Badge>
       </div>
 
       {/* Price + Change */}
@@ -77,7 +81,7 @@ export function MarketCard({ quote, aiInsight }: MarketCardProps) {
       {/* Footer */}
       <div className="flex items-center justify-between mt-auto pt-2 border-t-[2px] border-ink/10">
         <span className="text-[10px] font-black uppercase opacity-50">
-          Updated: {new Date(quote.updatedAt).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}
+          {formatTimestamp(quote.updatedAt)}
         </span>
         {stale !== "ok" && (
           <span className={`text-[10px] font-black uppercase ${stale === "stale" ? "text-bear" : "text-gold"}`}>

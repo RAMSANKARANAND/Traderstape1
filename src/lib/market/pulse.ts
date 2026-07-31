@@ -108,11 +108,11 @@ function generateFocus(
 
 function getNseStatus(quotes: MarketQuote[]): string {
   const nifty = quotes.find((q) => q.name === "NIFTY 50");
-  if (nifty?.marketState === "OPEN") return "Open";
+  if (nifty?.marketState === "LIVE") return "Open";
   if (nifty?.marketState === "CLOSED") return "Closed";
   // Fallback: check if any NSE stock has marketState
   const anyNse = quotes.find((q) => q.marketState);
-  if (anyNse?.marketState === "OPEN") return "Open";
+  if (anyNse?.marketState === "LIVE") return "Open";
   return "Unknown";
 }
 
