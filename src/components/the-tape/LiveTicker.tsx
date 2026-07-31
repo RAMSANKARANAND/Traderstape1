@@ -25,26 +25,23 @@ export function LiveTicker({ quotes }: LiveTickerProps) {
         : "text-gray-500";
 
     return (
-      <span key={q.symbol} className={`whitespace-nowrap ${colorClass}`}>
-        {q.name} {displayChange}
-      </span>
+      <div key={q.symbol} className={`flex items-center whitespace-nowrap ${colorClass}`}>
+        {q.name}&nbsp;{displayChange}
+      </div>
     );
   });
 
-  // Join items with thin separator "|"
-  const tickerContent = tickerItems.reduce((prev, curr, index) => {
-    if (index === 0) return [curr];
-    return [...prev, <span key={`sep-${index}`} className="mx-2 text-text-secondary">|</span>, curr];
-  }, [] as React.ReactNode[]);
+  // Duplicate ticker content for seamless loop
+  const duplicatedContent = [...tickerItems, ...tickerItems];
 
   return (
     <div
-      className="overflow-hidden whitespace-nowrap h-12 md:h-12 flex items-center bg-bg"
+      className="overflow-hidden whitespace-nowrap h-11 bg-white flex items-center"
       style={{ height: "44px" }}
     >
       <div
-        className="inline-block animate-marquee"
-        style={{ willChange: "transform" }}
+        className="flex animate-marquee gap-6"
+        style={{ width: "max-content", willChange: "transform" }}
         onMouseEnter={(e) => {
           (e.currentTarget as HTMLElement).style.animationPlayState = "paused";
         }}
@@ -52,8 +49,10 @@ export function LiveTicker({ quotes }: LiveTickerProps) {
           (e.currentTarget as HTMLElement).style.animationPlayState = "running";
         }}
       >
-        {tickerContent}
-        {tickerContent}
+        {duplicatedContent.reduce((prev, curr, index) => {
+          if (index === 0) return [curr];
+          return [...prev, <span key={`sep-${index}`} className="text-text-secondary">|</span>, curr];
+        }, [] as React.ReactNode[])}
       </div>
       <style jsx>{`
         @keyframes marquee {
