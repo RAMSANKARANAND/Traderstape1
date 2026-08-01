@@ -151,3 +151,9 @@ model TapeView {
   updatedAt              DateTime         @updatedAt
   author                 User             @relation(fields: [authorId], references: [id])
 }
+
+model WaitlistEmail {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
