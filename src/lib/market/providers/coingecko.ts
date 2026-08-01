@@ -75,6 +75,10 @@ export const coingeckoProvider: MarketProvider = {
       const ids = COINGECKO_IDS.join(",");
       const url = `https://api.coingecko.com/api/v3/simple/price?ids=${encodeURIComponent(ids)}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_24hr_high=true&include_24hr_low=true`;
 
+      // DEBUG: Log provider URL
+      console.log(`[CoinGecko Provider] URL: ${url}`);
+      console.log(`[CoinGecko Provider] API Key present: ${!!apiKey}`);
+
       // Create AbortController for 5-second timeout
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000);
@@ -95,12 +99,22 @@ export const coingeckoProvider: MarketProvider = {
 
       clearTimeout(timeoutId);
 
+      // DEBUG: Log HTTP status and response
+      console.log(`[CoinGecko Provider] HTTP Status: ${response.status}`);
+
       if (!response.ok) {
+        const errorText = await response.text().catch(() => "unknown");
+        console.error(`[CoinGecko Provider] Error response (truncated): ${errorText.substring(0, 500)}`);
         console.error(`CoinGecko provider: HTTP ${response.status}`);
         return FALLBACK_QUOTES;
       }
 
-      const data = (await response.json()) as Record<string, {
+      const responseText = await response.text();
+      
+      // DEBUG: Log response body (truncated)
+      console.log(`[CoinGecko Provider] Response body (truncated): ${responseText.substring(0, 1000)}`);
+
+      const data = JSON.parse(responseText) as Record<string, {
         usd?: number;
         usd_24h_change?: number;
         usd_24h_vol?: number;
@@ -143,6 +157,9 @@ export const coingeckoProvider: MarketProvider = {
           currency: "USD",
         });
       }
+
+      // DEBUG: Log number of parsed crypto quotes
+      console.log(`[CoinGecko Provider] Parsed ${results.length} crypto quotes`);
 
       // If we got fewer results than expected, fill with fallback data
       if (results.length < COINGECKO_IDS.length) {
