@@ -21,6 +21,40 @@ interface LiveMarketTickerProps {
   title?: string;
 }
 
+const FRIENDLY_NAMES: Record<string, string> = {
+  "NIFTY": "NIFTY 50",
+  "NSEI": "NIFTY 50",
+  "^NSEI": "NIFTY 50",
+  "BANKNIFTY": "BANK NIFTY",
+  "NSEBANK": "BANK NIFTY",
+  "BSESN": "SENSEX",
+  "SENSEX": "SENSEX",
+  "INDIAVIX": "INDIA VIX",
+  "USDINR": "USD/INR",
+  "USD/INR": "USD/INR",
+  "EURUSD": "EUR/USD",
+  "EUR/USD": "EUR/USD",
+  "GBPUSD": "GBP/USD",
+  "GBP/USD": "GBP/USD",
+  "BTC": "BTC",
+  "BTC-USD": "BTC",
+  "ETH": "ETH",
+  "ETH-USD": "ETH",
+  "SOL": "SOL",
+  "SOL-USD": "SOL",
+  "XRP": "XRP",
+  "XRP-USD": "XRP",
+  "GOLD": "GOLD",
+  "GC=F": "GOLD",
+  "SILVER": "SILVER",
+  "SI=F": "SILVER",
+};
+
+function getFriendlyName(symbol: string): string {
+  const upper = symbol.toUpperCase();
+  return FRIENDLY_NAMES[upper] || FRIENDLY_NAMES[upper.replace(/[^A-Z]/g, "")] || symbol;
+}
+
 function formatPrice(price: number): string {
   return price.toFixed(2);
 }
@@ -77,7 +111,7 @@ export function LiveMarketTicker({ items, title = "Live Market" }: LiveMarketTic
     if (upperSymbol === "NIFTY" || upperSymbol === "NSEI" || upperSymbol === "^NSEI") {
       return "/the-tape?market=india";
     } else if (upperSymbol === "BANKNIFTY" || upperSymbol === "NSEBANK") {
-      return "/the-tape?market=india"; // or a specific bank market
+      return "/the-tape?market=india";
     } else if (upperSymbol === "BSESN" || upperSymbol === "SENSEX") {
       return "/the-tape?market=india";
     } else if (upperSymbol === "INDIAVIX") {
@@ -108,14 +142,14 @@ export function LiveMarketTicker({ items, title = "Live Market" }: LiveMarketTic
   return (
     <div className="brutal-card brutal-shadow bg-bg border-ink w-full">
       {/* Header */}
-      <div className="flex items-center justify-between p-3 border-b-[2px] border-ink bg-ink/5">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between p-4 border-b-[2px] border-ink bg-ink/5">
+        <div className="flex items-center gap-3">
           <span className="text-live font-black text-sm">LIVE ●</span>
           <h3 className="text-body font-black uppercase tracking-wide text-ink">
             {title}
           </h3>
         </div>
-        <span className="text-[10px] font-black uppercase opacity-60">
+        <span className="text-[11px] font-black uppercase opacity-60">
           Updated {Math.floor((Date.now() - lastUpdated) / 1000)}s ago
         </span>
       </div>
@@ -123,7 +157,7 @@ export function LiveMarketTicker({ items, title = "Live Market" }: LiveMarketTic
       {/* Ticker Container */}
       <div
         ref={containerRef}
-        className="flex gap-4 p-4 overflow-x-hidden scroll-smooth whitespace-nowrap"
+        className="flex gap-6 p-4 overflow-x-hidden scroll-smooth whitespace-nowrap"
         style={{ scrollBehavior: 'auto' }}
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
@@ -133,6 +167,7 @@ export function LiveMarketTicker({ items, title = "Live Market" }: LiveMarketTic
         {displayItems.map((item, index) => {
           const isPositive = item.direction === "up";
           const isNegative = item.direction === "down";
+          const friendlyName = getFriendlyName(item.symbol);
 
           return (
             <Link
@@ -144,23 +179,23 @@ export function LiveMarketTicker({ items, title = "Live Market" }: LiveMarketTic
                 window.open(getMarketPath(item.symbol), '_self');
               }}
             >
-              <div className="flex items-center gap-3 px-4 py-2 min-w-[180px]">
-                {/* Symbol and Name */}
+              <div className="flex flex-col items-start gap-2 px-5 py-3 min-w-[160px]">
+                {/* Symbol and Friendly Name */}
                 <div className="flex-shrink-0">
-                  <div className="font-black uppercase text-sm tracking-tight text-ink group-hover:text-accent-coral transition-colors">
+                  <div className="font-black uppercase text-base tracking-tight text-ink group-hover:text-accent-coral transition-colors">
                     {item.symbol}
                   </div>
-                  <div className="text-[10px] font-bold uppercase opacity-60">
-                    {item.name}
+                  <div className="text-[11px] font-bold uppercase opacity-60">
+                    {friendlyName}
                   </div>
                 </div>
 
                 {/* Price and Change */}
                 <div className="flex-shrink-0 text-right">
-                  <div className="text-base font-black tabular-nums leading-none mb-1">
+                  <div className={`text-lg font-black tabular-nums leading-none mb-1 ${isPositive ? "text-bullish" : isNegative ? "text-bearish" : "text-ink"}`}>
                     {formatPrice(item.price)}
                   </div>
-                  <div className={`text-xs font-bold ${isPositive ? "text-bullish" : isNegative ? "text-bearish" : "text-text-muted"}`}>
+                  <div className={`text-sm font-bold ${isPositive ? "text-bullish" : isNegative ? "text-bearish" : "text-text-muted"}`}>
                     {formatChange(item.change)} ({formatPercent(item.changePercent)})
                   </div>
                 </div>
@@ -168,18 +203,18 @@ export function LiveMarketTicker({ items, title = "Live Market" }: LiveMarketTic
                 {/* Direction Indicator */}
                 <div className="flex-shrink-0">
                   {isPositive && (
-                    <div className="w-6 h-6 bg-bullish/20 border-2 border-bullish rounded flex items-center justify-center">
-                      <span className="text-bullish font-black text-xs">↑</span>
+                    <div className="w-7 h-7 bg-bullish/20 border-2 border-bullish rounded flex items-center justify-center">
+                      <span className="text-bullish font-black text-sm">↑</span>
                     </div>
                   )}
                   {isNegative && (
-                    <div className="w-6 h-6 bg-bearish/20 border-2 border-bearish rounded flex items-center justify-center">
-                      <span className="text-bearish font-black text-xs">↓</span>
+                    <div className="w-7 h-7 bg-bearish/20 border-2 border-bearish rounded flex items-center justify-center">
+                      <span className="text-bearish font-black text-sm">↓</span>
                     </div>
                   )}
                   {item.direction === "flat" && (
-                    <div className="w-6 h-6 bg-text-muted/20 border-2 border-text-muted rounded flex items-center justify-center">
-                      <span className="text-text-muted font-black text-xs">→</span>
+                    <div className="w-7 h-7 bg-text-muted/20 border-2 border-text-muted rounded flex items-center justify-center">
+                      <span className="text-text-muted font-black text-sm">→</span>
                     </div>
                   )}
                 </div>

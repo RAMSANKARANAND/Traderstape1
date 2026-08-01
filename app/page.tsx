@@ -161,6 +161,11 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
       />
 
+      {/* ───────────────────────── Live Market Ticker ───────────────────────── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <LiveMarketTicker items={marketQuotes} />
+      </section>
+
       {/* ───────────────────────── 1. Hero Dashboard ───────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2 animate-fade-in-up">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -217,11 +222,6 @@ export default async function HomePage() {
             </div>
           )}
         </div>
-      </section>
-
-      {/* ───────────────────────── Live Market Ticker ───────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <LiveMarketTicker items={marketQuotes} />
       </section>
 
       {/* ───────────────────────── 2. Featured Story ───────────────────────── */}
