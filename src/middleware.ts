@@ -14,7 +14,7 @@ const EXEMPT_PATHS = [
 
 function isExempt(pathname: string): boolean {
   if (pathname === "/coming-soon") return true;
-  if (pathname.startsWith("/admin/")) return true;
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) return true;
   if (pathname.startsWith("/api/")) return true;
   if (pathname.startsWith("/_next/")) return true;
   if (pathname === "/favicon.ico") return true;
