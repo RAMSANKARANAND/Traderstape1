@@ -47,11 +47,22 @@ function formatDate(date: Date | null): string {
 }
 
 export default async function HomePage() {
-  const [newsPosts, latestTapeView, marketQuotes] = await Promise.all([
-    getPublishedNewsPosts({ take: 8 }),
-    getLatestTapeView(),
-    getMarketQuotes(),
-  ]);
+  let newsPosts: Awaited<ReturnType<typeof getPublishedNewsPosts>> = [];
+  let latestTapeView: Awaited<ReturnType<typeof getLatestTapeView>> = null;
+  let marketQuotes: Awaited<ReturnType<typeof getMarketQuotes>> = [];
+
+  try {
+    const [posts, tape, quotes] = await Promise.all([
+      getPublishedNewsPosts({ take: 8 }),
+      getLatestTapeView(),
+      getMarketQuotes(),
+    ]);
+    newsPosts = posts ?? [];
+    latestTapeView = tape;
+    marketQuotes = quotes ?? [];
+  } catch (error) {
+    console.error("Failed to fetch homepage data, using fallbacks:", error);
+  }
 
   const breakingPost = newsPosts.find((p) => p.isBreaking) ?? null;
   const featuredPost = newsPosts.find((p) => p.isFeatured && p.id !== breakingPost?.id) ?? null;
@@ -90,30 +101,50 @@ export default async function HomePage() {
   };
 
   // Generate AI-powered morning brief
-  const aiMorningBriefResult = await generateAiContent({
-    action: "generate-morning-brief",
-    briefContext: morningBriefContext,
-  });
+  let aiMorningBriefResult: Awaited<ReturnType<typeof generateAiContent>> = { success: false, mode: "mock", message: "AI unavailable", data: undefined };
+  try {
+    aiMorningBriefResult = await generateAiContent({
+      action: "generate-morning-brief",
+      briefContext: morningBriefContext,
+    });
+  } catch (error) {
+    console.error("AI morning brief generation failed:", error);
+  }
 
   // Parse the AI response into the format expected by MorningMarketBriefCard
-  const morningBrief = aiMorningBriefResult.success && aiMorningBriefResult.data?.content
-    ? parseAIResponseToMorningBrief(String(aiMorningBriefResult.data.content))
-    : null;
+  let morningBrief: MorningBriefData = null;
+  if (aiMorningBriefResult.success && aiMorningBriefResult.data?.content) {
+    try {
+      morningBrief = parseAIResponseToMorningBrief(String(aiMorningBriefResult.data.content));
+    } catch (e) {
+      console.error("Failed to parse AI response:", e);
+    }
+  }
 
   // Fallback to DB-based brief if AI generation fails
-  const fallbackBrief = !morningBrief ? await getLatestPublishedMorningBrief() : null;
-  const finalMorningBrief = morningBrief || (fallbackBrief ? {
-    sentiment: fallbackBrief.sentiment,
-    confidence: fallbackBrief.confidence,
-    focusPoints: fallbackBrief.focusPoints as readonly string[],
-    globalOverview: {
-      us: fallbackBrief.globalUs,
-      europe: fallbackBrief.globalEurope,
-      asia: fallbackBrief.globalAsia,
-    },
-    riskEvents: fallbackBrief.riskEvents as ReadonlyArray<{ level: "High" | "Medium" | "Low"; title: string; description: string }>,
-    summary: fallbackBrief.summary,
-  } : null);
+  let fallbackBrief: MorningBriefData = null;
+  if (!morningBrief) {
+    try {
+      const dbBrief = await getLatestPublishedMorningBrief();
+      if (dbBrief) {
+        fallbackBrief = {
+          sentiment: dbBrief.sentiment,
+          confidence: dbBrief.confidence,
+          focusPoints: dbBrief.focusPoints as readonly string[],
+          globalOverview: {
+            us: dbBrief.globalUs,
+            europe: dbBrief.globalEurope,
+            asia: dbBrief.globalAsia,
+          },
+          riskEvents: dbBrief.riskEvents as ReadonlyArray<{ level: "High" | "Medium" | "Low"; title: string; description: string }>,
+          summary: dbBrief.summary,
+        };
+      }
+    } catch (error) {
+      console.error("Failed to fetch fallback morning brief:", error);
+    }
+  }
+  const finalMorningBrief = morningBrief || fallbackBrief;
 
   const organizationJsonLd = {
     "@context": "https://schema.org",
@@ -186,6 +217,11 @@ export default async function HomePage() {
             </div>
           )}
         </div>
+      </section>
+
+      {/* ───────────────────────── Live Market Ticker ───────────────────────── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <LiveMarketTicker items={marketQuotes} />
       </section>
 
       {/* ───────────────────────── 2. Featured Story ───────────────────────── */}
