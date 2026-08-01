@@ -13,6 +13,7 @@ interface TickerItem {
   direction: "up" | "down" | "flat";
   currency?: string;
   provider: string;
+  updatedAt: string;
 }
 
 interface LiveMarketTickerProps {

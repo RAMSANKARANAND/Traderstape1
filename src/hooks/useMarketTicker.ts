@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { LiveMarketTicker } from "@/components/home/LiveMarketTicker";
+import { LiveMarketTicker } from "@/components/markets/LiveTicker";
 import { MarketQuote } from "@/lib/market/types";
 import { formatPrice, formatChange, formatPercent } from "@/lib/market/utils";
 

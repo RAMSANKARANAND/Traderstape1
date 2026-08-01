@@ -6,7 +6,8 @@ import type { MorningBriefContext } from "@/lib/ai/types";
 import { SectionTitle, Badge, NewsCard, Button } from "@/components/ui";
 import { MarketCard } from "@/components/the-tape/MarketCard";
 import { MorningMarketBriefCard } from "@/components/ai/MorningMarketBriefCard";
-import { LiveMarketTicker } from "@/components/home/LiveMarketTicker";
+import { LiveMarketTicker } from "@/components/markets/LiveTicker";
+import { useMarketTicker } from "@/hooks/useMarketTicker";
 import Link from "next/link";
 import NewsletterSignup from "@/components/home/NewsletterSignup";
 
