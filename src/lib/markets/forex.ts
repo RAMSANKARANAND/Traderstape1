@@ -13,21 +13,17 @@ interface ErApiResponse {
   time_last_update_utc?: string;
 }
 
-interface FrankfurterResponse {
-  rates?: Record<string, number>;
-}
-
 function mapDirection(change: number): "up" | "down" | "flat" {
   if (change > 0) return "up";
   if (change < 0) return "down";
   return "flat";
 }
 
-function getYesterdayDate(): string {
-  const d = new Date();
-  d.setDate(d.getDate() - 1);
-  return d.toISOString().split("T")[0];
-}
+// In-memory cache for previous rates to calculate changes
+// Persists across requests in the same Cloudflare Worker instance
+let previousRatesCache: Record<string, number> | null = null;
+let previousCacheTime: number = 0;
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 async function fetchLatestRates(): Promise<{
   rates: Record<string, number>;
@@ -56,40 +52,35 @@ async function fetchLatestRates(): Promise<{
   };
 }
 
-async function fetchYesterdayRates(): Promise<Record<string, number>> {
-  const yesterday = getYesterdayDate();
-  const symbols = FOREX_PAIRS.map((p) => p.code).join(",");
-  const url = `https://api.frankfurter.dev/v1/${yesterday}?base=USD&symbols=${encodeURIComponent(symbols)}`;
+function updateCache(rates: Record<string, number>): void {
+  previousRatesCache = { ...rates };
+  previousCacheTime = Date.now();
+}
 
-  try {
-    const response = await fetch(url, {
-      headers: { Accept: "application/json" },
-      signal: AbortSignal.timeout(8000),
-    });
-
-    if (!response.ok) return {};
-
-    const data = (await response.json()) as FrankfurterResponse;
-    return data?.rates ?? {};
-  } catch {
-    return {};
+function getCachedRates(): Record<string, number> | null {
+  if (!previousRatesCache) return null;
+  if (Date.now() - previousCacheTime > CACHE_TTL_MS) {
+    previousRatesCache = null;
+    return null;
   }
+  return previousRatesCache;
 }
 
 export async function getForex(): Promise<ForexQuote[]> {
   const results: ForexQuote[] = [];
 
   try {
-    const [latest, yesterdayRates] = await Promise.all([
-      fetchLatestRates(),
-      fetchYesterdayRates(),
-    ]);
+    const latest = await fetchLatestRates();
+    const cachedRates = getCachedRates();
+
+    // Update cache for next request
+    updateCache(latest.rates);
 
     for (const pair of FOREX_PAIRS) {
       const currentRate = latest.rates[pair.code];
       if (!currentRate) continue;
 
-      const previousRate = yesterdayRates[pair.code];
+      const previousRate = cachedRates?.[pair.code];
       const change = previousRate
         ? Number((currentRate - previousRate).toFixed(4))
         : 0;
@@ -105,7 +96,7 @@ export async function getForex(): Promise<ForexQuote[]> {
         change,
         changePercent,
         direction: mapDirection(change),
-        source: "Open Exchange Rates",
+        source: "ExchangeRate API",
         updatedAt: latest.updatedAt,
       });
     }
