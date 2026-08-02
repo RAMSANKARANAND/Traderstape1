@@ -15,7 +15,7 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type Role = "ADMIN" | "EDITOR" | "CONTRIBUTOR";
-export type AssetType = "STOCK_FNO" | "FOREX";
+export type AssetType = "STOCK_FNO" | "FOREX" | "CRYPTO";
 export type Direction = "UP" | "DOWN" | "FLAT";
 export type NewsCategory = "STOCKS" | "CRYPTO" | "FOREX" | "GEOPOLITICAL";
 export type TapeViewCategory =

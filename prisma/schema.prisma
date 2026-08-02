@@ -10,17 +10,17 @@ datasource db {
 }
 
 model User {
-  id           String        @id @default(cuid())
-  name         String
-  email        String        @unique
-  passwordHash String
-  role         Role          @default(CONTRIBUTOR)
-  isActive     Boolean       @default(true)
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  marketLevels MarketLevel[]
-  newsPosts    NewsPost[]
-  tapeViews    TapeView[]
+  id            String         @id @default(cuid())
+  name          String
+  email         String         @unique
+  passwordHash  String
+  role          Role           @default(CONTRIBUTOR)
+  isActive      Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  marketLevels  MarketLevel[]
+  newsPosts     NewsPost[]
+  tapeViews     TapeView[]
   morningBriefs MorningBrief[]
 }
 
@@ -60,27 +60,27 @@ model NewsPost {
 }
 
 model MorningBrief {
-  id             String       @id @default(cuid())
+  id             String    @id @default(cuid())
   headline       String
-  slug           String       @unique
-  sentiment      String       @default("Neutral")
-  confidence     Int          @default(0)
-  focusPoints    String       @default("[]")
-  riskEvents     String       @default("[]")
-  globalUs       String       @default("")
-  globalEurope   String       @default("")
-  globalAsia     String       @default("")
+  slug           String    @unique
+  sentiment      String    @default("Neutral")
+  confidence     Int       @default(0)
+  focusPoints    String    @default("[]")
+  riskEvents     String    @default("[]")
+  globalUs       String    @default("")
+  globalEurope   String    @default("")
+  globalAsia     String    @default("")
   summary        String
-  body           String       @default("")
+  body           String    @default("")
   authorId       String
   publishedAt    DateTime?
-  isPublished    Boolean      @default(false)
+  isPublished    Boolean   @default(false)
   seoTitle       String?
   seoDescription String?
   ogImageUrl     String?
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  author         User         @relation(fields: [authorId], references: [id])
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  author         User      @relation(fields: [authorId], references: [id])
 }
 
 enum Role {
@@ -124,32 +124,32 @@ enum TapeViewBias {
 }
 
 model TapeView {
-  id                     String           @id @default(cuid())
-  title                  String
-  slug                   String           @unique
-  category               TapeViewCategory
-  instrument             String
-  bias                   TapeViewBias
-  support1               String?
-  support2               String?
-  support3               String?
-  resistance1            String?
-  resistance2            String?
-  resistance3            String?
-  keyLevelsToWatch       String?
-  todayView              String
-  riskFactors            String?
-  educationalDisclaimer  String?
-  body                   String
-  authorId               String
-  publishedAt            DateTime?
-  isPublished            Boolean          @default(false)
-  seoTitle               String?
-  seoDescription         String?
-  ogImageUrl             String?
-  createdAt              DateTime         @default(now())
-  updatedAt              DateTime         @updatedAt
-  author                 User             @relation(fields: [authorId], references: [id])
+  id                    String           @id @default(cuid())
+  title                 String
+  slug                  String           @unique
+  category              TapeViewCategory
+  instrument            String
+  bias                  TapeViewBias
+  support1              String?
+  support2              String?
+  support3              String?
+  resistance1           String?
+  resistance2           String?
+  resistance3           String?
+  keyLevelsToWatch      String?
+  todayView             String
+  riskFactors           String?
+  educationalDisclaimer String?
+  body                  String
+  authorId              String
+  publishedAt           DateTime?
+  isPublished           Boolean          @default(false)
+  seoTitle              String?
+  seoDescription        String?
+  ogImageUrl            String?
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+  author                User             @relation(fields: [authorId], references: [id])
 }
 
 model WaitlistEmail {

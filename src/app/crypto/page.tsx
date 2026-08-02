@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default async function CryptoPage() {
   // Crypto uses the same MarketLevel model with a crypto-specific asset type
   // For now, we show a placeholder since crypto levels can be added via admin
-  const levels = await getPublishedMarketLevels("STOCK_FNO");
+  const levels = await getPublishedMarketLevels("CRYPTO");
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
