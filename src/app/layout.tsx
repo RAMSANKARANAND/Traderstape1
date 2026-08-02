@@ -28,6 +28,17 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon-180.png",
+    apple: "/favicon-180.png",
+    other: {
+      rel: "icon",
+      type: "image/png",
+      sizes: "192x192",
+      url: "/favicon-192.png",
+    },
+  },
 };
 
 export default function RootLayout({
