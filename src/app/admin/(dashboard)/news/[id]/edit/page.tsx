@@ -11,8 +11,10 @@ export const metadata: Metadata = {
 
 export default async function EditNewsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] }>;
 }) {
   const user = await getSessionUser();
   if (!user) redirect("/admin/login");
@@ -21,9 +23,28 @@ export default async function EditNewsPage({
   const post = await getNewsPostById(id);
   if (!post) notFound();
 
+  const paramsObj = await searchParams;
+  const status = paramsObj.status;
+  const published = paramsObj.published;
+  const showMessage = status === "saved";
+  let message = "";
+  if (showMessage) {
+    if (published === "true") {
+      message = "Published! View it at /news/" + post.slug;
+    } else {
+      message = "Saved as draft — check 'Publish immediately' to make it live";
+    }
+  }
+
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <SectionTitle className="mb-8">Edit News Post</SectionTitle>
+
+      {showMessage && (
+        <div className="mb-4 p-4 bg-accent-yellow text-ink rounded-md font-black">
+          {message}
+        </div>
+      )}
 
       <Card>
         <form
@@ -32,6 +53,7 @@ export default async function EditNewsPage({
             const session = await getSessionUser();
             if (!session) redirect("/admin/login");
 
+            const isPublished = formData.get("isPublished") === "on";
             await updateNewsPost(id, {
               title: formData.get("title") as string,
               category: formData.get("category") as "STOCKS" | "CRYPTO" | "FOREX" | "GEOPOLITICAL",
@@ -40,10 +62,11 @@ export default async function EditNewsPage({
               seoTitle: (formData.get("seoTitle") as string) || null,
               seoDescription: (formData.get("seoDescription") as string) || null,
               ogImageUrl: (formData.get("ogImageUrl") as string) || null,
-              isPublished: formData.get("isPublished") === "on",
-              publishedAt: formData.get("isPublished") === "on" ? (post.publishedAt || new Date()) : null,
+              isPublished,
+              publishedAt: isPublished ? (post.publishedAt || new Date()) : null,
             });
-            redirect("/admin/news");
+            // Redirect back to edit page with status message
+            redirect(`/admin/news/${id}/edit?status=saved&published=${isPublished}`);
           }}
           className="space-y-6"
         >

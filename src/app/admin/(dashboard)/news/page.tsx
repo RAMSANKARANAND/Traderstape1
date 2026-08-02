@@ -19,6 +19,7 @@ export default async function AdminNewsPage() {
   const normalizedPosts = posts.map((post) => ({
     id: post.id,
     title: post.title,
+    slug: post.slug,
     category: post.category === "GEOPOLITICAL" ? "GEOPOLITICS" : (post.category as any),
     author: post.author,
     isPublished: post.isPublished,

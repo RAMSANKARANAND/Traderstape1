@@ -6,6 +6,8 @@ import { Badge, Button } from "@/components/ui";
 import { createMorningBrief, updateMorningBrief } from "@/lib/db-raw";
 import type { MorningBrief } from "@/lib/db-raw";
 
+type MorningBriefFormData = Omit<MorningBrief, "id" | "authorId" | "createdAt" | "updatedAt">;
+
 interface MorningBriefEditorProps {
   authorId: string;
   existing?: MorningBrief;
@@ -41,9 +43,16 @@ interface MorningBriefEditorProps {
     setSeoDescription: (v: string) => void;
     setIsPublished: (v: boolean) => void;
   };
+  onSubmit?: (data: MorningBriefFormData) => Promise<void> | void;
 }
 
-export function MorningBriefEditor({ authorId, existing, state, setters }: MorningBriefEditorProps) {
+export function MorningBriefEditor({
+  authorId,
+  existing,
+  state,
+  setters,
+  onSubmit,
+}: MorningBriefEditorProps) {
   const router = useRouter();
   const isEdit = !!existing;
 
@@ -64,7 +73,6 @@ export function MorningBriefEditor({ authorId, existing, state, setters }: Morni
   const [internalSeoTitle, setInternalSeoTitle] = useState(existing?.seoTitle || "");
   const [internalSeoDescription, setInternalSeoDescription] = useState(existing?.seoDescription || "");
   const [internalIsPublished, setInternalIsPublished] = useState(existing?.isPublished || false);
-  const [saving, setSaving] = useState(false);
 
   // Local inputs for adding items
   const [focusInput, setFocusInput] = useState("");
@@ -126,7 +134,6 @@ export function MorningBriefEditor({ authorId, existing, state, setters }: Morni
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSaving(true);
 
     const data = {
       headline,
@@ -147,18 +154,21 @@ export function MorningBriefEditor({ authorId, existing, state, setters }: Morni
       publishedAt: isPublished ? new Date() : null,
     };
 
-    try {
-      if (isEdit && existing) {
-        await updateMorningBrief(existing.id, data);
-      } else {
-        await createMorningBrief({ ...data, authorId });
+    if (onSubmit) {
+      await onSubmit(data);
+    } else {
+      // Fallback to original behavior (for backward compatibility)
+      try {
+        if (isEdit && existing) {
+          await updateMorningBrief(existing.id, data);
+        } else {
+          await createMorningBrief({ ...data, authorId });
+        }
+        router.push("/admin/morning-brief");
+        router.refresh();
+      } catch (err) {
+        console.error("Save failed:", err);
       }
-      router.push("/admin/morning-brief");
-      router.refresh();
-    } catch (err) {
-      console.error("Save failed:", err);
-    } finally {
-      setSaving(false);
     }
   };
 
@@ -356,8 +366,8 @@ export function MorningBriefEditor({ authorId, existing, state, setters }: Morni
 
         {/* Actions */}
         <div className="flex items-center gap-3 pt-4 border-t-3 border-ink">
-          <Button type="submit" variant="primary" size="md" disabled={saving}>
-            {saving ? "Saving..." : isEdit ? "Update Brief" : "Save Brief"}
+          <Button type="submit" variant="primary" size="md">
+            {isEdit ? "Update Brief" : "Save Brief"}
           </Button>
           <Button type="button" variant="secondary" size="md" onClick={() => router.push("/admin/morning-brief")}>
             Cancel

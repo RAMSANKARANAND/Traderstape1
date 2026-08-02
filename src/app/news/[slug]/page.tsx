@@ -6,11 +6,12 @@ import type { Metadata } from "next";
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] }>;
 }
 
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getNewsPostBySlug(slug);
+  const post = await getNewsPostBySlug(slug, true); // for metadata, we want published version
 
   if (!post) return { title: "Article Not Found" };
 
@@ -35,9 +36,15 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   };
 }
 
-export default async function ArticlePage({ params }: ArticlePageProps) {
+export default async function ArticlePage({
+  params,
+  searchParams,
+}: ArticlePageProps) {
   const { slug } = await params;
-  const post = await getNewsPostBySlug(slug, true);
+  const search = await searchParams;
+  const isPreview = search?.preview === "1";
+
+  const post = await getNewsPostBySlug(slug, !isPreview); // if preview, do not require published
 
   if (!post) {
     notFound();
@@ -69,6 +76,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       >
         ← Back to News
       </Link>
+
+      {isPreview && (
+        <div className="mb-4 p-3 bg-accent-yellow text-ink rounded-md font-bold">
+          Preview Mode - Draft Post
+        </div>
+      )}
 
       <article>
         <div className="flex items-center gap-3 mb-4">
@@ -124,7 +137,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
       <div className="mt-12 pt-8 brutal-border-t border-t-3 border-ink">
         <p className="text-xs font-bold opacity-60">
-          TradersTape is for educational purposes only. Nothing on this site is financial advice.
+          Traderstape is for educational purposes only. Nothing on this site is financial advice.
         </p>
       </div>
     </div>

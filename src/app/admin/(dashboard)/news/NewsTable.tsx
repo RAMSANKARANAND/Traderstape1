@@ -9,6 +9,7 @@ type NewsCategory = "GEOPOLITICS" | "FOREX" | "CRYPTO" | "STOCKS" | "RESEARCH";
 interface NewsPost {
   id: string;
   title: string;
+  slug: string;
   category: NewsCategory;
   author: { name: string };
   isPublished: boolean;
@@ -135,6 +136,16 @@ export default function NewsTable({ posts, userRole }: NewsTableProps) {
                     >
                       {post.isPublished ? "Unpublish" : "Publish"}
                     </button>
+                    {!post.isPublished && (
+                      <a
+                        href={`/news/${post.slug}?preview=1`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs font-black uppercase bg-accent-yellow text-ink px-2 py-1 brutal-border border-2 border-ink"
+                      >
+                        Preview
+                      </a>
+                    )}
                     <button
                       type="button"
                       onClick={async () => {

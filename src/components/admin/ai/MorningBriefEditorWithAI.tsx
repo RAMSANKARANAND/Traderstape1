@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import { MorningBriefEditor } from "@/app/admin/(dashboard)/morning-brief/new/MorningBriefEditor";
 import { AiAssistantPanel } from "./AiAssistantPanel";
 import type { MorningBrief } from "@/lib/db-raw";
+import { useRouter } from "next/navigation";
+import { createMorningBrief, updateMorningBrief } from "@/lib/db-raw";
 
 interface MorningBriefEditorWithAIProps {
   authorId: string;
@@ -11,6 +13,7 @@ interface MorningBriefEditorWithAIProps {
 }
 
 export function MorningBriefEditorWithAI({ authorId, existing }: MorningBriefEditorWithAIProps) {
+  const router = useRouter();
   const [state, setState] = useState({
     headline: existing?.headline || "",
     slug: existing?.slug || "",
@@ -56,6 +59,33 @@ export function MorningBriefEditorWithAI({ authorId, existing }: MorningBriefEdi
     setIsPublished: (v: boolean) => setState(prev => ({ ...prev, isPublished: v })),
   };
 
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleFormSubmit = async (data: Omit<MorningBrief, "id" | "authorId" | "createdAt" | "updatedAt">) => {
+    setSubmitting(true);
+    setError(null);
+    try {
+      if (existing) {
+        await updateMorningBrief(existing.id, data);
+      } else {
+        await createMorningBrief({ ...data, authorId });
+      }
+      setSuccess(true);
+      // Redirect after a short delay to let the user see the success message
+      setTimeout(() => {
+        router.push("/admin/morning-brief");
+        router.refresh();
+      }, 1500);
+    } catch (err) {
+      setError("Failed to save morning brief. Please try again.");
+      console.error(err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const handleInsertContent = (field: string, value: string) => {
     // Mapping AI response fields to editor state
     const mapping: Record<string, (v: string) => void> = {
@@ -83,11 +113,27 @@ export function MorningBriefEditorWithAI({ authorId, existing }: MorningBriefEdi
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <div className="lg:col-span-2">
+        {submitting && (
+          <div className="mb-4 p-4 bg-accent-yellow text-ink rounded-md font-bold">
+            Saving...
+          </div>
+        )}
+        {success && (
+          <div className="mb-4 p-4 bg-accent-yellow text-ink rounded-md font-bold">
+            Morning brief saved successfully! Redirecting...
+          </div>
+        )}
+        {error && (
+          <div className="mb-4 p-4 bg-accent-coral text-white rounded-md font-bold">
+            {error}
+          </div>
+        )}
         <MorningBriefEditor 
           authorId={authorId} 
           existing={existing} 
           state={state} 
           setters={setters} 
+          onSubmit={handleFormSubmit}
         />
       </div>
       <div className="lg:col-span-1">
