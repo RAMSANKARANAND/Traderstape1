@@ -34,5 +34,8 @@
 			"database_id": "4ae004b2-f472-4663-94ba-1968a2c644cc",
 			"remote": true
 		}
-	]
+	],
+	"vars": {
+		"MAINTENANCE_MODE": "true"
+	}
 }
