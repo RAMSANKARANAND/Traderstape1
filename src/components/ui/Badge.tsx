@@ -2,7 +2,7 @@ import React from "react";
 
 interface BadgeProps {
   children: React.ReactNode;
-  variant?: "default" | "flat" | "up" | "down" | "bullish" | "bearish" | "neutral" | "ai" | "breaking" | "forex" | "crypto" | "gold";
+  variant?: "default" | "flat" | "up" | "down" | "bullish" | "bearish" | "neutral" | "ai" | "breaking" | "forex" | "crypto" | "gold" | "live";
   className?: string;
   onClick?: () => void;
 }
@@ -20,6 +20,7 @@ const variantClasses: Record<string, string> = {
   forex: "badge-forex",
   crypto: "badge-crypto",
   gold: "badge-gold",
+  live: "badge-live",
 };
 
 export function Badge({ children, variant = "default", className = "", onClick }: BadgeProps) {

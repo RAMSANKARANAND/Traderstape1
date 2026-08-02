@@ -18,10 +18,10 @@ interface NewsPageProps {
 
 const categories = [
   { value: "", label: "All" },
-  { value: "STOCKS", label: "Stocks" },
-  { value: "CRYPTO", label: "Crypto" },
-  { value: "FOREX", label: "Forex" },
-  { value: "GEOPOLITICAL", label: "Geopolitical" },
+  { value: "STOCKS", label: "Stocks", color: "card-sky", badge: "forex" },
+  { value: "CRYPTO", label: "Crypto", color: "card-gold", badge: "gold" },
+  { value: "FOREX", label: "Forex", color: "card-mint", badge: "bullish" },
+  { value: "GEOPOLITICAL", label: "Geopolitical", color: "card-coral", badge: "bearish" },
 ];
 
 type PostWithAuthor = NewsPostWithAuthor;
@@ -35,6 +35,13 @@ function formatDate(date: Date | null): string {
     timeZone: "UTC",
   }).format(new Date(date));
 }
+
+const tabVariant = (cat: typeof categories[0], active: boolean) => {
+  if (active) return "bg-ink text-bg brutal-border shadow-[3px_3px_0_#000]";
+  if (!cat.color) return "bg-bg text-ink brutal-border shadow-[3px_3px_0_#000] hover:bg-accent-yellow";
+  const colorClass = `bg-${cat.color.replace("card-", "")} text-ink brutal-border shadow-[3px_3px_0_#000]`;
+  return colorClass;
+};
 
 export default async function NewsPage({ searchParams }: NewsPageProps) {
   const { category } = await searchParams;
@@ -75,10 +82,8 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
           <Link
             key={cat.value}
             href={cat.value ? `/news?category=${cat.value}` : "/news"}
-            className={`px-4 py-2 font-black uppercase text-sm brutal-border transition-all duration-100 ${
-              (category === cat.value || (!category && !cat.value))
-                ? "bg-ink text-bg"
-                : "bg-bg text-ink hover:bg-accent-yellow"
+            className={`px-4 py-2 font-black uppercase text-sm transition-all duration-100 ${
+              tabVariant(cat, category === cat.value || (!category && !cat.value))
             }`}
           >
             {cat.label}
@@ -197,11 +202,11 @@ function BreakingHero({ post }: { post: PostWithAuthor }) {
   return (
     <Link
       href={`/news/${post.slug}`}
-      className="block brutal-card brutal-shadow p-6 md:p-8 bg-accent-coral/10 border-accent-coral hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[6px_6px_0_#111] transition-all duration-100"
+      className="block card-coral brutal-shadow p-6 md:p-8 hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[6px_6px_0_#111] transition-all duration-100"
     >
       <div className="flex flex-wrap items-center gap-3 mb-4">
-        <Badge variant="down">Breaking</Badge>
-        <Badge variant="default">{post.category}</Badge>
+        <Badge variant="bearish">Breaking</Badge>
+        <Badge variant="forex">{post.category}</Badge>
         <span className="text-xs font-bold uppercase opacity-60 ml-auto">
           {formatDate(post.publishedAt)}
         </span>
@@ -223,11 +228,11 @@ function FeaturedHero({ post }: { post: PostWithAuthor }) {
   return (
     <Link
       href={`/news/${post.slug}`}
-      className="block brutal-card brutal-shadow p-6 md:p-8 bg-accent-yellow/20 border-accent-yellow hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[6px_6px_0_#111] transition-all duration-100"
+      className="block card-gold brutal-shadow p-6 md:p-8 hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[6px_6px_0_#111] transition-all duration-100"
     >
       <div className="flex flex-wrap items-center gap-3 mb-4">
         <Badge variant="flat">Featured</Badge>
-        <Badge variant="default">{post.category}</Badge>
+        <Badge variant="forex">{post.category}</Badge>
         <span className="text-xs font-bold uppercase opacity-60 ml-auto">
           {formatDate(post.publishedAt)}
         </span>

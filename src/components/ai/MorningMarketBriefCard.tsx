@@ -1,5 +1,4 @@
 import React from "react";
-import { Card } from "../ui/Card";
 import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
 import type { MorningBriefData } from "@/lib/ai/types";
@@ -35,7 +34,7 @@ export function MorningMarketBriefCard({ data, lastUpdated, onReadFull }: Mornin
   const sentimentVariantKey = sentimentVariant[data.sentiment] ?? "neutral";
 
   return (
-    <Card className="flex flex-col h-full p-5 gap-4 card-lift">
+    <div className="card-lavender flex flex-col h-full p-5 gap-4 card-lift">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -53,7 +52,7 @@ export function MorningMarketBriefCard({ data, lastUpdated, onReadFull }: Mornin
         <div className="flex items-center gap-2">
           <div className="w-32 h-2 border-2 border-ink bg-white">
             <div
-              className="h-full bg-ai"
+              className="h-full bg-ink"
               style={{ width: `${Math.min(100, Math.max(0, data.confidence))}%` }}
             />
           </div>
@@ -72,7 +71,7 @@ export function MorningMarketBriefCard({ data, lastUpdated, onReadFull }: Mornin
         <ul className="space-y-1">
           {data.focusPoints.slice(0, 5).map((point, i) => (
             <li key={i} className="text-small font-bold leading-tight opacity-70 flex items-start gap-1.5">
-              <span className="text-accent-coral mt-0.5 shrink-0">•</span>
+              <span className="text-ink mt-0.5 shrink-0">•</span>
               <span>{point}</span>
             </li>
           ))}
@@ -81,15 +80,15 @@ export function MorningMarketBriefCard({ data, lastUpdated, onReadFull }: Mornin
 
       {/* Global Overview */}
       <div className="grid grid-cols-3 gap-2 text-center">
-        <div className="brutal-border brutal-shadow p-2">
+        <div className="brutal-border brutal-shadow p-2 bg-white">
           <div className="text-[10px] font-black uppercase opacity-60">US Markets</div>
           <div className="text-small font-black">{data.globalOverview.us}</div>
         </div>
-        <div className="brutal-border brutal-shadow p-2">
+        <div className="brutal-border brutal-shadow p-2 bg-white">
           <div className="text-[10px] font-black uppercase opacity-60">Europe</div>
           <div className="text-small font-black">{data.globalOverview.europe}</div>
         </div>
-        <div className="brutal-border brutal-shadow p-2">
+        <div className="brutal-border brutal-shadow p-2 bg-white">
           <div className="text-[10px] font-black uppercase opacity-60">Asia</div>
           <div className="text-small font-black">{data.globalOverview.asia}</div>
         </div>
@@ -107,7 +106,7 @@ export function MorningMarketBriefCard({ data, lastUpdated, onReadFull }: Mornin
                   ? "bearish"
                   : risk.level === "Medium"
                   ? "breaking"
-                  : "default"
+                  : "neutral"
               }
               className="text-[10px]"
             >
@@ -118,7 +117,7 @@ export function MorningMarketBriefCard({ data, lastUpdated, onReadFull }: Mornin
       </div>
 
       {/* AI Summary */}
-      <div className="bg-accent-lavender/20 border-2 border-ink p-3">
+      <div className="bg-white border-2 border-ink p-3">
         <div className="flex items-center gap-2 mb-1">
           <Badge variant="ai" className="text-[9px]">AI</Badge>
           <span className="text-[10px] font-black uppercase opacity-70">Summary</span>
@@ -132,6 +131,6 @@ export function MorningMarketBriefCard({ data, lastUpdated, onReadFull }: Mornin
           Read Full Market Brief
         </Button>
       </div>
-    </Card>
+    </div>
   );
 }

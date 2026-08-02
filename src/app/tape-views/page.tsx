@@ -16,13 +16,13 @@ export const metadata: Metadata = {
 
 const categories = [
   { value: "", label: "All" },
-  { value: "NSE", label: "NSE" },
-  { value: "FOREX", label: "Forex" },
-  { value: "CRYPTO", label: "Crypto" },
-  { value: "COMMODITIES", label: "Commodities" },
-  { value: "GLOBAL_MARKETS", label: "Global Markets" },
-  { value: "WEEKLY_OUTLOOK", label: "Weekly Outlook" },
-  { value: "SPECIAL_REPORT", label: "Special Report" },
+  { value: "NSE", label: "NSE", color: "card-sky", badge: "forex" },
+  { value: "FOREX", label: "Forex", color: "card-mint", badge: "bullish" },
+  { value: "CRYPTO", label: "Crypto", color: "card-gold", badge: "gold" },
+  { value: "COMMODITIES", label: "Commodities", color: "card-gold", badge: "gold" },
+  { value: "GLOBAL_MARKETS", label: "Global Markets", color: "card-lavender", badge: "ai" },
+  { value: "WEEKLY_OUTLOOK", label: "Weekly Outlook", color: "card-coral", badge: "bearish" },
+  { value: "SPECIAL_REPORT", label: "Special Report", color: "card-coral", badge: "bearish" },
 ];
 
 const categoryLabels: Record<string, string> = {
@@ -33,6 +33,33 @@ const categoryLabels: Record<string, string> = {
   GLOBAL_MARKETS: "Global Markets",
   WEEKLY_OUTLOOK: "Weekly Outlook",
   SPECIAL_REPORT: "Special Report",
+};
+
+const categoryCardBg: Record<string, string> = {
+  NSE: "card-sky",
+  FOREX: "card-mint",
+  CRYPTO: "card-gold",
+  COMMODITIES: "card-gold",
+  GLOBAL_MARKETS: "card-lavender",
+  WEEKLY_OUTLOOK: "card-coral",
+  SPECIAL_REPORT: "card-coral",
+};
+
+const categoryBadgeVariant: Record<string, string> = {
+  NSE: "forex",
+  FOREX: "bullish",
+  CRYPTO: "gold",
+  COMMODITIES: "gold",
+  GLOBAL_MARKETS: "ai",
+  WEEKLY_OUTLOOK: "bearish",
+  SPECIAL_REPORT: "bearish",
+};
+
+const tabVariant = (cat: typeof categories[0], active: boolean) => {
+  if (active) return "bg-ink text-bg brutal-border shadow-[3px_3px_0_#000]";
+  if (!cat.color) return "bg-bg text-ink brutal-border shadow-[3px_3px_0_#000] hover:bg-accent-yellow";
+  const colorClass = `bg-${cat.color.replace("card-", "")} text-ink brutal-border shadow-[3px_3px_0_#000]`;
+  return colorClass;
 };
 
 interface TapeViewArticle {
@@ -87,10 +114,8 @@ export default async function TapeViewsPage({
                 ? `/tape-views?category=${cat.value}`
                 : "/tape-views"
             }
-            className={`px-4 py-2 font-black uppercase text-sm brutal-border transition-all duration-100 ${
-              category === cat.value || (!category && !cat.value)
-                ? "bg-ink text-bg"
-                : "bg-bg text-ink hover:bg-accent-yellow"
+            className={`px-4 py-2 font-black uppercase text-sm transition-all duration-100 ${
+              tabVariant(cat, category === cat.value || (!category && !cat.value))
             }`}
           >
             {cat.label}
@@ -112,48 +137,49 @@ export default async function TapeViewsPage({
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {articles.map((article) => (
-            <Link
-              key={article.id}
-              href={`/tape-views/${article.slug}`}
-              className="block"
-            >
-              <Card
-                accent="none"
-                className="page-enter"
+          {articles.map((article) => {
+            const cardBg = categoryCardBg[article.category] || "card-white";
+            const badgeVariant = (categoryBadgeVariant[article.category] || "flat") as "default" | "flat" | "up" | "down" | "bullish" | "bearish" | "neutral" | "ai" | "breaking" | "forex" | "crypto" | "gold" | "live";
+            return (
+              <Link
+                key={article.id}
+                href={`/tape-views/${article.slug}`}
+                className="block"
               >
-              <div className="flex items-start justify-between mb-3">
-                <Badge
-                  variant="default"
-                  className="text-[10px] px-2 py-0.5"
-                >
-                  {categoryLabels[article.category] || article.category}
-                </Badge>
+                <div className={`${cardBg} brutal-shadow p-5 page-enter`}>
+                <div className="flex items-start justify-between mb-3">
+                  <Badge
+                    variant={badgeVariant}
+                    className="text-[10px] px-2 py-0.5"
+                  >
+                    {categoryLabels[article.category] || article.category}
+                  </Badge>
 
-                <Badge
-                  variant={
-                    article.bias === "BULLISH"
-                      ? "up"
-                      : article.bias === "BEARISH"
-                      ? "flat"
-                      : "up"
-                  }
-                  className="text-[10px] px-2 py-0.5"
-                >
-                  {article.bias}
-                </Badge>
-              </div>
+                  <Badge
+                    variant={
+                      article.bias === "BULLISH"
+                        ? "bullish"
+                        : article.bias === "BEARISH"
+                        ? "bearish"
+                        : "neutral"
+                    }
+                    className="text-[10px] px-2 py-0.5"
+                  >
+                    {article.bias}
+                  </Badge>
+                </div>
 
-              <h3 className="text-xl font-black uppercase mb-2 leading-tight">
-                {article.title}
-              </h3>
+                <h3 className="text-xl font-black uppercase mb-2 leading-tight">
+                  {article.title}
+                </h3>
 
-              <p className="text-sm font-bold opacity-70 mb-4 leading-relaxed">
-                {article.todayView}
-              </p>
-              </Card>
-            </Link>
-          ))}
+                <p className="text-sm font-bold opacity-70 mb-4 leading-relaxed">
+                  {article.todayView}
+                </p>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       )}
     </div>

@@ -11,20 +11,30 @@ interface NewsCardProps {
   className?: string;
 }
 
-const categoryColors: Record<string, string> = {
-  STOCKS: "border-accent-blue",
-  CRYPTO: "border-accent-yellow",
-  FOREX: "border-accent-teal",
-  GEOPOLITICAL: "border-accent-coral",
+const categoryCardBg: Record<string, string> = {
+  STOCKS: "card-sky",
+  CRYPTO: "card-gold",
+  FOREX: "card-mint",
+  GEOPOLITICAL: "card-coral",
+};
+
+const categoryBadgeBg: Record<string, string> = {
+  STOCKS: "card-sky",
+  CRYPTO: "card-gold",
+  FOREX: "card-mint",
+  GEOPOLITICAL: "card-coral",
 };
 
 export function NewsCard({ title, slug, category, summary, publishedAt, className = "" }: NewsCardProps) {
-  const borderColor = categoryColors[category] || "border-ink";
+  const cardBg = categoryCardBg[category] || "card-white";
+  const badgeBg = categoryBadgeBg[category] || "card-white";
 
   return (
-    <Link href={`/news/${slug}`} className={`block brutal-card p-5 ${borderColor} hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[4px_4px_0_#111] transition-all duration-100 ${className}`}>
+    <Link href={`/news/${slug}`} className={`block ${cardBg} brutal-shadow p-5 hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[4px_4px_0_#111] transition-all duration-100 ${className}`}>
       <div className="flex items-start justify-between gap-3 mb-3">
-        <Badge variant="default">{category}</Badge>
+        <Badge variant={badgeBg === "card-white" ? "flat" : badgeBg === "card-sky" ? "forex" : badgeBg === "card-gold" ? "gold" : badgeBg === "card-mint" ? "bullish" : "bearish"} className="text-[10px]">
+          {category}
+        </Badge>
         {publishedAt && (
           <span className="text-xs font-bold uppercase whitespace-nowrap">
             {new Intl.DateTimeFormat("en-GB", {

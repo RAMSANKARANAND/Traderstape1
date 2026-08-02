@@ -1,5 +1,4 @@
 import React from "react";
-import { Card } from "../ui/Card";
 import { Badge } from "../ui/Badge";
 import { Sparkline } from "./Sparkline";
 import type { MarketQuote } from "@/lib/market/types";
@@ -18,15 +17,18 @@ export function MarketCard({ quote, aiInsight }: MarketCardProps) {
   const isLive = marketState === "LIVE";
   const isPreOpen = marketState === "PRE-OPEN";
 
+  // Determine card background based on direction
+  const cardClass = isPositive ? "card-mint" : isNegative ? "card-coral" : "card-white";
+
   return (
-    <Card className="flex flex-col h-full p-4 gap-3 card-lift">
+    <div className={`${cardClass} flex flex-col h-full p-4 gap-3 card-lift`}>
       {/* Header */}
       <div className="flex justify-between items-start">
         <div>
           <div className="font-black uppercase text-sm tracking-tight">{quote.name}</div>
           <div className="text-[11px] font-bold uppercase opacity-60">{quote.symbol}</div>
         </div>
-        <Badge variant={isLive ? "bullish" : isPreOpen ? "default" : "neutral"}>
+        <Badge variant={isLive ? "bullish" : isPreOpen ? "neutral" : "neutral"}>
           {marketState}
         </Badge>
       </div>
@@ -92,7 +94,7 @@ export function MarketCard({ quote, aiInsight }: MarketCardProps) {
 
       {/* AI Insight */}
       {aiInsight && (
-        <div className="bg-accent-lavender/20 border-2 border-ink p-2.5">
+        <div className="bg-white border-2 border-ink p-2.5">
           <div className="flex items-center gap-2 mb-1">
             <Badge variant="ai" className="text-[9px]">AI</Badge>
             <span className="text-[10px] font-black uppercase opacity-70">Insight</span>
@@ -100,6 +102,6 @@ export function MarketCard({ quote, aiInsight }: MarketCardProps) {
           <p className="text-[11px] font-bold leading-relaxed opacity-80">{aiInsight}</p>
         </div>
       )}
-    </Card>
+    </div>
   );
 }

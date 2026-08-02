@@ -176,10 +176,10 @@ export default async function HomePage() {
           )}
           
           {/* ── Card 2: Market Snapshot ── */}
-          <div className="brutal-card brutal-shadow p-5 border-ink flex flex-col min-h-[220px]">
+          <div className="card-sky p-5 flex flex-col min-h-[220px]">
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-card-title font-black uppercase tracking-tight">Market Snapshot</h2>
-              <Badge variant="flat" className="text-[10px]">Live</Badge>
+              <Badge variant="live" className="text-[10px]">LIVE</Badge>
             </div>
             <div className="flex-1 grid grid-cols-1 gap-2">
               {marketQuotes.slice(0, 5).map((quote) => (
@@ -192,13 +192,13 @@ export default async function HomePage() {
           {latestTapeView ? (
             <Link
               href={`/tape-views/${latestTapeView.slug}`}
-              className="brutal-card brutal-shadow p-5 border-ink flex flex-col min-h-[220px] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[5px_5px_0_#111] transition-all duration-100"
+              className="card-gold p-5 flex flex-col min-h-[220px] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[5px_5px_0_#111] transition-all duration-100"
             >
               <div className="flex items-center gap-2 mb-3">
-                <Badge variant="default" className="text-[10px]">{latestTapeView.category}</Badge>
+                <Badge variant="flat" className="text-[10px]">{latestTapeView.category}</Badge>
                 <span className="text-small font-black uppercase opacity-60">{latestTapeView.instrument}</span>
                 <Badge
-                  variant={latestTapeView.bias === "BULLISH" ? "up" : latestTapeView.bias === "BEARISH" ? "down" : "default"}
+                  variant={latestTapeView.bias === "BULLISH" ? "bullish" : latestTapeView.bias === "BEARISH" ? "bearish" : "neutral"}
                   className="text-[10px] ml-auto"
                 >
                   {latestTapeView.bias}
@@ -217,7 +217,7 @@ export default async function HomePage() {
               </div>
             </Link>
           ) : (
-            <div className="brutal-card brutal-shadow p-5 border-ink flex flex-col min-h-[220px] items-center justify-center">
+            <div className="card-white p-5 flex flex-col min-h-[220px] items-center justify-center">
               <p className="text-body font-black uppercase opacity-40 text-center">No analysis available</p>
             </div>
           )}
@@ -233,11 +233,11 @@ export default async function HomePage() {
           </div>
           <Link
             href={`/news/${featuredPost.slug}`}
-            className="group block brutal-card brutal-shadow bg-accent-yellow/10 border-accent-yellow hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[5px_5px_0_#111] transition-all duration-150"
+            className="group block card-gold hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[5px_5px_0_#111] transition-all duration-150"
           >
             <div className="p-5 md:p-6">
               <div className="flex flex-wrap items-center gap-2 mb-3">
-                <Badge variant="default" className="text-[10px]">{featuredPost.category}</Badge>
+                <Badge variant="flat" className="text-[10px]">{featuredPost.category}</Badge>
                 <span className="text-small font-bold uppercase opacity-60 ml-auto">
                   {formatDate(featuredPost.publishedAt)}
                 </span>
@@ -261,30 +261,28 @@ export default async function HomePage() {
 
       {/* ───────────────────────── 3. Breaking News ───────────────────────── */}
       {breakingPost && (
-        <section className="bg-accent-coral/10 border-t-[3px] border-ink border-b-[3px] border-ink">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 md:py-6 animate-fade-in-up">
-            <div className="flex items-center gap-3 mb-3">
-              <Badge variant="breaking">Breaking</Badge>
-              <h2 className="text-small font-black uppercase tracking-widest opacity-70">Breaking News</h2>
-            </div>
-            <Link
-              href={`/news/${breakingPost.slug}`}
-              className="block brutal-card brutal-shadow p-4 md:p-5 bg-bg border-accent-coral hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[5px_5px_0_#111] transition-all duration-100"
-            >
-              <div className="flex flex-wrap items-center gap-2 mb-2">
-                <Badge variant="default" className="text-[10px]">{breakingPost.category}</Badge>
-                <span className="text-small font-bold uppercase opacity-60 ml-auto">
-                  {formatDate(breakingPost.publishedAt)}
-                </span>
-              </div>
-              <h3 className="text-heading font-black uppercase leading-tight mb-1">
-                {breakingPost.title}
-              </h3>
-              <p className="text-small font-bold opacity-80 leading-relaxed max-w-3xl">
-                {breakingPost.summary}
-              </p>
-            </Link>
+        <section className="card-coral max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 md:py-6 animate-fade-in-up">
+          <div className="flex items-center gap-3 mb-3">
+            <Badge variant="breaking">Breaking</Badge>
+            <h2 className="text-small font-black uppercase tracking-widest opacity-70">Breaking News</h2>
           </div>
+          <Link
+            href={`/news/${breakingPost.slug}`}
+            className="block card-white p-4 md:p-5 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[5px_5px_0_#111] transition-all duration-100"
+          >
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              <Badge variant="flat" className="text-[10px]">{breakingPost.category}</Badge>
+              <span className="text-small font-bold uppercase opacity-60 ml-auto">
+                {formatDate(breakingPost.publishedAt)}
+              </span>
+            </div>
+            <h3 className="text-heading font-black uppercase leading-tight mb-1">
+              {breakingPost.title}
+            </h3>
+            <p className="text-small font-bold opacity-80 leading-relaxed max-w-3xl">
+              {breakingPost.summary}
+            </p>
+          </Link>
         </section>
       )}
 
@@ -337,7 +335,7 @@ export default async function HomePage() {
 
       {/* ───────────────────────── 7. Educational Disclaimer ───────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10">
-        <div className="bg-accent-pink brutal-border brutal-shadow p-5 md:p-6">
+        <div className="card-coral brutal-border brutal-shadow p-5 md:p-6">
           <h3 className="text-heading font-black uppercase mb-2">⚠ Educational Disclaimer</h3>
           <p className="text-body font-bold leading-relaxed">
             TradersTape is for educational purposes only. Nothing on this site is financial advice.

@@ -3,12 +3,20 @@
 /* ───────────────────────── Design Tokens ───────────────────────── */
 :root {
   /* Backgrounds */
-  --bg: #F8F5EE;
-  --bg-surface: #FFFDF8;
+  --bg: #f5f0e6;
+  --bg-surface: #f5f0e6;
   --bg-card: #FFFFFF;
-  --bg-hero: #FFF8E7;
-  --bg-featured: #FFE89A;
-  --bg-cta: #CFF6C8;
+  --bg-hero: #f5f0e6;
+  --bg-featured: #f5f0e6;
+  --bg-cta: #f5f0e6;
+
+  /* Card Background Colors (neo-brutalist palette) */
+  --card-mint: #8fe3a8;
+  --card-coral: #f5a3a0;
+  --card-lavender: #c9b8f5;
+  --card-sky: #a3d5f5;
+  --card-gold: #f0bb40;
+  --card-white: #FFFFFF;
 
   /* Ink / Text */
   --ink: #111111;
@@ -27,16 +35,16 @@
   /* Accent palette */
   --accent-yellow: #FFE89A;
   --accent-lime: #C6F135;
-  --accent-mint: #CFF6C8;
-  --accent-sky: #D6F0FF;
-  --accent-lavender: #E8D9FF;
+  --accent-mint: #8fe3a8;
+  --accent-sky: #a3d5f5;
+  --accent-lavender: #c9b8f5;
   --accent-peach: #FFD9C8;
   --accent-bullish: #4ADE80;
   --accent-bearish: #FB7185;
   --accent-neutral: #6B7280;
 
   /* Surfaces & Borders */
-  --border-ink: #1F1F1F;
+  --border-ink: #111111;
   --border-strong: #111111;
   --surface-card: #FFFFFF;
 
@@ -56,19 +64,20 @@
   --space-10: 40px;
   --space-12: 48px;
 
-  /* Border radius */
+  /* Border radius - NEO-BRUTALIST: square corners */
   --radius-none: 0px;
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 20px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
   --radius-full: 9999px;
 
   /* Shadows */
-  --shadow-card: 6px 6px 0 var(--border-ink);
-  --shadow-card-hover: 9px 9px 0 var(--border-ink);
-  --shadow-button: 4px 4px 0 var(--border-ink);
-  --shadow-button-pressed: 2px 2px 0 var(--border-ink);
+  --shadow-card: 4px 4px 0 var(--ink);
+  --shadow-card-hover: 6px 6px 0 var(--ink);
+  --shadow-card-lg: 5px 5px 0 var(--ink);
+  --shadow-button: 3px 3px 0 var(--ink);
+  --shadow-button-pressed: 1px 1px 0 var(--ink);
 
   /* Transitions */
   --ease-out: 200ms ease-out;
@@ -83,6 +92,14 @@
   --color-bg-hero: var(--bg-hero);
   --color-bg-featured: var(--bg-featured);
   --color-bg-cta: var(--bg-cta);
+
+  /* Card Colors */
+  --color-card-mint: var(--card-mint);
+  --color-card-coral: var(--card-coral);
+  --color-card-lavender: var(--card-lavender);
+  --color-card-sky: var(--card-sky);
+  --color-card-gold: var(--card-gold);
+  --color-card-white: var(--card-white);
 
   /* Ink / Text */
   --color-ink: var(--ink);
@@ -150,11 +167,11 @@ body::before {
 
 /* ───────────────────────── Neo-Brutalist Primitives ───────────────────────── */
 
-/* Cards */
+/* Cards - square corners, thick black borders, hard shadows */
 .brutal-card {
   background: var(--bg-card);
   border: 3px solid var(--border-ink);
-  border-radius: var(--radius-xl);
+  border-radius: 0;
   box-shadow: var(--shadow-card);
   transition: transform var(--ease-out), box-shadow var(--ease-out);
 }
@@ -162,6 +179,49 @@ body::before {
 .brutal-card:hover {
   transform: translate(-2px, -2px);
   box-shadow: var(--shadow-card-hover);
+}
+
+/* Colored card variants */
+.card-mint {
+  background: var(--card-mint);
+  border: 3px solid var(--ink);
+  border-radius: 0;
+  box-shadow: var(--shadow-card);
+}
+
+.card-coral {
+  background: var(--card-coral);
+  border: 3px solid var(--ink);
+  border-radius: 0;
+  box-shadow: var(--shadow-card);
+}
+
+.card-lavender {
+  background: var(--card-lavender);
+  border: 3px solid var(--ink);
+  border-radius: 0;
+  box-shadow: var(--shadow-card-lg);
+}
+
+.card-sky {
+  background: var(--card-sky);
+  border: 3px solid var(--ink);
+  border-radius: 0;
+  box-shadow: var(--shadow-card);
+}
+
+.card-gold {
+  background: var(--card-gold);
+  border: 3px solid var(--ink);
+  border-radius: 0;
+  box-shadow: var(--shadow-card);
+}
+
+.card-white {
+  background: var(--card-white);
+  border: 3px solid var(--ink);
+  border-radius: 0;
+  box-shadow: var(--shadow-button);
 }
 
 /* Borders */
@@ -182,6 +242,10 @@ body::before {
   box-shadow: var(--shadow-card);
 }
 
+.brutal-shadow-lg {
+  box-shadow: var(--shadow-card-lg);
+}
+
 /* Pressed button state */
 .btn-press {
   transition: transform var(--ease-in), box-shadow var(--ease-in);
@@ -199,7 +263,7 @@ body::before {
 
 .card-lift:hover {
   transform: translate(-3px, -3px);
-  box-shadow: 9px 9px 0 var(--ink);
+  box-shadow: 6px 6px 0 var(--ink);
 }
 
 /* ───────────────────────── Typography Presets ───────────────────────── */
@@ -246,124 +310,62 @@ body::before {
 }
 
 /* ───────────────────────── Badge Variants ───────────────────────── */
-.badge-bullish {
+.badge-base {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 2px 10px;
-  border-radius: var(--radius-full);
-  background: var(--bull);
-  color: #0a2e14;
+  border-radius: 0;
   border: 2px solid var(--border-ink);
   font-weight: 700;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+
+.badge-bullish {
+  background: var(--card-mint);
+  color: var(--ink);
 }
 
 .badge-bearish {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 2px 10px;
-  border-radius: var(--radius-full);
-  background: var(--bear);
-  color: #2a0a0d;
-  border: 2px solid var(--border-ink);
-  font-weight: 700;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  background: var(--card-coral);
+  color: var(--ink);
 }
 
 .badge-neutral {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 2px 10px;
-  border-radius: var(--radius-full);
-  background: var(--accent-neutral);
-  color: #ffffff;
-  border: 2px solid var(--border-ink);
-  font-weight: 700;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  background: var(--card-white);
+  color: var(--ink);
 }
 
 .badge-ai {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 2px 10px;
-  border-radius: var(--radius-full);
-  background: var(--ai);
-  color: #ffffff;
-  border: 2px solid var(--border-ink);
-  font-weight: 700;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  background: var(--card-lavender);
+  color: var(--ink);
 }
 
 .badge-breaking {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 2px 10px;
-  border-radius: var(--radius-full);
-  background: var(--breaking);
-  color: #ffffff;
-  border: 2px solid var(--border-ink);
-  font-weight: 700;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  background: var(--card-coral);
+  color: var(--ink);
 }
 
 .badge-forex {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 2px 10px;
-  border-radius: var(--radius-full);
-  background: var(--forex);
-  color: #072e42;
-  border: 2px solid var(--border-ink);
-  font-weight: 700;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  background: var(--card-sky);
+  color: var(--ink);
 }
 
 .badge-crypto {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 2px 10px;
-  border-radius: var(--radius-full);
-  background: var(--crypto);
-  color: #1f1240;
-  border: 2px solid var(--border-ink);
-  font-weight: 700;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  background: var(--card-lavender);
+  color: var(--ink);
 }
 
 .badge-gold {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 2px 10px;
-  border-radius: var(--radius-full);
-  background: var(--gold);
-  color: #3d2f00;
-  border: 2px solid var(--border-ink);
-  font-weight: 700;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  background: var(--card-gold);
+  color: var(--ink);
+}
+
+.badge-live {
+  background: var(--card-white);
+  color: var(--ink);
 }
 
 /* ───────────────────────── Component Tokens ───────────────────────── */
@@ -373,8 +375,8 @@ body::before {
   justify-content: center;
   gap: 8px;
   padding: var(--space-3) var(--space-5);
-  border-radius: var(--radius-xl);
-  background: var(--accent-lime);
+  border-radius: 0;
+  background: var(--card-gold);
   color: var(--ink);
   border: 3px solid var(--border-ink);
   box-shadow: var(--shadow-button);
@@ -389,8 +391,7 @@ body::before {
 
 .btn-primary:hover {
   transform: translate(-1px, -1px);
-  box-shadow: 5px 5px 0 var(--border-ink);
-  background: #b3dd2c;
+  box-shadow: 4px 4px 0 var(--border-ink);
 }
 
 .btn-primary:active {
@@ -404,8 +405,8 @@ body::before {
   justify-content: center;
   gap: 8px;
   padding: var(--space-3) var(--space-5);
-  border-radius: var(--radius-xl);
-  background: #FFFFFF;
+  border-radius: 0;
+  background: var(--card-white);
   color: var(--ink);
   border: 3px solid var(--border-ink);
   box-shadow: var(--shadow-button);
@@ -420,8 +421,7 @@ body::before {
 
 .btn-secondary:hover {
   transform: translate(-1px, -1px);
-  box-shadow: 5px 5px 0 var(--border-ink);
-  background: #f5f5f5;
+  box-shadow: 4px 4px 0 var(--border-ink);
 }
 
 .btn-secondary:active {
@@ -487,21 +487,19 @@ body::before {
 }
 
 .table-row-hover:hover {
-  background-color: var(--bg-featured);
+  background-color: var(--card-gold);
 }
 
 /* Responsive shadow reduction */
 @media (max-width: 800px) {
-  .brutal-shadow {
-    box-shadow: 4px 4px 0 var(--ink);
-  }
-
+  .brutal-shadow,
+  .brutal-card,
   .card-lift:hover {
-    box-shadow: 6px 6px 0 var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
   }
 
-  .brutal-card:hover {
-    box-shadow: 6px 6px 0 var(--ink);
+  .brutal-shadow-lg {
+    box-shadow: 4px 4px 0 var(--ink);
   }
 }
 

@@ -59,10 +59,10 @@ export default function RootLayout({
         <WelcomeDisclaimerModal />
 
         {/* Navigation */}
-        <header className="bg-[#F4F5F6] border-b-[4px] border-black sticky top-0 z-40 h-[72px] flex items-center">
+        <header className="card-white border-b-[3px] border-ink shadow-[3px_3px_0_#000] sticky top-0 z-40 h-[72px] flex items-center">
           <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full" aria-label="Main navigation">
             <div className="flex items-center justify-between h-full">
-              <Link href="/" className="font-black text-2xl uppercase tracking-tighter brutal-border px-3 py-1 bg-white hover:bg-ink hover:text-white transition-colors duration-100">
+              <Link href="/" className="card-white brutal-border brutal-shadow px-3 py-1 font-black text-2xl uppercase tracking-tighter hover:bg-ink hover:text-white transition-colors duration-100">
                 TradersTape
               </Link>
 
@@ -76,10 +76,10 @@ export default function RootLayout({
 
               {/* Mobile Nav Toggle */}
               <details className="md:hidden relative">
-                <summary className="list-none cursor-pointer brutal-border px-3 py-2 bg-bg font-black uppercase text-sm">
+                <summary className="list-none cursor-pointer brutal-border px-3 py-2 card-white font-black uppercase text-sm">
                   Menu
                 </summary>
-                <div className="absolute right-0 top-full mt-1 w-48 bg-bg brutal-border brutal-shadow z-50 flex flex-col">
+                <div className="absolute right-0 top-full mt-1 w-48 card-white brutal-border brutal-shadow z-50 flex flex-col">
                   <MobileNavLink href="/the-tape">The Tape</MobileNavLink>
                   <MobileNavLink href="/news">News</MobileNavLink>
                   <MobileNavLink href="/tape-views">Tape Views</MobileNavLink>

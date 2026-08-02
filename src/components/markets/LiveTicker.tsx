@@ -140,7 +140,7 @@ export function LiveMarketTicker({ items, title = "Live Market" }: LiveMarketTic
   };
 
   return (
-    <div className="brutal-card brutal-shadow bg-bg border-ink w-full">
+    <div className="card-white brutal-shadow w-full">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b-[2px] border-ink bg-ink/5">
         <div className="flex items-center gap-3">
@@ -168,18 +168,19 @@ export function LiveMarketTicker({ items, title = "Live Market" }: LiveMarketTic
           const isPositive = item.direction === "up";
           const isNegative = item.direction === "down";
           const friendlyName = getFriendlyName(item.symbol);
+          const cardClass = isPositive ? "card-mint" : isNegative ? "card-coral" : "card-white";
 
           return (
             <Link
               key={`${item.symbol}-${index}`}
               href={getMarketPath(item.symbol)}
-              className="flex-shrink-0 inline-block brutal-border bg-bg hover:bg-ink/5 transition-all duration-150 cursor-pointer group"
+              className="flex-shrink-0 inline-block brutal-border hover:bg-ink/5 transition-all duration-150 cursor-pointer group"
               onClick={(e) => {
                 e.preventDefault();
                 window.open(getMarketPath(item.symbol), '_self');
               }}
             >
-              <div className="flex flex-col items-start gap-2 px-5 py-3 min-w-[160px]">
+              <div className={`${cardClass} flex flex-col items-start gap-2 px-5 py-3 min-w-[160px]`}>
                 {/* Symbol and Friendly Name */}
                 <div className="flex-shrink-0">
                   <div className="font-black uppercase text-base tracking-tight text-ink group-hover:text-accent-coral transition-colors">
@@ -203,17 +204,17 @@ export function LiveMarketTicker({ items, title = "Live Market" }: LiveMarketTic
                 {/* Direction Indicator */}
                 <div className="flex-shrink-0">
                   {isPositive && (
-                    <div className="w-7 h-7 bg-bullish/20 border-2 border-bullish rounded flex items-center justify-center">
+                    <div className="w-7 h-7 bg-white border-2 border-ink rounded flex items-center justify-center">
                       <span className="text-bullish font-black text-sm">↑</span>
                     </div>
                   )}
                   {isNegative && (
-                    <div className="w-7 h-7 bg-bearish/20 border-2 border-bearish rounded flex items-center justify-center">
+                    <div className="w-7 h-7 bg-white border-2 border-ink rounded flex items-center justify-center">
                       <span className="text-bearish font-black text-sm">↓</span>
                     </div>
                   )}
                   {item.direction === "flat" && (
-                    <div className="w-7 h-7 bg-text-muted/20 border-2 border-text-muted rounded flex items-center justify-center">
+                    <div className="w-7 h-7 bg-white border-2 border-ink rounded flex items-center justify-center">
                       <span className="text-text-muted font-black text-sm">→</span>
                     </div>
                   )}
