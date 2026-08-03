@@ -138,6 +138,10 @@ function stripJsonFences(text: string): string {
   return text.replace(/```json/gi, "").replace(/```/g, "").trim();
 }
 
+function normalizeNewlines(text: string): string {
+  return text.replace(/\\n/g, "\n");
+}
+
 export async function generateWithCloudflare(req: AiRequest): Promise<AiResponse> {
   const messages = buildMessages(req);
   const raw = await callCloudflareAI(messages);
@@ -148,28 +152,28 @@ export async function generateWithCloudflare(req: AiRequest): Promise<AiResponse
         success: true,
         mode: "cloudflare",
         message: "News draft generated successfully.",
-        data: { content: raw },
+        data: { content: normalizeNewlines(raw) },
       };
     case "rewrite":
       return {
         success: true,
         mode: "cloudflare",
         message: "Content rewritten successfully.",
-        data: { content: raw },
+        data: { content: normalizeNewlines(raw) },
       };
     case "summarize":
       return {
         success: true,
         mode: "cloudflare",
         message: "Content summarized.",
-        data: { summary: raw },
+        data: { summary: normalizeNewlines(raw) },
       };
     case "generate-tape-view":
       return {
         success: true,
         mode: "cloudflare",
         message: "Tape view analysis generated.",
-        data: { content: raw },
+        data: { content: normalizeNewlines(raw) },
       };
     case "generate-seo": {
       try {
@@ -218,7 +222,7 @@ export async function generateWithCloudflare(req: AiRequest): Promise<AiResponse
         success: true,
         mode: "cloudflare",
         message: "Morning brief generated.",
-        data: { content: raw },
+        data: { content: normalizeNewlines(raw) },
       };
     }
     case "generate-news-roundup-summary": {

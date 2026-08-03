@@ -3,7 +3,10 @@ import { MorningMarketBriefCard } from "@/components/ai/MorningMarketBriefCard";
 import Link from "next/link";
 import { Badge, Button } from "@/components/ui";
 import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+
+function normalizeBodyContent(content: string): string {
+  return content.replace(/\\n/g, "\n");
+}
 
 export const dynamic = "force-dynamic";
 
@@ -55,7 +58,7 @@ export default async function MorningBriefPage() {
             <div className="text-body font-bold leading-relaxed whitespace-pre-wrap text-base">
               <div className="prose-invert text-base leading-6">
                 <ReactMarkdown>
-                  {brief.body}
+                  {normalizeBodyContent(brief.body)}
                 </ReactMarkdown>
               </div>
             </div>

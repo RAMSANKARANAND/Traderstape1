@@ -4,7 +4,9 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import remarkGfm from "remark-gfm";
+function normalizeBodyContent(content: string): string {
+  return content.replace(/\\n/g, "\n");
+}
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
@@ -114,7 +116,7 @@ export default async function ArticlePage({
 <div className="prose prose-lg max-w-none mt-6">
           <div className="prose-invert text-base leading-6">
             <ReactMarkdown>
-              {post.body}
+              {normalizeBodyContent(post.body)}
             </ReactMarkdown>
           </div>
         </div>
