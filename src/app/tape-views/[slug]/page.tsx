@@ -1,8 +1,10 @@
 import { getTapeViewBySlug, getRelatedTapeViews } from "@/lib/db-raw";
 import { Badge, Card } from "@/components/ui";
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import remarkGfm from "remark-gfm";
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
@@ -173,31 +175,14 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         </Card>
       </div>
 
-      <Card className="mb-6 md:mb-8">
+<Card className="mb-6 md:mb-8">
         <h2 className="text-lg md:text-xl font-black uppercase mb-3 md:mb-4">Full Analysis</h2>
-        <div className="prose prose-lg font-bold max-w-none">
-          {post.body.split("\n").map((paragraph: string, i: number) => {
-            if (paragraph.startsWith("## ")) {
-              return (
-                <h2 key={i} className="text-xl md:text-2xl font-black uppercase mt-6 md:mt-8 mb-3 md:mb-4">
-                  {paragraph.replace("## ", "")}
-                </h2>
-              );
-            }
-            if (paragraph.startsWith("- ")) {
-              return (
-                <li key={i} className="ml-4 mb-1 md:mb-2 font-bold text-sm md:text-base">
-                  {paragraph.replace("- ", "")}
-                </li>
-              );
-            }
-            if (paragraph.trim() === "") return null;
-            return (
-              <p key={i} className="mb-3 md:mb-4 leading-relaxed text-sm md:text-base">
-                {paragraph}
-              </p>
-            );
-          })}
+        <div className="prose prose-lg max-w-none">
+          <div className="prose-invert text-base leading-6">
+            <ReactMarkdown>
+              {post.body}
+            </ReactMarkdown>
+          </div>
         </div>
       </Card>
 

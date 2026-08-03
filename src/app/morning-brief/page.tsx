@@ -2,6 +2,8 @@ import { getLatestPublishedMorningBrief } from "@/lib/db-raw";
 import { MorningMarketBriefCard } from "@/components/ai/MorningMarketBriefCard";
 import Link from "next/link";
 import { Badge, Button } from "@/components/ui";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export const dynamic = "force-dynamic";
 
@@ -47,11 +49,15 @@ export default async function MorningBriefPage() {
             : undefined}
         />
 
-        {brief.body && (
+{brief.body && (
           <div className="mt-6 brutal-card brutal-shadow p-5 border-ink">
             <h2 className="text-card-title font-black uppercase mb-3">Full Analysis</h2>
-            <div className="text-body font-bold leading-relaxed whitespace-pre-wrap">
-              {brief.body}
+            <div className="text-body font-bold leading-relaxed whitespace-pre-wrap text-base">
+              <div className="prose-invert text-base leading-6">
+                <ReactMarkdown>
+                  {brief.body}
+                </ReactMarkdown>
+              </div>
             </div>
           </div>
         )}
