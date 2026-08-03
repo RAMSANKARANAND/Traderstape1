@@ -42,4 +42,16 @@ export const AVAILABLE_AI_ACTIONS: Array<{
     description: "Generate SEO title and meta description",
     fields: ["seoTitle", "seoDescription"],
   },
+  {
+    id: "generate-news-draft",
+    label: "Generate News Draft",
+    description: "Generate a news draft from title and category",
+    fields: ["title", "category", "content"],
+  },
+  {
+    id: "generate-news-roundup-summary",
+    label: "Generate News Roundup Summary",
+    description: "Generate a short factual summary and category for a news roundup item",
+    fields: ["title", "category", "content"],
+  },
 ];

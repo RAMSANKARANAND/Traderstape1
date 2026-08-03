@@ -68,6 +68,17 @@ const MOCK_RESPONSES: Record<string, (req: AiRequest) => AiResponse> = {
       content: `MARKET SENTIMENT\nBullish - Domestic equities are favoured amid easing yield pressures and upbeat earnings signals.\n\nAI CONFIDENCE\n78%\n\nTODAY'S FOCUS\n• RBI policy commentary\n• USD/INR stability\n• Banking stocks\n• Gold rally\n• IT earnings\n\nGLOBAL OVERVIEW\nUS Markets: Positive\nEurope: Cautious\nAsia: Mixed\n\nRISK EVENTS\nHigh: RBI policy\nMedium: US CPI\nLow: crude oil\n\nAI SUMMARY\nMarkets opened with a bullish undertone. Nifty holds above 24,000 with support building. RBI commentary will guide rates. Global cues are mixed but not disruptive.`,
     },
   }),
+  "generate-news-roundup-summary": (req) => ({
+    // Mock response: if content too short or vague, return null
+    success: true,
+    mode: "mock",
+    message: "News roundup summary generated (mock).",
+    data: {
+      // We'll just echo a simple summary; real logic in Cloudflare
+      summary: `${req.title || "Market update"} - This is a mock summary.`,
+      category: req.category || "Stocks",
+    },
+  }),
 };
 
 export function getAiProvider() {

@@ -1,10 +1,36 @@
 import { PrismaClient, Role } from "@prisma/client";
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import bcrypt from "bcryptjs";
+import path from "node:path";
 
-const prisma = new PrismaClient();
+// Resolve the SQLite file from DATABASE_URL (e.g. "file:./prisma/dev.db")
+// so we seed the same local database the app uses in development.
+const databaseUrl = process.env.DATABASE_URL ?? "file:./prisma/dev.db";
+const dbPath = databaseUrl.replace(/^file:/, "");
+const resolvedDbPath = path.isAbsolute(dbPath)
+  ? dbPath
+  : path.resolve(__dirname, dbPath);
+
+const adapter = new PrismaBetterSqlite3({ url: `file:${resolvedDbPath}` });
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
   console.log("Seeding database...");
+
+  // Create system user (for automated/cron tasks)
+  const systemPasswordHash = await bcrypt.hash("system-generated-password-not-for-login", 12);
+  const systemUser = await prisma.user.upsert({
+    where: { email: "system@traderstape.com" },
+    update: {},
+    create: {
+      name: "System",
+      email: "system@traderstape.com",
+      passwordHash: systemPasswordHash,
+      role: Role.ADMIN,
+      isActive: false,
+    },
+  });
+  console.log(`Created system user: ${systemUser.email}`);
 
   // Create admin user
   const adminPasswordHash = await bcrypt.hash("admin123", 12);

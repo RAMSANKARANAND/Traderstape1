@@ -1,41 +1,46 @@
 {
-	"$schema": "node_modules/wrangler/config-schema.json",
-	"main": ".open-next/worker.js",
-	"name": "traderstape1new",
-	"compatibility_date": "2026-07-23",
-	"compatibility_flags": [
-		"nodejs_compat",
-		"global_fetch_strictly_public"
-	],
-	"rules": [
-		{ "type": "CompiledWasm", "globs": ["**/*.wasm"], "fallthrough": true }
-	],
-	"assets": {
-		"directory": ".open-next/assets",
-		"binding": "ASSETS"
-	},
-	"services": [
-		{
-			// Self-reference service binding, the service name must match the worker name
-			// see https://opennext.js.org/cloudflare/caching
-			"binding": "WORKER_SELF_REFERENCE",
-			"service": "traderstape1new"
-		}
-	],
-	"images": {
-		// Enable image optimization
-		// see https://opennext.js.org/cloudflare/howtos/image
-		"binding": "IMAGES"
-	},
-	"d1_databases": [
-		{
-			"binding": "traderstape",
-			"database_name": "traderstape",
-			"database_id": "4ae004b2-f472-4663-94ba-1968a2c644cc",
-			"remote": true
-		}
-	],
-	"vars": {
-		"MAINTENANCE_MODE": "true"
-	}
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "main": ".open-next/worker.js",
+  "name": "traderstape1new",
+  "compatibility_date": "2026-07-23",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "global_fetch_strictly_public"
+  ],
+  "rules": [
+    { "type": "CompiledWasm", "globs": ["**/*.wasm"], "fallthrough": true }
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      // Self-reference service binding, the service name must match the worker name
+      // see https://opennext.js.org/cloudflare/caching
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "traderstape1new"
+    }
+  ],
+  "images": {
+    // Enable image optimization
+    // see https://opennext.js.org/cloudflare/howtos/image
+    "binding": "IMAGES"
+  },
+  "d1_databases": [
+    {
+      "binding": "traderstape",
+      "database_name": "traderstape",
+      "database_id": "4ae004b2-f472-4663-94ba-1968a2c644cc",
+      "remote": true
+    }
+  ],
+  "vars": {
+    "MAINTENANCE_MODE": "true"
+  },
+"triggers": {
+     "crons": [
+       "0 * * * *" // Every hour at minute 0
+     ]
+   }
 }

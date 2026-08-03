@@ -6,7 +6,8 @@ export type AiAction =
   | "summarize"
   | "rewrite-summary"
   | "generate-tape-view"
-  | "generate-morning-brief";
+  | "generate-morning-brief"
+  | "generate-news-roundup-summary";
 
 export interface AiRequest {
   action: AiAction;
@@ -24,6 +25,7 @@ export interface AiAssistantResult {
   metaDescription?: string;
   tags?: string[];
   keywords?: string[];
+  category?: string;
 }
 
 export interface AiResponse {

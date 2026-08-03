@@ -3,6 +3,7 @@ import { NEWS_PROMPTS } from "./prompts/news";
 import { SEO_PROMPTS } from "./prompts/seo";
 import { TAPE_VIEW_PROMPTS } from "./prompts/tapeView";
 import { MORNING_BRIEF_PROMPT } from "@/lib/ai/prompts/morningBrief";
+import { NEWS_ROUNDUP_PROMPT } from "./prompts/newsRoundup";
 
 const CF_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 
@@ -52,16 +53,13 @@ async function callCloudflareAI(messages: CfMessage[]): Promise<string> {
   return json.result.response.trim();
 }
 
-// JSON output is layered on top of the existing prompt content so structured
-// actions (seo, tags) can be parsed reliably, without rewriting the prompts
-// that already live in src/lib/ai/prompts/.
 const JSON_SEO_INSTRUCTION =
-  '\n\nRespond with ONLY valid JSON in this exact shape, no markdown fences, no commentary: ' +
+  "\n\nRespond with ONLY valid JSON in this exact shape, no markdown fences, no commentary: " +
   '{"seoTitle": string, "metaDescription": string, "keywords": string[]}. ' +
   "seoTitle must be under 60 characters, metaDescription under 160 characters, keywords should have 5-7 items.";
 
 const JSON_TAGS_INSTRUCTION =
-  '\n\nRespond with ONLY valid JSON in this exact shape, no markdown fences, no commentary: ' +
+  "\n\nRespond with ONLY valid JSON in this exact shape, no markdown fences, no commentary: " +
   '{"tags": string[]}.';
 
 function buildMessages(req: AiRequest): CfMessage[] {
@@ -119,6 +117,13 @@ function buildMessages(req: AiRequest): CfMessage[] {
       return [
         { role: "system", content: p.system },
         { role: "user", content: p.user() },
+      ];
+    }
+    case "generate-news-roundup-summary": {
+      const p = NEWS_ROUNDUP_PROMPT["generate-news-roundup-summary"];
+      return [
+        { role: "system", content: p.system },
+        { role: "user", content: p.user({ title: req.title, category: req.category, content: req.content }) },
       ];
     }
     default:
@@ -215,6 +220,43 @@ export async function generateWithCloudflare(req: AiRequest): Promise<AiResponse
         message: "Morning brief generated.",
         data: { content: raw },
       };
+    }
+    case "generate-news-roundup-summary": {
+      // Expecting JSON: {summary: string|null, category: "Stocks"|"Crypto"|"Forex"|"Geopolitical"|null}
+      try {
+        const parsed = JSON.parse(stripJsonFences(raw)) as {
+          summary: string | null;
+          category: "Stocks" | "Crypto" | "Forex" | "Geopolitical" | null;
+        };
+        // Validate category
+        const validCats = ["Stocks", "Crypto", "Forex", "Geopolitical"];
+        if (
+          (parsed.summary === null && parsed.category === null) ||
+          (typeof parsed.summary === "string" &&
+            parsed.summary.trim() !== "" &&
+            typeof parsed.category === "string" &&
+            validCats.includes(parsed.category))
+        ) {
+          return {
+            success: true,
+            mode: "cloudflare",
+            message: "News roundup summary generated.",
+            data: { summary: parsed.summary ?? undefined, category: parsed.category ?? undefined },
+          };
+        } else {
+          return {
+            success: false,
+            mode: "cloudflare",
+            message: "Invalid response from AI for news roundup summary.",
+          };
+        }
+      } catch {
+        return {
+          success: false,
+          mode: "cloudflare",
+          message: "Failed to parse news roundup summary from AI response.",
+        };
+      }
     }
     default:
       return {

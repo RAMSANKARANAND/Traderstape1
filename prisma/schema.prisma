@@ -54,6 +54,10 @@ model NewsPost {
   seoTitle       String?
   seoDescription String?
   ogImageUrl     String?
+  sourceName     String?
+  sourceUrl      String?
+  externalId     String?
+  @@unique([sourceName, externalId])
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   author         User         @relation(fields: [authorId], references: [id])
@@ -141,7 +145,7 @@ model TapeView {
   riskFactors           String?
   educationalDisclaimer String?
   body                  String
-  authorId              String
+authorId       String
   publishedAt           DateTime?
   isPublished           Boolean          @default(false)
   seoTitle              String?
