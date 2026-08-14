@@ -1158,6 +1158,84 @@ export async function countPublishedMorningBriefs(): Promise<number> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// PasswordResetToken functions
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface PasswordResetToken {
+  id: string;
+  userId: string;
+  token: string;
+  expiresAt: Date;
+  usedAt: Date | null;
+  createdAt: Date;
+}
+
+export async function createPasswordResetToken(userId: string): Promise<string> {
+  const d1 = await getD1();
+  const token = crypto.randomUUID();
+  const now = new Date().toISOString();
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString(); // 1 hour
+  await d1
+    .prepare(
+      `INSERT INTO PasswordResetToken (id, userId, token, expiresAt, usedAt, createdAt)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+    )
+    .bind(generateId(), userId, token, expiresAt, null, now)
+    .run();
+  return token;
+}
+
+export async function getPasswordResetToken(
+  token: string,
+): Promise<{ userId: string; expiresAt: Date; usedAt: Date | null } | null> {
+  const d1 = await getD1();
+  const row = await d1
+    .prepare("SELECT * FROM PasswordResetToken WHERE token = ?")
+    .bind(token)
+    .first();
+  if (!row) return null;
+  return {
+    userId: row.userId as string,
+    expiresAt: toDate(row.expiresAt)!,
+    usedAt: toDate(row.usedAt),
+  };
+}
+
+export async function markPasswordResetTokenUsed(token: string): Promise<void> {
+  const d1 = await getD1();
+  const now = new Date().toISOString();
+  await d1
+    .prepare("UPDATE PasswordResetToken SET usedAt = ? WHERE token = ?")
+    .bind(now, token)
+    .run();
+}
+
+export async function isPasswordResetTokenValid(
+  token: string,
+): Promise<{ valid: boolean; userId?: string; reason?: string }> {
+  const tokenData = await getPasswordResetToken(token);
+  if (!tokenData) {
+    return { valid: false, reason: "not_found" };
+  }
+  if (tokenData.expiresAt < new Date()) {
+    return { valid: false, reason: "expired" };
+  }
+  if (tokenData.usedAt !== null) {
+    return { valid: false, reason: "already_used" };
+  }
+  return { valid: true, userId: tokenData.userId };
+}
+
+export async function updateUserPassword(userId: string, passwordHash: string): Promise<void> {
+  const d1 = await getD1();
+  const now = new Date().toISOString();
+  await d1
+    .prepare("UPDATE User SET passwordHash = ?, updatedAt = ? WHERE id = ?")
+    .bind(passwordHash, now, userId)
+    .run();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Internal: normalize a D1 row to a TapeView
 // ─────────────────────────────────────────────────────────────────────────────
 

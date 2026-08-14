@@ -1,6 +1,4 @@
 -- Migration number: 0005 	2026-08-07T10:11:58.751Z
 
-ALTER TABLE NewsPost ADD COLUMN isBreaking BOOLEAN NOT NULL DEFAULT false;
-ALTER TABLE NewsPost ADD COLUMN isFeatured BOOLEAN NOT NULL DEFAULT false;
-ALTER TABLE NewsPost ADD COLUMN isTrending BOOLEAN NOT NULL DEFAULT false;
-ALTER TABLE NewsPost ADD COLUMN isEditorPick BOOLEAN NOT NULL DEFAULT false;
+-- Columns isBreaking, isFeatured, isTrending, isEditorPick already exist in NewsPost table
+-- (verified via PRAGMA table_info). This migration is a no-op on existing databases.
