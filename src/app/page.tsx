@@ -168,7 +168,7 @@ const organizationJsonLd = {
     ["^NSEI", "^NSEBANK", "^BSESN", "^INDIAVIX", "RELIANCE.NS"].includes(q.symbol)
   );
   const global = marketQuotes.filter((q) =>
-    ["^GSPC", "^IXIC", "^DJI", "^N225", "^FTSE", "^GDAXI", "^HSI"].includes(q.symbol)
+    ["^GSPC", "^IXIC", "^DJI", "^N225", "^FTSE", "^GDAXI", "^HSI", "GOLD", "BTC"].includes(q.symbol)
   );
 
   console.log("[HOME PAGE] latestTapeView:", JSON.stringify(latestTapeView));
