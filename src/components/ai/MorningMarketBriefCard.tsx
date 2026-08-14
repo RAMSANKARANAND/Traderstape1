@@ -34,7 +34,7 @@ export function MorningMarketBriefCard({ data, lastUpdated, onReadFull }: Mornin
   const sentimentVariantKey = sentimentVariant[data.sentiment] ?? "neutral";
 
   return (
-    <div className="card-lavender flex flex-col p-5 gap-4 card-lift">
+    <div className="card-lavender flex flex-col p-5 gap-4 h-full card-lift">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">

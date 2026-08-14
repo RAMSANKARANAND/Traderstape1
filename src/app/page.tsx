@@ -188,7 +188,7 @@ const organizationJsonLd = {
 
       {/* ───────────────────────── 1. Hero Dashboard ───────────────────────── */}
       <section className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2 animate-fade-in-up">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
 
           {/* ── Card 1: Morning Market Brief ── */}
           {finalMorningBrief && (
@@ -196,7 +196,7 @@ const organizationJsonLd = {
           )}
           
           {/* ── Card 2: Market Snapshot ── */}
-          <div className="card-sky p-5 flex flex-col gap-0">
+          <div className="card-sky p-5 flex flex-col gap-0 h-full">
             {indian.slice(0, 5).map((quote) => (
               <div key={quote.symbol} className="flex items-center justify-between border-b border-ink/10 py-2 last:border-0">
                 <span className="text-small font-black uppercase">{quote.symbol.replace(/^\^/, "").replace(".NS", "")}</span>
@@ -214,7 +214,7 @@ const organizationJsonLd = {
           {latestTapeView ? (
             <Link
               href={`/tape-views/${latestTapeView.slug}`}
-              className="card-gold p-5 flex flex-col min-h-[220px] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[5px_5px_0_#111] transition-all duration-100"
+              className="card-gold p-5 flex flex-col min-h-[220px] h-full hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[5px_5px_0_#111] transition-all duration-100"
             >
               <div className="flex items-center gap-2 mb-3">
                 <Badge variant="flat" className="text-[10px]">{latestTapeView.category}</Badge>
