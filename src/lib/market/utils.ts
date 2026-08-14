@@ -1,3 +1,5 @@
+import type { MarketQuote } from "./types";
+
 export function formatPrice(value: number, decimals = 2): string {
   return new Intl.NumberFormat("en-IN", {
     minimumFractionDigits: decimals,
@@ -63,5 +65,13 @@ export function getMarketStatus(): { open: boolean; label: string; detail: strin
     open,
     label: open ? "NSE OPEN" : "MARKET CLOSED",
     detail: open ? "09:15–15:30 IST" : "Opens Tomorrow 09:15 IST",
+  };
+}
+
+export function getTopMovers(quotes: MarketQuote[], count = 5) {
+  const sorted = [...quotes].sort((a, b) => b.changePercent - a.changePercent);
+  return {
+    gainers: sorted.slice(0, count),
+    losers: sorted.slice(-count).reverse(),
   };
 }

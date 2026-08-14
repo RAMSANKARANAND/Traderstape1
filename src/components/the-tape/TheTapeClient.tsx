@@ -11,9 +11,12 @@ import type { MarketQuote } from "@/lib/market/types";
 import { computeMarketPulse } from "@/lib/market/pulse";
 import type { MarketPulse } from "@/lib/market/pulse";
 import { LiveTicker } from "./LiveTicker";
+import { getTopMovers } from "@/lib/market/utils";
+import { formatPercent } from "@/lib/market/utils";
 
 const INDIAN_INDICES = ["NIFTY 50", "BANK NIFTY", "SENSEX", "INDIA VIX"];
-const FOREX = ["USD/INR", "EUR/USD", "GBP/USD", "XAU/USD", "XAG/USD"];
+const FOREX = ["USD/INR", "EUR/USD", "GBP/USD"];
+const METALS = ["XAU/USD", "XAG/USD"];
 const CRYPTO = ["BTC", "ETH"];
 const NSE_STOCKS = ["RELIANCE", "HDFC BANK", "TCS", "INFOSYS", "ICICI BANK", "SBI", "L&T", "AXIS BANK", "KOTAK BANK", "ITC"];
 
@@ -173,9 +176,18 @@ export function TheTapeClient({ initialQuotes }: TheTapeClientProps) {
             </div>
 
             <div>
-              <h3 className="text-sm font-black uppercase tracking-widest text-text-secondary mb-3">Forex & Metals</h3>
+              <h3 className="text-sm font-black uppercase tracking-widest text-text-secondary mb-3">Forex</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {getFiltered(FOREX).map((q) => (
+                  <MarketDetailCard key={q.symbol} quote={q} />
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-black uppercase tracking-widest text-text-secondary mb-3">Metals</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {getFiltered(METALS).map((q) => (
                   <MarketDetailCard key={q.symbol} quote={q} />
                 ))}
               </div>
@@ -186,6 +198,29 @@ export function TheTapeClient({ initialQuotes }: TheTapeClientProps) {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {getFiltered(CRYPTO).map((q) => (
                   <MarketDetailCard key={q.symbol} quote={q} />
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Section: Top Movers */}
+        <section id="movers">
+          <SectionHeader title="Top Movers" description="Biggest gainers and losers across all asset classes." />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="card-mint p-4 md:p-5">
+              <h3 className="text-sm font-black uppercase tracking-widest text-text-secondary mb-3">Top 10 Gainers</h3>
+              <div className="space-y-2">
+                {getTopMovers(quotes, 10).gainers.map((quote) => (
+                  <MarketDetailCard key={quote.symbol} quote={quote} />
+                ))}
+              </div>
+            </div>
+            <div className="card-coral p-4 md:p-5">
+              <h3 className="text-sm font-black uppercase tracking-widest text-text-secondary mb-3">Top 10 Losers</h3>
+              <div className="space-y-2">
+                {getTopMovers(quotes, 10).losers.map((quote) => (
+                  <MarketDetailCard key={quote.symbol} quote={quote} />
                 ))}
               </div>
             </div>

@@ -14,6 +14,7 @@ export interface MarketQuote {
   volume?: number;
   currency?: string;
   marketState?: "PRE-OPEN" | "LIVE" | "CLOSED";
+  isStale?: boolean;
 }
 
 export interface MarketProvider {

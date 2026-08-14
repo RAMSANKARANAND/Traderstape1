@@ -14,6 +14,7 @@ interface TickerItem {
   currency?: string;
   provider: string;
   updatedAt: string;
+  isStale?: boolean;
 }
 
 interface LiveMarketTickerProps {
@@ -195,6 +196,11 @@ export function LiveMarketTicker({ items, title = "Live Market" }: LiveMarketTic
                 <div className="flex-shrink-0 text-right">
                   <div className={`text-lg font-black tabular-nums leading-none mb-1 ${isPositive ? "text-bullish" : isNegative ? "text-bearish" : "text-ink"}`}>
                     {formatPrice(item.price)}
+                    {item.isStale && (
+                      <span className="ml-1 text-[8px] font-black bg-yellow-100 text-yellow-800 px-1.5 py-0.5 rounded align-top">
+                        STALE
+                      </span>
+                    )}
                   </div>
                   <div className={`text-sm font-bold ${isPositive ? "text-bullish" : isNegative ? "text-bearish" : "text-text-muted"}`}>
                     {formatChange(item.change)} ({formatPercent(item.changePercent)})

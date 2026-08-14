@@ -1,0 +1,11 @@
+﻿CREATE INDEX IF NOT EXISTS idx_tapeview_pub_date ON TapeView(isPublished, publishedAt DESC);
+CREATE INDEX IF NOT EXISTS idx_tapeview_cat_pub_date ON TapeView(category, isPublished, publishedAt DESC);
+CREATE INDEX IF NOT EXISTS idx_tapeview_instrument ON TapeView(instrument, isPublished, publishedAt DESC);
+CREATE INDEX IF NOT EXISTS idx_tapeview_author ON TapeView(authorId);
+CREATE INDEX IF NOT EXISTS idx_tapeview_updated ON TapeView(updatedAt DESC);
+CREATE INDEX IF NOT EXISTS idx_morningbrief_pub_date ON MorningBrief(isPublished, publishedAt DESC);
+CREATE INDEX IF NOT EXISTS idx_morningbrief_created ON MorningBrief(createdAt DESC);
+CREATE INDEX IF NOT EXISTS idx_morningbrief_author ON MorningBrief(authorId);
+CREATE INDEX IF NOT EXISTS idx_marketlevel_pub_asset ON MarketLevel(isPublished, assetType);
+CREATE INDEX IF NOT EXISTS idx_marketlevel_symbol ON MarketLevel(symbol, isPublished);
+CREATE INDEX IF NOT EXISTS idx_marketlevel_updated ON MarketLevel(updatedAt DESC);

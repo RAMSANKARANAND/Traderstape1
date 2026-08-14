@@ -5,6 +5,7 @@ import { Card, SectionTitle } from "@/components/ui";
 import { Button } from "@/components/ui/Button";
 import { CancelButton } from "./CancelButton";
 import type { Metadata } from "next";
+import { requireRole } from "@/lib/auth-guard";
 
 export const metadata: Metadata = {
   title: "New Market Level | TradersTape Admin",
@@ -18,14 +19,15 @@ export default async function NewLevelPage() {
     <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <SectionTitle className="mb-8">New Market Level</SectionTitle>
 
-      <Card>
+<Card>
         <form
           action={async (formData: FormData) => {
             "use server";
+            await requireRole(["ADMIN", "EDITOR", "CONTRIBUTOR"]);
             const session = await getSessionUser();
             if (!session) redirect("/admin/login");
 
-              await createMarketLevel({
+            await createMarketLevel({
                 symbol: formData.get("symbol") as string,
                 assetType: formData.get("assetType") as "STOCK_FNO" | "FOREX",
                 level: parseFloat(formData.get("level") as string),

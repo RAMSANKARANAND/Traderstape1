@@ -3,7 +3,7 @@ import { getSessionUser } from "@/lib/session";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Badge, Button } from "@/components/ui";
-import { togglePublish, deleteBrief } from "./actions";
+import BriefActionsClient from "./BriefActionsClient";
 
 export const dynamic = "force-dynamic";
 
@@ -73,40 +73,11 @@ export default async function MorningBriefAdminPage() {
                   {new Date(brief.updatedAt).toLocaleDateString("en-GB")}
                 </td>
                 <td className="p-3">
-                  <div className="flex items-center gap-2">
-                    <form action={togglePublish}>
-                      <input type="hidden" name="id" value={brief.id} />
-                      <button
-                        type="submit"
-                        className="text-[11px] font-black uppercase underline hover:text-accent-coral"
-                      >
-                        {brief.isPublished ? "Unpublish" : "Publish"}
-                      </button>
-                    </form>
-                    <Link
-                      href={`/admin/morning-brief/${brief.id}/edit`}
-                      className="text-[11px] font-black uppercase underline hover:text-accent-coral"
-                    >
-                      Edit
-                    </Link>
-                    <form action={deleteBrief}>
-                      <input type="hidden" name="id" value={brief.id} />
-                      <button
-                        type="submit"
-                        className="text-[11px] font-black uppercase underline text-bear hover:opacity-80"
-                      >
-                        Delete
-                      </button>
-                    </form>
-                    {brief.isPublished && (
-                      <Link
-                        href={`/morning-brief/${brief.slug}`}
-                        className="text-[11px] font-black uppercase underline hover:text-accent-coral"
-                      >
-                        Preview
-                      </Link>
-                    )}
-                  </div>
+                  <BriefActionsClient
+                    id={brief.id}
+                    isPublished={brief.isPublished}
+                    slug={brief.slug}
+                  />
                 </td>
               </tr>
             ))}

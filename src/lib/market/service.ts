@@ -1,12 +1,45 @@
 import type { MarketQuote } from "./types";
 import { yahooProvider } from "./providers/yahoo";
 import { coingeckoProvider } from "./providers/coingecko";
-import { cloudflareForexProvider } from "./providers/cloudflare-forex";
+import { currencyApiProvider } from "./providers/currency-api";
+import { getMetals } from "@/lib/markets/metals";
 import { getMarketSession } from "./market-session";
 
-const providers = [yahooProvider, coingeckoProvider, cloudflareForexProvider];
+const metalsProvider: import("./types").MarketProvider = {
+  name: "Gold API",
+  async fetchQuotes() {
+    try {
+      const metals = await getMetals();
+      return metals.map(m => ({
+        symbol: m.symbol.startsWith("XAU") ? "GOLD" : "SILVER",
+        name: m.name,
+        price: m.price,
+        change: m.change,
+        changePercent: m.changePercent,
+        direction: m.direction,
+        updatedAt: m.updatedAt || new Date().toISOString(),
+        provider: "Gold API",
+        currency: m.currency,
+      }));
+    } catch (error) {
+      console.error("Metals fetch error:", error);
+      return [];
+    }
+  },
+};
+
+const providers = [yahooProvider, coingeckoProvider, currencyApiProvider, metalsProvider];
+
+let cache: { quotes: MarketQuote[]; timestamp: number } | null = null;
+const CACHE_TTL = 30_000; // 30 seconds
 
 export async function getMarketQuotes(): Promise<MarketQuote[]> {
+  const now = Date.now();
+
+  if (cache && now - cache.timestamp < CACHE_TTL) {
+    return cache.quotes;
+  }
+
   const results = await Promise.allSettled(providers.map((provider) => provider.fetchQuotes()));
 
   const quotes: MarketQuote[] = [];
@@ -26,5 +59,11 @@ export async function getMarketQuotes(): Promise<MarketQuote[]> {
     }
   }
 
+  cache = { quotes, timestamp: now };
+
   return quotes;
+}
+
+export function invalidateMarketCache() {
+  cache = null;
 }

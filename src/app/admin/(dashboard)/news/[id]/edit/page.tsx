@@ -4,6 +4,7 @@ import { getNewsPostById, updateNewsPost } from "@/lib/db-raw";
 import { Card, SectionTitle, Button } from "@/components/ui";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { requireRole } from "@/lib/auth-guard";
 
 export const metadata: Metadata = {
   title: "Edit News Post | TradersTape Admin",
@@ -50,10 +51,21 @@ export default async function EditNewsPage({
         <form
           action={async (formData: FormData) => {
             "use server";
+            await requireRole(["ADMIN", "EDITOR", "CONTRIBUTOR"]);
             const session = await getSessionUser();
             if (!session) redirect("/admin/login");
 
+            // Ownership check: CONTRIBUTOR can only edit their own posts
+            if (session.role === "CONTRIBUTOR" && post.authorId !== session.id) {
+              throw new Error("Forbidden: You can only edit your own posts");
+            }
+
             const isPublished = formData.get("isPublished") === "on";
+            // CONTRIBUTOR cannot publish - only ADMIN/EDITOR can publish
+            if (session.role === "CONTRIBUTOR" && isPublished && !post.isPublished) {
+              throw new Error("Forbidden: Only editors can publish posts");
+            }
+
             await updateNewsPost(id, {
               title: formData.get("title") as string,
               category: formData.get("category") as "STOCKS" | "CRYPTO" | "FOREX" | "GEOPOLITICAL",

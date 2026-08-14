@@ -1,14 +1,11 @@
 "use server";
 
-import { getSessionUser } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { toggleTapeViewPublish as toggleTapeViewPublishDb, bulkDeleteTapeViews as bulkDeleteTapeViewsDb } from "@/lib/db-raw";
+import { requireRole } from "@/lib/auth-guard";
 
 export async function toggleTapeViewPublish(id: string) {
-  const session = await getSessionUser();
-  if (!session) {
-    redirect("/admin/login");
-  }
+  await requireRole(["ADMIN", "EDITOR"]);
 
   if (!id || typeof id !== "string" || id.trim().length === 0) {
     return { success: false, error: "Invalid tape view ID." };
@@ -35,10 +32,7 @@ export async function toggleTapeViewPublish(id: string) {
 }
 
 export async function bulkDeleteTapeViews(ids: string[]) {
-  const session = await getSessionUser();
-  if (!session) {
-    redirect("/admin/login");
-  }
+  await requireRole(["ADMIN", "EDITOR"]);
 
   if (!Array.isArray(ids) || ids.length === 0) {
     return { success: false, error: "No valid IDs provided." };

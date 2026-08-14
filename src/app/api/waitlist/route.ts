@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { getKvNamespace, checkRateLimit } from "@/lib/rate-limit";
 
 interface WaitlistRequest {
   email: string;
@@ -7,6 +8,19 @@ interface WaitlistRequest {
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting by IP using KV
+    const ip = request.headers.get("cf-connecting-ip") || "unknown";
+    const kv = await getKvNamespace();
+    if (kv) {
+      const rateLimit = await checkRateLimit(kv, ip, "waitlist", 5, 60);
+      if (!rateLimit.allowed) {
+        return NextResponse.json(
+          { error: "Rate limit exceeded. Try again later." },
+          { status: 429, headers: { "Retry-After": String(rateLimit.retryAfter) } }
+        );
+      }
+    }
+
     const body = (await request.json()) as WaitlistRequest;
     const { email } = body;
 

@@ -144,7 +144,7 @@ export default function TapeViewsTable({ tapeViews, userRole }: TapeViewsTablePr
                           await toggleTapeViewPublish(tapeView.id);
                         });
                       }}
-                      className="text-xs font-black uppercase bg-accent-teal text-white px-2 py-1 brutal-border border-2 border-ink"
+                      className="text-xs font-black uppercase bg-accent-mint text-ink px-2 py-1 brutal-border border-2 border-ink"
                     >
                       {tapeView.isPublished ? "Unpublish" : "Publish"}
                     </button>
@@ -155,7 +155,7 @@ export default function TapeViewsTable({ tapeViews, userRole }: TapeViewsTablePr
                           await bulkDeleteTapeViews([tapeView.id]);
                         });
                       }}
-                      className="text-xs font-black uppercase bg-accent-coral text-white px-2 py-1 brutal-border border-2 border-ink"
+                      className="text-xs font-black uppercase bg-accent-coral text-ink px-2 py-1 brutal-border border-2 border-ink"
                     >
                       Delete
                     </button>

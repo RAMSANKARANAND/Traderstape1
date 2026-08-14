@@ -86,6 +86,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
           <SearchInput onQueryChange={setQuery} />
           <button 
             onClick={onClose}
+            aria-label="Close search"
             className="absolute right-4 top-4 p-1 hover:bg-gray-100 rounded-full transition-colors"
           >
             <X className="w-6 h-6 text-black" />

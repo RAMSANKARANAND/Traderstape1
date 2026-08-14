@@ -304,19 +304,25 @@ export async function getPublishedNewsPosts(
   let stmt: D1PreparedStatement;
   const take = options?.take;
 
+  const selectColumns = `SELECT n.id, n.title, n.slug, n.category, n.summary, 
+        n.authorId, n.publishedAt, n.isPublished, n.isBreaking, n.isFeatured,
+        n.isTrending, n.isEditorPick, n.seoTitle, n.seoDescription, n.ogImageUrl,
+        n.createdAt, n.updatedAt,
+        u.name as authorName`;
+
   if (options?.category) {
-    const sql = `SELECT n.*, u.name as authorName
-       FROM NewsPost n
-       LEFT JOIN User u ON n.authorId = u.id
-       WHERE n.isPublished = 1 AND n.category = ?
-       ORDER BY n.publishedAt DESC${take ? ` LIMIT ${take}` : ""}`;
+    const sql = `${selectColumns}
+        FROM NewsPost n
+        LEFT JOIN User u ON n.authorId = u.id
+        WHERE n.isPublished = 1 AND n.category = ?
+        ORDER BY n.publishedAt DESC${take ? ` LIMIT ${take}` : ""}`;
     stmt = d1.prepare(sql).bind(options.category);
   } else {
-    const sql = `SELECT n.*, u.name as authorName
-       FROM NewsPost n
-       LEFT JOIN User u ON n.authorId = u.id
-       WHERE n.isPublished = 1
-       ORDER BY n.publishedAt DESC${take ? ` LIMIT ${take}` : ""}`;
+    const sql = `${selectColumns}
+        FROM NewsPost n
+        LEFT JOIN User u ON n.authorId = u.id
+        WHERE n.isPublished = 1
+        ORDER BY n.publishedAt DESC${take ? ` LIMIT ${take}` : ""}`;
     stmt = d1.prepare(sql);
   }
   const result = await stmt.all();
@@ -326,7 +332,7 @@ export async function getPublishedNewsPosts(
     slug: row.slug as string,
     category: row.category as NewsCategory,
     summary: row.summary as string,
-    body: row.body as string,
+    body: row.body as string ?? "",
     authorId: row.authorId as string,
     publishedAt: toDate(row.publishedAt),
     isPublished: toBool(row.isPublished),
@@ -412,10 +418,14 @@ export async function getAllNewsPosts(): Promise<NewsPostWithAuthor[]> {
   const d1 = await getD1();
   const result = await d1
     .prepare(
-      `SELECT n.*, u.name as authorName
-       FROM NewsPost n
-       LEFT JOIN User u ON n.authorId = u.id
-       ORDER BY n.updatedAt DESC`,
+      `SELECT n.id, n.title, n.slug, n.category, n.summary, 
+        n.body, n.authorId, n.publishedAt, n.isPublished, n.isBreaking, n.isFeatured,
+        n.isTrending, n.isEditorPick, n.seoTitle, n.seoDescription, n.ogImageUrl,
+        n.createdAt, n.updatedAt,
+        u.name as authorName
+        FROM NewsPost n
+        LEFT JOIN User u ON n.authorId = u.id
+        ORDER BY n.updatedAt DESC`,
     )
     .all();
   return (result.results || []).map((row) => ({
@@ -454,6 +464,17 @@ export async function getPublishedNewsSlugs(): Promise<
   }));
 }
 
+export async function getNewsPostTitlesIn(titles: string[]): Promise<Set<string>> {
+  if (titles.length === 0) return new Set();
+  const d1 = await getD1();
+  const placeholders = titles.map(() => "?").join(", ");
+  const result = await d1
+    .prepare(`SELECT title FROM NewsPost WHERE title IN (${placeholders})`)
+    .bind(...titles)
+    .all();
+  return new Set((result.results || []).map((r) => r.title as string));
+}
+
 export async function createNewsPost(data: {
   title: string;
   slug: string;
@@ -461,9 +482,9 @@ export async function createNewsPost(data: {
   summary: string;
   body: string;
   authorId: string;
-  seoTitle: string | null;
-  seoDescription: string | null;
-  ogImageUrl: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  ogImageUrl?: string | null;
   isPublished: boolean;
   publishedAt: Date | null;
 }): Promise<void> {
@@ -485,9 +506,9 @@ export async function createNewsPost(data: {
       data.authorId,
       data.publishedAt ? data.publishedAt.toISOString() : null,
       data.isPublished ? 1 : 0,
-      data.seoTitle,
-      data.seoDescription,
-      data.ogImageUrl,
+      data.seoTitle ?? null,
+      data.seoDescription ?? null,
+      data.ogImageUrl ?? null,
       now,
       now,
     )
@@ -564,6 +585,25 @@ export async function countNewsPosts(): Promise<number> {
   return (row?.count as number) || 0;
 }
 
+export async function getTrendingCategories(hoursAgo = 48): Promise<
+  { category: NewsCategory; count: number }[]
+> {
+  const d1 = await getD1();
+  const cutoff = new Date(Date.now() - hoursAgo * 60 * 60 * 1000).toISOString();
+  const result = await d1
+    .prepare(
+      `SELECT category, COUNT(*) as count FROM NewsPost 
+       WHERE isPublished = 1 AND publishedAt >= ? 
+       GROUP BY category ORDER BY count DESC`
+    )
+    .bind(cutoff)
+    .all();
+  return (result.results || []).map((row) => ({
+    category: row.category as NewsCategory,
+    count: row.count as number,
+  }));
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // TapeView queries
 // ─────────────────────────────────────────────────────────────────────────────
@@ -584,15 +624,27 @@ export async function getPublishedTapeViews(
 ): Promise<TapeView[]> {
   const d1 = await getD1();
   let stmt: D1PreparedStatement;
+  const selectColumns = `SELECT t.id, t.title, t.slug, t.category, t.instrument, t.bias,
+       t.support1, t.support2, t.support3, t.resistance1, t.resistance2, t.resistance3,
+       t.keyLevelsToWatch, t.todayView, t.riskFactors, t.educationalDisclaimer,
+       t.body, t.authorId, t.publishedAt, t.isPublished, t.seoTitle, t.seoDescription,
+       t.ogImageUrl, t.createdAt, t.updatedAt`;
+
   if (options?.category) {
     stmt = d1
       .prepare(
-        "SELECT * FROM TapeView WHERE isPublished = 1 AND category = ? ORDER BY publishedAt DESC",
+        `${selectColumns}
+        FROM TapeView t
+        WHERE t.isPublished = 1 AND t.category = ?
+        ORDER BY t.publishedAt DESC`,
       )
       .bind(options.category);
   } else {
     stmt = d1.prepare(
-      "SELECT * FROM TapeView WHERE isPublished = 1 ORDER BY publishedAt DESC",
+      `${selectColumns}
+      FROM TapeView t
+      WHERE t.isPublished = 1
+      ORDER BY t.publishedAt DESC`,
     );
   }
   const result = await stmt.all();
@@ -630,9 +682,15 @@ export async function getTapeViewById(id: string): Promise<TapeView | null> {
 
 export async function getAllTapeViews(): Promise<TapeViewWithAuthor[]> {
   const d1 = await getD1();
+  const selectColumns = `SELECT t.id, t.title, t.slug, t.category, t.instrument, t.bias,
+       t.support1, t.support2, t.support3, t.resistance1, t.resistance2, t.resistance3,
+       t.keyLevelsToWatch, t.todayView, t.riskFactors, t.educationalDisclaimer,
+       t.body, t.authorId, t.publishedAt, t.isPublished, t.seoTitle, t.seoDescription,
+       t.ogImageUrl, t.createdAt, t.updatedAt, u.name as authorName`;
+
   const result = await d1
     .prepare(
-      `SELECT t.*, u.name as authorName
+      `${selectColumns}
        FROM TapeView t
        LEFT JOIN User u ON t.authorId = u.id
        ORDER BY t.updatedAt DESC`,
@@ -896,11 +954,14 @@ export async function getLatestPublishedMorningBrief(): Promise<MorningBriefWith
   const d1 = await getD1();
   const row = await d1
     .prepare(
-      `SELECT m.*, u.name as authorName
-       FROM MorningBrief m
-       LEFT JOIN User u ON m.authorId = u.id
-       WHERE m.isPublished = 1
-       ORDER BY m.publishedAt DESC LIMIT 1`,
+      `SELECT m.id, m.headline, m.slug, m.sentiment, m.confidence, m.focusPoints, m.riskEvents,
+         m.globalUs, m.globalEurope, m.globalAsia, m.summary, m.body, m.authorId,
+         m.publishedAt, m.isPublished, m.seoTitle, m.seoDescription, m.ogImageUrl,
+         m.createdAt, m.updatedAt, u.name as authorName
+        FROM MorningBrief m
+        LEFT JOIN User u ON m.authorId = u.id
+        WHERE m.isPublished = 1
+        ORDER BY m.publishedAt DESC LIMIT 1`,
     )
     .first();
   if (!row) return null;
@@ -953,9 +1014,14 @@ export async function getMorningBriefById(id: string): Promise<MorningBrief | nu
 
 export async function getAllMorningBriefs(): Promise<MorningBriefWithAuthor[]> {
   const d1 = await getD1();
+  const selectColumns = `SELECT m.id, m.headline, m.slug, m.sentiment, m.confidence, m.focusPoints, m.riskEvents,
+       m.globalUs, m.globalEurope, m.globalAsia, m.summary, m.body, m.authorId,
+       m.publishedAt, m.isPublished, m.seoTitle, m.seoDescription, m.ogImageUrl,
+       m.createdAt, m.updatedAt, u.name as authorName`;
+
   const result = await d1
     .prepare(
-      `SELECT m.*, u.name as authorName
+      `${selectColumns}
        FROM MorningBrief m
        LEFT JOIN User u ON m.authorId = u.id
        ORDER BY m.updatedAt DESC`,

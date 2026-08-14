@@ -1,6 +1,7 @@
 import React from "react";
-import { getPublishedNewsPosts, getLatestTapeView, getLatestPublishedMorningBrief } from "@/lib/db-raw";
+import { getPublishedNewsPosts, getLatestTapeView, getLatestPublishedMorningBrief, getTrendingCategories } from "@/lib/db-raw";
 import { getMarketQuotes } from "@/lib/market/service";
+import { formatPrice, formatPercent, getTopMovers } from "@/lib/market/utils";
 import { generateAiContent } from "@/lib/ai/service";
 import type { MorningBriefContext } from "@/lib/ai/types";
 import { SectionTitle, Badge, NewsCard, Button } from "@/components/ui";
@@ -50,6 +51,7 @@ export default async function HomePage() {
   let newsPosts: Awaited<ReturnType<typeof getPublishedNewsPosts>> = [];
   let latestTapeView: Awaited<ReturnType<typeof getLatestTapeView>> = null;
   let marketQuotes: Awaited<ReturnType<typeof getMarketQuotes>> = [];
+  let trendingCategories: { category: "STOCKS" | "CRYPTO" | "FOREX" | "GEOPOLITICAL"; count: number }[] = [];
 
   try {
     const [posts, tape, quotes] = await Promise.all([
@@ -62,6 +64,13 @@ export default async function HomePage() {
     marketQuotes = quotes ?? [];
   } catch (error) {
     console.error("Failed to fetch homepage data, using fallbacks:", error);
+  }
+
+  try {
+    const trending = await getTrendingCategories(48);
+    trendingCategories = trending ?? [];
+  } catch (error) {
+    console.error("Failed to fetch trending categories:", error);
   }
 
   const breakingPost = newsPosts.find((p) => p.isBreaking) ?? null;
@@ -146,13 +155,24 @@ export default async function HomePage() {
   }
   const finalMorningBrief = morningBrief || fallbackBrief;
 
-  const organizationJsonLd = {
+const organizationJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "TradersTape",
     description: "Market-watching site covering stock F&O levels, forex levels, and geopolitical trading news for educational purposes.",
     url: "https://traderstape.com",
   };
+
+  // Filter market quotes for Indian indices and global indices
+  const indian = marketQuotes.filter((q) =>
+    ["^NSEI", "^NSEBANK", "^BSESN", "^INDIAVIX", "RELIANCE.NS"].includes(q.symbol)
+  );
+  const global = marketQuotes.filter((q) =>
+    ["^GSPC", "^IXIC", "^DJI", "^N225", "^FTSE", "^GDAXI", "^HSI"].includes(q.symbol)
+  );
+
+  console.log("[HOME PAGE] latestTapeView:", JSON.stringify(latestTapeView));
+  console.log("[HOME PAGE] global quotes:", global.map(q => q.symbol));
 
   return (
     <div>
@@ -161,68 +181,219 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
       />
 
-      {/* ───────────────────────── Live Market Ticker ───────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <LiveMarketTicker items={marketQuotes} />
-      </section>
-
-      {/* ───────────────────────── 1. Hero Dashboard ───────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2 animate-fade-in-up">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-
-          {/* ── Card 1: Morning Market Brief ── */}
-          {finalMorningBrief && (
-            <MorningMarketBriefCard data={finalMorningBrief} />
-          )}
-          
-          {/* ── Card 2: Market Snapshot ── */}
-          <div className="card-sky p-5 flex flex-col min-h-[220px]">
-            <div className="flex items-center justify-between mb-2">
-              <h2 className="text-card-title font-black uppercase tracking-tight">Market Snapshot</h2>
-              <Badge variant="live" className="text-[10px]">LIVE</Badge>
-            </div>
-            <div className="flex-1 grid grid-cols-1 gap-2">
-              {marketQuotes.slice(0, 5).map((quote) => (
-                <MarketCard key={quote.symbol} quote={quote} />
-              ))}
-            </div>
-          </div>
-
-          {/* ── Card 3: Featured Tape View ── */}
-          {latestTapeView ? (
-            <Link
-              href={`/tape-views/${latestTapeView.slug}`}
-              className="card-gold p-5 flex flex-col min-h-[220px] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[5px_5px_0_#111] transition-all duration-100"
-            >
-              <div className="flex items-center gap-2 mb-3">
-                <Badge variant="flat" className="text-[10px]">{latestTapeView.category}</Badge>
-                <span className="text-small font-black uppercase opacity-60">{latestTapeView.instrument}</span>
-                <Badge
-                  variant={latestTapeView.bias === "BULLISH" ? "bullish" : latestTapeView.bias === "BEARISH" ? "bearish" : "neutral"}
-                  className="text-[10px] ml-auto"
-                >
-                  {latestTapeView.bias}
-                </Badge>
-              </div>
-              <h3 className="text-card-title font-black uppercase leading-tight mb-2 line-clamp-2">
-                {latestTapeView.title}
-              </h3>
-              <p className="text-small font-bold leading-relaxed opacity-70 line-clamp-3 flex-1">
-                {latestTapeView.todayView}
-              </p>
-              <div className="mt-3">
-                <span className="inline-block bg-ink text-bg brutal-border px-3.5 py-1.5 font-black uppercase text-[11px] tracking-wide hover:bg-accent-coral hover:text-white transition-colors">
-                  Read Analysis →
-                </span>
-              </div>
-            </Link>
-          ) : (
-            <div className="card-white p-5 flex flex-col min-h-[220px] items-center justify-center">
-              <p className="text-body font-black uppercase opacity-40 text-center">No analysis available</p>
-            </div>
-          )}
+{/* ───────────────────────── Live Market Ticker — shrunk single-row strip ───────────────────────── */}
+      <section className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="h-12 overflow-x-auto scroll-smooth whitespace-nowrap -mb-1">
+          <LiveMarketTicker items={marketQuotes} />
         </div>
       </section>
+
+      {/* ───────────────────────── 2. Latest News — HERO section ───────────────────────── */}
+      <section className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8">
+        <div className="flex flex-col lg:flex-row gap-8">
+
+          {/* Featured card — left, ~40% width, taller */}
+          {featuredPost && (
+            <div className="w-full lg:w-4/5 lg:max-w-[420px] card-gold p-4 lg:p-6 lg:h-[360px] relative overflow-hidden flex flex-col">
+              <div className="flex items-center gap-2 mb-3">
+                <Badge variant="flat" className="text-[8px] uppercase tracking-wider">{featuredPost.category}</Badge>
+              </div>
+              <h3 className="text-lg font-black uppercase leading-tight mb-2">{featuredPost.title}</h3>
+              <p className="text-sm font-bold opacity-80 leading-relaxed mb-3 line-clamp-2 flex-grow">
+                {featuredPost.summary}
+              </p>
+              <div className="mt-3">
+                <Link
+                  href={`/news/${featuredPost.slug}`}
+                  className="inline-block bg-ink text-bg brutal-border brutal-shadow px-3.5 py-1.5 font-black uppercase text-[10px] tracking-wide transition-colors"
+                >
+                  Read More →
+                </Link>
+              </div>
+            </div>
+          )}
+
+          {/* Compact grid of remaining news cards */}
+          {latestNews.length > 0 && (
+            <div className="w-full lg:w-1/5 flex flex-col lg:flex-row gap-2">
+              {latestNews.slice(0, 5).map((post) => (
+                <NewsCard
+                  key={post.id}
+                  title={post.title}
+                  slug={post.slug}
+                  category={post.category}
+                  summary={post.summary}
+                  publishedAt={post.publishedAt}
+                  className="h-24"
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Section header with "All News →" link — placed after cards in lg */}
+          <div className="lg:w-full lg:order-2 mb-4 lg:mb-0">
+            <SectionTitle>Latest News</SectionTitle>
+            <Link href="/news" className="text-small font-black uppercase hover:text-accent-coral">
+              All News →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────────────────── 3. At a Glance — compact tiles row ───────────────────────── */}
+      <section className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4 border-t border-b border-ink brutal-shadow">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+          {/* Morning Brief tile */}
+          <div className="card-coral brutal-border brutal-shadow h-16 flex flex-col items-center justify-center">
+            <div className="text-[8px] font-black uppercase tracking-widest mb-1">Morning Brief</div>
+            <Link
+              href="/morning-brief"
+              className="text-accent-coral hover:text-white transition-colors text-[10px] uppercase tracking-wider"
+            >
+              View →
+            </Link>
+          </div>
+
+          {/* Market Snapshot tile */}
+          <div className="card-sky brutal-border brutal-shadow h-16 flex flex-col items-center justify-center">
+            <div className="text-[8px] font-black uppercase tracking-widest mb-1">Market Snapshot</div>
+            <div className="text-2xl font-black">{marketQuotes.find((q) => q.symbol === "^NSEI")?.price || "—"}</div>
+            <div className="text-sm font-bold my-1" style={{ color: marketQuotes.find((q) => q.symbol === "^NSEI")?.direction === "up" ? "text-accent-bullish" : "text-accent-bearish" }}>
+              {marketQuotes.find((q) => q.symbol === "^NSEI")?.change || "0"}
+            </div>
+            <Link
+              href="/the-tape"
+              className="text-accent-coral hover:text-white transition-colors text-[10px] uppercase mt-1 block"
+            >
+              → View
+            </Link>
+          </div>
+
+          {/* Global Markets tile */}
+          <div className="card-lavender brutal-border brutal-shadow h-16 flex flex-col items-center justify-center">
+            <div className="text-[8px] font-black uppercase tracking-widest mb-1">Global Markets</div>
+            <Badge variant="bullish" className="text-[8px] uppercase">
+              Bullish
+            </Badge>
+            <Link
+              href="/tape-views"
+              className="text-accent-coral hover:text-white transition-colors text-[10px] uppercase mt-1 block"
+            >
+              → View
+            </Link>
+          </div>
+
+          {/* Top Movers tile */}
+          <div className="card-mint brutal-border brutal-shadow h-16 flex flex-col items-center justify-center">
+            <div className="text-[8px] font-black uppercase tracking-widest mb-1">Top Movers</div>
+            <div className="text-xl font-black" style={{ color: "text-accent-coral" }}>
+              {getTopMovers(marketQuotes, 5).gainers.length > 0 ? getTopMovers(marketQuotes, 5).gainers[0].symbol : "—"}
+              {getTopMovers(marketQuotes, 5).gainers.length > 0 ? ` +${getTopMovers(marketQuotes, 5).gainers[0].changePercent}` : ""}
+            </div>
+            <Link
+              href="/the-tape#movers"
+              className="text-accent-coral hover:text-white transition-colors text-[10px] uppercase mt-1 block"
+            >
+              → View
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Top Gainers/Losers widget — unchanged position below */}
+      <section className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4 animate-fade-in-up">
+        <div className="flex flex-col md:flex-row gap-4 md:gap-8">
+          <div className="flex-1 card-mint p-4 md:p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-[10px] font-black uppercase tracking-widest text-ink">▲ Top 5 Gainers</span>
+            </div>
+            <div className="space-y-2">
+              {getTopMovers(marketQuotes, 5).gainers.length > 0 ? (
+                getTopMovers(marketQuotes, 5).gainers.map((quote) => (
+                  <div key={quote.symbol} className="flex items-center justify-between px-2 py-1.5 text-sm font-bold">
+                    <span className="uppercase">{quote.name || quote.symbol}</span>
+                    <span className="text-ink">{formatPercent(quote.changePercent)}</span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-body font-black uppercase opacity-40 text-center py-4">No gainers data</p>
+              )}
+            </div>
+          </div>
+          <div className="flex-1 card-coral p-4 md:p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-[10px] font-black uppercase tracking-widest text-ink">▼ Top 5 Losers</span>
+            </div>
+            <div className="space-y-2">
+              {getTopMovers(marketQuotes, 5).losers.length > 0 ? (
+                getTopMovers(marketQuotes, 5).losers.map((quote) => (
+                  <div key={quote.symbol} className="flex items-center justify-between px-2 py-1.5 text-sm font-bold">
+                    <span className="uppercase">{quote.name || quote.symbol}</span>
+                    <span className="text-ink">{formatPercent(quote.changePercent)}</span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-body font-black uppercase opacity-40 text-center py-4">No losers data</p>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="mt-4 text-center md:text-right">
+          <Link
+            href="/the-tape#movers"
+            className="inline-block text-small font-black uppercase text-accent-coral hover:underline transition-colors"
+          >
+            View All Movers →
+          </Link>
+        </div>
+      </section>
+
+      {/* Market Breadth strip — unchanged */}
+      <section className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-2 animate-fade-in-up">
+        <div className="card-sky p-3 md:p-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-6">
+            <div className="flex flex-wrap items-center gap-3 font-black text-sm">
+              <span className="text-accent-bullish">{marketQuotes.filter(q => q.direction === "up").length} Advancing</span>
+              <span className="text-ink/40">/</span>
+              <span className="text-accent-bearish">{marketQuotes.filter(q => q.direction === "down").length} Declining</span>
+              <span className="text-ink/40">/</span>
+              <span className="text-text-muted">{marketQuotes.filter(q => q.direction === "flat").length} Unchanged</span>
+            </div>
+            <div className="w-full md:w-1/2 h-2 bg-ink/10 rounded-full overflow-hidden">
+              {(() => {
+                const advancing = marketQuotes.filter(q => q.direction === "up").length;
+                const declining = marketQuotes.filter(q => q.direction === "down").length;
+                const total = advancing + declining;
+                const advancingPct = total > 0 ? (advancing / total) * 100 : 0;
+                return (
+                  <div className="h-full flex">
+                    <div className="bg-accent-bullish" style={{ width: `${advancingPct}%` }} />
+                    <div className="bg-accent-bearish" style={{ width: `${100 - advancingPct}%` }} />
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Trending Topics — unchanged */}
+      {trendingCategories.length > 0 && (
+        <section className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-2 animate-fade-in-up">
+          <div className="card-lavender p-3 md:p-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-6">
+              <span className="text-[10px] font-black uppercase tracking-widest text-ink">Trending</span>
+              <div className="flex flex-wrap items-center gap-2">
+                {trendingCategories.slice(0, 4).map((item) => (
+                  <Badge key={item.category} variant="ai" className="text-[10px]">
+                    {item.category} ({item.count})
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ───────────────────────── 2. Featured Story ───────────────────────── */}
       {featuredPost && (
@@ -239,7 +410,7 @@ export default async function HomePage() {
               <div className="flex flex-wrap items-center gap-2 mb-3">
                 <Badge variant="flat" className="text-[10px]">{featuredPost.category}</Badge>
                 <span className="text-small font-bold uppercase opacity-60 ml-auto">
-                  {formatDate(featuredPost.publishedAt)}
+{formatDate(featuredPost.publishedAt)}
                 </span>
               </div>
               <h3 className="text-heading font-black uppercase leading-tight mb-2 group-hover:text-accent-coral transition-colors">
@@ -312,7 +483,42 @@ export default async function HomePage() {
 
       {/* ───────────────────────── 5. The Tape CTA ───────────────────────── */}
       <section className="bg-ink text-bg border-t-[3px] border-ink border-b-[3px] border-ink">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 text-center">
+        <div className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 text-center">
+          <h2 className="text-display font-black uppercase leading-tight mb-2">
+            Enter <span className="text-accent-coral">The Tape</span>
+          </h2>
+          <p className="text-body font-bold max-w-2xl mx-auto mb-5 opacity-80">
+            Real-time market intelligence across NSE, forex, crypto, commodities, and global markets.
+          </p>
+          <Link
+            href="/the-tape"
+            className="inline-block bg-accent-coral text-white brutal-border brutal-shadow px-6 py-3 font-black uppercase text-small tracking-wide hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[5px_5px_0_#fff] transition-all duration-150"
+          >
+            🚀 Launch The Tape
+          </Link>
+        </div>
+      </section>
+
+      {/* ───────────────────────── 6. Newsletter ───────────────────────── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 section-padding">
+        <NewsletterSignup />
+      </section>
+
+      {/* ───────────────────────── 7. Educational Disclaimer ───────────────────────── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10">
+        <div className="card-coral brutal-border brutal-shadow p-5 md:p-6">
+          <h3 className="text-heading font-black uppercase mb-2">⚠ Educational Disclaimer</h3>
+          <p className="text-body font-bold leading-relaxed">
+            TradersTape is for educational purposes only. Nothing on this site is financial advice.
+            Always conduct your own research and consult with a licensed financial advisor before
+            making investment decisions. Trading involves substantial risk of loss.
+          </p>
+        </div>
+      </section>
+
+      {/* ───────────────────────── 5. The Tape CTA ───────────────────────── */}
+      <section className="bg-ink text-bg border-t-[3px] border-ink border-b-[3px] border-ink">
+        <div className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 text-center">
           <h2 className="text-display font-black uppercase leading-tight mb-2">
             Enter <span className="text-accent-coral">The Tape</span>
           </h2>

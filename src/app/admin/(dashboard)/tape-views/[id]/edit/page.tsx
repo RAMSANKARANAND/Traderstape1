@@ -4,6 +4,7 @@ import { getTapeViewById, updateTapeView } from "@/lib/db-raw";
 import { Card, SectionTitle, Button } from "@/components/ui";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { requireRole } from "@/lib/auth-guard";
 
 export const metadata: Metadata = {
   title: "Edit Tape View | TradersTape Admin",
@@ -62,8 +63,20 @@ export default async function EditTapeViewPage({
         <form
           action={async (formData: FormData) => {
             "use server";
+            await requireRole(["ADMIN", "EDITOR", "CONTRIBUTOR"]);
             const session = await getSessionUser();
             if (!session) redirect("/admin/login");
+
+            // Ownership check: CONTRIBUTOR can only edit their own tape views
+            if (session.role === "CONTRIBUTOR" && tapeView.authorId !== session.id) {
+              throw new Error("Forbidden: You can only edit your own tape views");
+            }
+
+            // CONTRIBUTOR cannot publish - only ADMIN/EDITOR can publish
+            const isPublished = formData.get("isPublished") === "on";
+            if (session.role === "CONTRIBUTOR" && isPublished && !tapeView.isPublished) {
+              throw new Error("Forbidden: Only editors can publish tape views");
+            }
 
             await updateTapeView(id, {
               title: formData.get("title") as string,

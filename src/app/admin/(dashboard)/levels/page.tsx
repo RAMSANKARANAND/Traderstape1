@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { Card, Badge, SectionTitle } from "@/components/ui";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { requireRole } from "@/lib/auth-guard";
 
 export const metadata: Metadata = {
   title: "Manage Levels | TradersTape Admin",
@@ -13,6 +14,7 @@ export default async function AdminLevelsPage() {
   const user = await getSessionUser();
   if (!user) redirect("/admin/login");
 
+  const canPublish = user.role === "ADMIN" || user.role === "EDITOR";
   const levels = await getAllMarketLevels();
 
   return (
@@ -85,25 +87,27 @@ export default async function AdminLevelsPage() {
                         >
                           Edit
                         </Link>
-                        <form
-                          action={async () => {
-                            "use server";
-                            await updateMarketLevelPublish(level.id, !level.isPublished);
-                          }}
-                        >
-                          <button
-                            type="submit"
-                            className="text-xs font-black uppercase bg-accent-yellow text-ink px-2 py-1 brutal-border border-2 border-ink"
-                          >
-                            {level.isPublished ? "Unpub" : "Publish"}
-                          </button>
-                        </form>
-                        {(user.role === "ADMIN" || user.role === "EDITOR") && (
+                        {canPublish && (
                           <form
                             action={async () => {
                               "use server";
-                              const session = await getSessionUser();
-                              if (!session || (session.role !== "ADMIN" && session.role !== "EDITOR")) return;
+                              await requireRole(["ADMIN", "EDITOR"]);
+                              await updateMarketLevelPublish(level.id, !level.isPublished);
+                            }}
+                          >
+                            <button
+                              type="submit"
+                              className="text-xs font-black uppercase bg-accent-yellow text-ink px-2 py-1 brutal-border border-2 border-ink"
+                            >
+                              {level.isPublished ? "Unpub" : "Publish"}
+                            </button>
+                          </form>
+                        )}
+                        {canPublish && (
+                          <form
+                            action={async () => {
+                              "use server";
+                              await requireRole(["ADMIN", "EDITOR"]);
                               await deleteMarketLevel(level.id);
                             }}
                           >

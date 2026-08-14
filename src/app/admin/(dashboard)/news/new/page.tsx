@@ -5,6 +5,7 @@ import { createNewsPost } from "@/lib/db-raw";
 import { Card, SectionTitle, Button } from "@/components/ui";
 import { NewsEditorWithAI } from "@/components/admin/ai/NewsEditorWithAI";
 import type { Metadata } from "next";
+import { requireRole } from "@/lib/auth-guard";
 
 export const metadata: Metadata = {
   title: "New News Post | TradersTape Admin",
@@ -33,6 +34,7 @@ export default async function NewNewsPage() {
             <form
               action={async (formData: FormData) => {
                 "use server";
+                await requireRole(["ADMIN", "EDITOR", "CONTRIBUTOR"]);
                 const session = await getSessionUser();
                 if (!session) redirect("/admin/login");
 

@@ -12,7 +12,7 @@ const formatChange = (change: number): string => {
   return `${sign}${Math.abs(change).toFixed(2)}%`;
 };
 
-const TickerItem = React.memo(({ name, changePercent }: { name: string; changePercent: number }) => {
+const TickerItem = React.memo(({ name, changePercent, isStale }: { name: string; changePercent: number; isStale?: boolean }) => {
   const colorClass =
     changePercent > 0
       ? "text-green-600"
@@ -27,6 +27,7 @@ const TickerItem = React.memo(({ name, changePercent }: { name: string; changePe
     >
       <span>{name}</span>
       <span>{formatChange(changePercent)}</span>
+      {isStale && <span className="text-[8px] font-bold text-yellow-600 uppercase">stale</span>}
     </div>
   );
 });
@@ -35,7 +36,7 @@ export const LiveTicker = React.memo(function LiveTicker({ quotes }: LiveTickerP
   // Memoize ticker items to avoid unnecessary re-renders
   const tickerItems = useMemo(() => {
     return quotes.map((q) => (
-      <TickerItem key={q.symbol} name={q.name} changePercent={q.changePercent ?? 0} />
+      <TickerItem key={q.symbol} name={q.name} changePercent={q.changePercent ?? 0} isStale={q.isStale} />
     ));
   }, [quotes]);
 

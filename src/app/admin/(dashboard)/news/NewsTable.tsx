@@ -132,7 +132,7 @@ export default function NewsTable({ posts, userRole }: NewsTableProps) {
                           await toggleNewsPublish(post.id);
                         });
                       }}
-                      className="text-xs font-black uppercase bg-accent-teal text-white px-2 py-1 brutal-border border-2 border-ink"
+                      className="text-xs font-black uppercase bg-accent-mint text-ink px-2 py-1 brutal-border border-2 border-ink"
                     >
                       {post.isPublished ? "Unpublish" : "Publish"}
                     </button>
@@ -153,7 +153,7 @@ export default function NewsTable({ posts, userRole }: NewsTableProps) {
                           await bulkDeleteNews([post.id]);
                         });
                       }}
-                      className="text-xs font-black uppercase bg-accent-coral text-white px-2 py-1 brutal-border border-2 border-ink"
+                      className="text-xs font-black uppercase bg-accent-coral text-ink px-2 py-1 brutal-border border-2 border-ink"
                     >
                       Delete
                     </button>

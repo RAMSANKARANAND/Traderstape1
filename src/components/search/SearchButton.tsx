@@ -11,6 +11,7 @@ export function SearchButton({ onClick }: SearchButtonProps) {
   return (
     <button 
       onClick={onClick}
+      aria-label="Search"
       className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-black font-bold hover:bg-yellow-400 transition-colors active:translate-x-0.5 active:translate-y-0.5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none"
     >
       <Search className="w-4 h-4" />

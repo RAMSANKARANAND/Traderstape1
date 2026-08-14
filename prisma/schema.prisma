@@ -35,6 +35,10 @@ model MarketLevel {
   updatedAt   DateTime  @updatedAt
   isPublished Boolean   @default(false)
   updater     User      @relation(fields: [updatedBy], references: [id])
+
+  @@index([isPublished, assetType])
+  @@index([symbol, isPublished])
+  @@index([updatedAt(sort: Desc)])
 }
 
 model NewsPost {
@@ -56,12 +60,16 @@ model NewsPost {
   ogImageUrl     String?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
-  externalId     String?
-  sourceName     String?
-  sourceUrl      String?
   author         User         @relation(fields: [authorId], references: [id])
 
-  @@unique([sourceName, externalId])
+  @@index([isPublished, publishedAt(sort: Desc)])
+  @@index([category, isPublished, publishedAt(sort: Desc)])
+  @@index([isBreaking, isPublished, publishedAt(sort: Desc)])
+  @@index([isFeatured, isPublished, publishedAt(sort: Desc)])
+  @@index([isTrending, isPublished, publishedAt(sort: Desc)])
+  @@index([isEditorPick, isPublished, publishedAt(sort: Desc)])
+  @@index([updatedAt(sort: Desc)])
+  @@index([authorId])
 }
 
 model MorningBrief {
@@ -86,6 +94,10 @@ model MorningBrief {
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   author         User      @relation(fields: [authorId], references: [id])
+
+  @@index([isPublished, publishedAt(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
+  @@index([authorId])
 }
 
 model TapeView {
@@ -115,6 +127,12 @@ model TapeView {
   createdAt             DateTime         @default(now())
   updatedAt             DateTime         @updatedAt
   author                User             @relation(fields: [authorId], references: [id])
+
+  @@index([isPublished, publishedAt(sort: Desc)])
+  @@index([category, isPublished, publishedAt(sort: Desc)])
+  @@index([instrument, isPublished, publishedAt(sort: Desc)])
+  @@index([authorId])
+  @@index([updatedAt(sort: Desc)])
 }
 
 model WaitlistEmail {

@@ -27,7 +27,7 @@ export function MarketDetailCard({ quote }: MarketDetailCardProps) {
 
       <div>
         <div className="text-3xl font-black tabular-nums">{formatPrice(quote.price)}</div>
-        <div className={`text-sm font-bold ${quote.direction === "up" ? "text-accent-bullish" : quote.direction === "down" ? "text-accent-bearish" : "text-accent-neutral"}`}>
+        <div className="text-sm font-bold text-ink">
           {formatChange(quote.change)} ({formatPercent(quote.changePercent)})
         </div>
       </div>

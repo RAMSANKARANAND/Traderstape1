@@ -40,6 +40,7 @@ export function SearchInput({ onQueryChange, placeholder = "Search news, tape vi
       {inputValue && (
         <button 
           onClick={handleClear}
+          aria-label="Clear search"
           className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-full transition-colors"
         >
           <X className="w-5 h-5 text-gray-500" />

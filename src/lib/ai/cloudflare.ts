@@ -2,7 +2,7 @@ import type { AiRequest, AiResponse } from "./types";
 import { NEWS_PROMPTS } from "./prompts/news";
 import { SEO_PROMPTS } from "./prompts/seo";
 import { TAPE_VIEW_PROMPTS } from "./prompts/tapeView";
-import { MORNING_BRIEF_PROMPT } from "@/lib/ai/prompts/morningBrief";
+import { MORNING_BRIEF_PROMPT } from "./prompts/morningBrief";
 import { NEWS_ROUNDUP_PROMPT } from "./prompts/newsRoundup";
 
 const CF_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";

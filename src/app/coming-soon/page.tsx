@@ -180,7 +180,7 @@ export default function ComingSoonPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={status === "loading" || status === "success"}
-                className="w-full bg-white text-black border-3 border-black shadow-[4px_4px_0_#000] px-5 py-4 text-lg font-bold placeholder:text-gray-400 focus:outline-none focus:ring-0 focus:ring-offset-0 transition-shadow"
+                className="w-full bg-white text-black border-3 border-black shadow-[4px_4px_0_#000] px-5 py-4 text-lg font-bold placeholder:text-gray-400 focus:outline-none focus:border-3 focus:border-black focus:shadow-[6px_6px_0_#f0bb40] transition-shadow"
                 aria-describedby={status === "error" ? "email-error" : status === "success" ? "email-success" : undefined}
               />
               {(status === "error" || status === "success") && (
