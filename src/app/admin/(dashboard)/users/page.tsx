@@ -1,4 +1,5 @@
-import { getAllUsers, toggleUserActive } from "@/lib/db-raw";
+import { getAllUsers, toggleUserActive, createPasswordResetToken } from "@/lib/db-raw";
+import { requireRole } from "@/lib/auth-guard";
 import { getSessionUser } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { Card, Badge, SectionTitle, Button } from "@/components/ui";
@@ -53,25 +54,41 @@ export default async function AdminUsersPage() {
                   <td className="py-3 px-4 text-xs font-bold">
                     {new Date(u.createdAt).toLocaleDateString("en-IN")}
                   </td>
-                  <td className="py-3 px-4">
-                    <div className="flex gap-2">
-                      <form
-                        action={async () => {
-                          "use server";
-                          const session = await getSessionUser();
-                          if (!session || session.role !== "ADMIN") return;
-                          await toggleUserActive(u.id, !u.isActive);
-                        }}
-                      >
-                        <button
-                          type="submit"
-                          className="text-xs font-black uppercase bg-accent-yellow text-ink px-2 py-1 brutal-border border-2 border-ink"
+<td className="py-3 px-4">
+                      <div className="flex gap-2">
+                        <form
+                          action={async () => {
+                            "use server";
+                            const session = await getSessionUser();
+                            if (!session || session.role !== "ADMIN") return;
+                            await toggleUserActive(u.id, !u.isActive);
+                          }}
                         >
-                          {u.isActive ? "Deactivate" : "Activate"}
-                        </button>
-                      </form>
-                    </div>
-                  </td>
+                          <button
+                            type="submit"
+                            className="text-xs font-black uppercase bg-accent-yellow text-ink px-2 py-1 brutal-border border-2 border-ink"
+                          >
+                            {u.isActive ? "Deactivate" : "Activate"}
+                          </button>
+                        </form>
+                        <form
+                          action={async () => {
+                            "use server";
+                            requireRole(["ADMIN"]);
+                            await createPasswordResetToken(u.id);
+                            // Reset link would be built and email sent;
+                            // for now just show a subtle confirmation
+                          }}
+                        >
+                          <button
+                            type="submit"
+                            className="text-xs font-black uppercase bg-accent-coral text-white px-2 py-1 brutal-border border-2 border-accent-coral"
+                          >
+                            Send Reset Link
+                          </button>
+                        </form>
+                      </div>
+                    </td>
                 </tr>
               ))}
             </tbody>

@@ -14,7 +14,7 @@ export default async function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
+    <div className="flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-md">
         <h1 className="text-3xl font-black uppercase text-center mb-8">
           Admin Login
@@ -66,6 +66,11 @@ export default async function AdminLoginPage() {
             <Button type="submit" variant="primary" className="w-full">
               Sign In
             </Button>
+            <p className="text-center mt-4 text-sm text-ink/60">
+              <a href="/admin/forgot-password" className="underline text-ink/60 hover:text-ink">
+                Forgot password?
+              </a>
+            </p>
           </form>
         </Card>
       </div>
