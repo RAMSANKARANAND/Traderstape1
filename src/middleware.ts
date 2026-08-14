@@ -33,7 +33,7 @@ export function middleware(request: NextRequest) {
 
   // Admin auth protection
   if (pathname.startsWith("/admin")) {
-    if (pathname === "/admin/login") {
+    if (pathname === "/admin/login" || pathname === "/admin/forgot-password" || pathname === "/admin/reset-password") {
       return NextResponse.next();
     }
 
