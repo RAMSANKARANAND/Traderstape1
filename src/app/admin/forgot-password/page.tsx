@@ -1,7 +1,6 @@
 import { getUserByEmail } from "@/lib/db-raw";
 import { createPasswordResetToken } from "@/lib/db-raw";
 import { sendPasswordResetEmail } from "@/lib/email/resend";
-import { requireRole } from "@/lib/auth-guard";
 import { Card, Button } from "@/components/ui";
 import type { Metadata } from "next";
 
@@ -10,8 +9,6 @@ export const metadata: Metadata = {
 };
 
 export default async function ForgotPasswordPage() {
-  requireRole(["ADMIN"]);
-
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-md">
@@ -23,18 +20,22 @@ export default async function ForgotPasswordPage() {
             action={async (formData) => {
               "use server";
               const email = formData.get("email") as string;
+              console.log("[FORGOT PASSWORD] Request received for:", email);
+              
               const user = await getUserByEmail(email);
-
+              console.log("[FORGOT PASSWORD] User found:", !!user);
+              
               if (user) {
-                // Only create token and send email if user is found
                 const token = await createPasswordResetToken(user.id);
                 const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/admin/reset-password?token=${token}`;
-
+                console.log("[FORGOT PASSWORD] Sending email to:", user.email);
+                
                 await sendPasswordResetEmail(
                   { RESEND_API_KEY: process.env.RESEND_API_KEY as string },
                   user.email,
                   resetUrl,
                 );
+                console.log("[FORGOT PASSWORD] Email sent successfully");
               }
               // If user not found, still show the same generic message
               // (this prevents user enumeration attacks)

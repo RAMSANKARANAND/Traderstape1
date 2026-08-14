@@ -10,6 +10,8 @@ export async function sendPasswordResetEmail(
   to: string,
   resetUrl: string
 ): Promise<{ success: boolean; error?: string }> {
+  console.log("[RESEND] Sending request to Resend API");
+  
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -44,11 +46,15 @@ export async function sendPasswordResetEmail(
     }),
   });
 
+  console.log("[RESEND] Status:", response.status);
+  
   if (!response.ok) {
     const errorText = await response.text().catch(() => "unknown");
+    console.log("[RESEND] Error response body:", errorText);
     return { success: false, error: `Resend API error: ${response.status}` };
   }
 
   const data = await response.json();
+  console.log("[RESEND] Success response body:", JSON.stringify(data, null, 2));
   return { success: true };
 }
