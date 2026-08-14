@@ -195,20 +195,24 @@ const organizationJsonLd = {
             <MorningMarketBriefCard data={finalMorningBrief} />
           )}
           
-          {/* ── Card 2: Market Snapshot ── */}
-          <div className="card-sky p-5 flex flex-col gap-0 h-full">
-            {indian.slice(0, 5).map((quote) => (
-              <div key={quote.symbol} className="flex items-center justify-between border-b border-ink/10 py-2 last:border-0">
-                <span className="text-small font-black uppercase">{quote.symbol.replace(/^\^/, "").replace(".NS", "")}</span>
-                <div className="text-right">
-                  <span className="text-body font-black tabular-nums mr-2">{formatPrice(quote.price)}</span>
-                  <span className={`text-small font-bold tabular-nums ${quote.change >= 0 ? "text-accent-bullish" : "text-accent-bearish"}`}>
-                    {quote.change >= 0 ? "+" : ""}{quote.changePercent?.toFixed(2)}%
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+           {/* ── Card 2: Market Snapshot ── */}
+           <div className="card-sky p-5 flex flex-col gap-0 h-full">
+             <div className="flex items-center justify-between mb-3">
+               <Badge variant="live" className="text-[10px]">LIVE</Badge>
+               <h3 className="text-card-title font-black uppercase tracking-tight ml-auto">Market Snapshot</h3>
+             </div>
+             {indian.slice(0, 5).map((quote) => (
+               <div key={quote.symbol} className="flex items-center justify-between border-b border-ink/10 py-2 last:border-0">
+                 <span className="text-small font-black uppercase opacity-60 tracking-wide">{quote.symbol.replace(/^\^/, "").replace(".NS", "")}</span>
+                 <div className="text-right">
+                   <span className="text-card-title font-black tabular-nums mr-2">{formatPrice(quote.price)}</span>
+                   <span className={`text-small font-bold tabular-nums ${quote.change >= 0 ? "text-accent-bullish" : "text-accent-bearish"}`}>
+                     {quote.change >= 0 ? "+" : ""}{quote.changePercent?.toFixed(2)}%
+                   </span>
+                 </div>
+               </div>
+             ))}
+           </div>
 
           {/* ── Card 3: Featured Tape View ── */}
           {latestTapeView ? (
