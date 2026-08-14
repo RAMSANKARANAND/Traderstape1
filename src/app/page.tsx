@@ -104,8 +104,8 @@ export default async function HomePage() {
       instrument: latestTapeView.instrument,
       bias: latestTapeView.bias,
       todayView: latestTapeView.todayView,
-      keyLevelsToWatch: null, // Not available in current structure
-      riskFactors: null, // Not available in current structure
+      keyLevelsToWatch: null,
+      riskFactors: null,
     }] : []
   };
 
@@ -181,126 +181,86 @@ const organizationJsonLd = {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
       />
 
-{/* ───────────────────────── Live Market Ticker — shrunk single-row strip ───────────────────────── */}
-      <section className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="h-12 overflow-x-auto scroll-smooth whitespace-nowrap -mb-1">
-          <LiveMarketTicker items={marketQuotes} />
-        </div>
+      {/* ───────────────────────── Live Market Ticker ───────────────────────── */}
+      <section className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <LiveMarketTicker items={marketQuotes} />
       </section>
 
-      {/* ───────────────────────── 2. Latest News — HERO section ───────────────────────── */}
-      <section className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8">
-        <div className="flex flex-col lg:flex-row gap-8">
+      {/* ───────────────────────── 1. Hero Dashboard ───────────────────────── */}
+      <section className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2 animate-fade-in-up">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
 
-          {/* Featured card — left, ~40% width, taller */}
-          {featuredPost && (
-            <div className="w-full lg:w-4/5 lg:max-w-[420px] card-gold p-4 lg:p-6 lg:h-[360px] relative overflow-hidden flex flex-col">
-              <div className="flex items-center gap-2 mb-3">
-                <Badge variant="flat" className="text-[8px] uppercase tracking-wider">{featuredPost.category}</Badge>
-              </div>
-              <h3 className="text-lg font-black uppercase leading-tight mb-2">{featuredPost.title}</h3>
-              <p className="text-sm font-bold opacity-80 leading-relaxed mb-3 line-clamp-2 flex-grow">
-                {featuredPost.summary}
-              </p>
-              <div className="mt-3">
-                <Link
-                  href={`/news/${featuredPost.slug}`}
-                  className="inline-block bg-ink text-bg brutal-border brutal-shadow px-3.5 py-1.5 font-black uppercase text-[10px] tracking-wide transition-colors"
-                >
-                  Read More →
-                </Link>
-              </div>
-            </div>
+          {/* ── Card 1: Morning Market Brief ── */}
+          {finalMorningBrief && (
+            <MorningMarketBriefCard data={finalMorningBrief} />
           )}
-
-          {/* Compact grid of remaining news cards */}
-          {latestNews.length > 0 && (
-            <div className="w-full lg:w-1/5 flex flex-col lg:flex-row gap-2">
-              {latestNews.slice(0, 5).map((post) => (
-                <NewsCard
-                  key={post.id}
-                  title={post.title}
-                  slug={post.slug}
-                  category={post.category}
-                  summary={post.summary}
-                  publishedAt={post.publishedAt}
-                  className="h-24"
-                />
+          
+          {/* ── Card 2: Market Snapshot ── */}
+          <div className="card-sky p-5 flex flex-col min-h-[220px]">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-card-title font-black uppercase tracking-tight">Market Snapshot</h2>
+              <Badge variant="live" className="text-[10px]">LIVE</Badge>
+            </div>
+            <div className="flex-1 grid grid-cols-1 gap-2">
+              {indian.slice(0, 5).map((quote) => (
+                <MarketCard key={quote.symbol} quote={quote} />
               ))}
             </div>
+          </div>
+
+          {/* ── Card 3: Featured Tape View ── */}
+          {latestTapeView ? (
+            <Link
+              href={`/tape-views/${latestTapeView.slug}`}
+              className="card-gold p-5 flex flex-col min-h-[220px] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[5px_5px_0_#111] transition-all duration-100"
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <Badge variant="flat" className="text-[10px]">{latestTapeView.category}</Badge>
+                <span className="text-small font-black uppercase opacity-60">{latestTapeView.instrument}</span>
+                <Badge
+                  variant={latestTapeView.bias === "BULLISH" ? "bullish" : latestTapeView.bias === "BEARISH" ? "bearish" : "neutral"}
+                  className="text-[10px] ml-auto"
+                >
+                  {latestTapeView.bias}
+                </Badge>
+              </div>
+
+              <div className="mb-3">
+                <div className="grid grid-cols-2 gap-2">
+                  {global.map((quote) => (
+                    <div key={quote.symbol} className="flex items-center justify-between">
+                      <span className="text-[11px] font-black uppercase truncate pr-2">
+                        {quote.symbol.replace(/^\^/, "")}
+                      </span>
+                      <span className="text-[11px] font-black tabular-nums">
+                        {formatPrice(quote.price)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <h3 className="text-card-title font-black uppercase leading-tight mb-2 line-clamp-2">
+                {latestTapeView.title}
+              </h3>
+              <p className="text-small font-bold leading-relaxed opacity-70 line-clamp-3 flex-1">
+                {latestTapeView.todayView}
+              </p>
+              <div className="mt-3">
+                <span className="inline-block bg-ink text-bg brutal-border px-3.5 py-1.5 font-black uppercase text-[11px] tracking-wide hover:bg-accent-coral hover:text-white transition-colors">
+                  Read Analysis →
+                </span>
+              </div>
+            </Link>
+          ) : (
+            <div className="card-white p-5 flex flex-col min-h-[120px] items-center justify-center">
+              <p className="text-body font-black uppercase opacity-40 text-center">No analysis available</p>
+            </div>
           )}
-
-          {/* Section header with "All News →" link — placed after cards in lg */}
-          <div className="lg:w-full lg:order-2 mb-4 lg:mb-0">
-            <SectionTitle>Latest News</SectionTitle>
-            <Link href="/news" className="text-small font-black uppercase hover:text-accent-coral">
-              All News →
-            </Link>
-          </div>
         </div>
       </section>
 
-      {/* ───────────────────────── 3. At a Glance — compact tiles row ───────────────────────── */}
-      <section className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4 border-t border-b border-ink brutal-shadow">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-          {/* Morning Brief tile */}
-          <div className="card-coral brutal-border brutal-shadow h-16 flex flex-col items-center justify-center">
-            <div className="text-[8px] font-black uppercase tracking-widest mb-1">Morning Brief</div>
-            <Link
-              href="/morning-brief"
-              className="text-accent-coral hover:text-white transition-colors text-[10px] uppercase tracking-wider"
-            >
-              View →
-            </Link>
-          </div>
-
-          {/* Market Snapshot tile */}
-          <div className="card-sky brutal-border brutal-shadow h-16 flex flex-col items-center justify-center">
-            <div className="text-[8px] font-black uppercase tracking-widest mb-1">Market Snapshot</div>
-            <div className="text-2xl font-black">{marketQuotes.find((q) => q.symbol === "^NSEI")?.price || "—"}</div>
-            <div className="text-sm font-bold my-1" style={{ color: marketQuotes.find((q) => q.symbol === "^NSEI")?.direction === "up" ? "text-accent-bullish" : "text-accent-bearish" }}>
-              {marketQuotes.find((q) => q.symbol === "^NSEI")?.change || "0"}
-            </div>
-            <Link
-              href="/the-tape"
-              className="text-accent-coral hover:text-white transition-colors text-[10px] uppercase mt-1 block"
-            >
-              → View
-            </Link>
-          </div>
-
-          {/* Global Markets tile */}
-          <div className="card-lavender brutal-border brutal-shadow h-16 flex flex-col items-center justify-center">
-            <div className="text-[8px] font-black uppercase tracking-widest mb-1">Global Markets</div>
-            <Badge variant="bullish" className="text-[8px] uppercase">
-              Bullish
-            </Badge>
-            <Link
-              href="/tape-views"
-              className="text-accent-coral hover:text-white transition-colors text-[10px] uppercase mt-1 block"
-            >
-              → View
-            </Link>
-          </div>
-
-          {/* Top Movers tile */}
-          <div className="card-mint brutal-border brutal-shadow h-16 flex flex-col items-center justify-center">
-            <div className="text-[8px] font-black uppercase tracking-widest mb-1">Top Movers</div>
-            <div className="text-xl font-black" style={{ color: "text-accent-coral" }}>
-              {getTopMovers(marketQuotes, 5).gainers.length > 0 ? getTopMovers(marketQuotes, 5).gainers[0].symbol : "—"}
-              {getTopMovers(marketQuotes, 5).gainers.length > 0 ? ` +${getTopMovers(marketQuotes, 5).gainers[0].changePercent}` : ""}
-            </div>
-            <Link
-              href="/the-tape#movers"
-              className="text-accent-coral hover:text-white transition-colors text-[10px] uppercase mt-1 block"
-            >
-              → View
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Top Gainers/Losers widget — unchanged position below */}
+      {/* ───────────────────────── 2. Top Gainers/Losers widget ───────────────────────── */}
       <section className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4 animate-fade-in-up">
         <div className="flex flex-col md:flex-row gap-4 md:gap-8">
           <div className="flex-1 card-mint p-4 md:p-5">
@@ -480,41 +440,6 @@ const organizationJsonLd = {
           </div>
         </section>
       )}
-
-      {/* ───────────────────────── 5. The Tape CTA ───────────────────────── */}
-      <section className="bg-ink text-bg border-t-[3px] border-ink border-b-[3px] border-ink">
-        <div className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 text-center">
-          <h2 className="text-display font-black uppercase leading-tight mb-2">
-            Enter <span className="text-accent-coral">The Tape</span>
-          </h2>
-          <p className="text-body font-bold max-w-2xl mx-auto mb-5 opacity-80">
-            Real-time market intelligence across NSE, forex, crypto, commodities, and global markets.
-          </p>
-          <Link
-            href="/the-tape"
-            className="inline-block bg-accent-coral text-white brutal-border brutal-shadow px-6 py-3 font-black uppercase text-small tracking-wide hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[5px_5px_0_#fff] transition-all duration-150"
-          >
-            🚀 Launch The Tape
-          </Link>
-        </div>
-      </section>
-
-      {/* ───────────────────────── 6. Newsletter ───────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 section-padding">
-        <NewsletterSignup />
-      </section>
-
-      {/* ───────────────────────── 7. Educational Disclaimer ───────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10">
-        <div className="card-coral brutal-border brutal-shadow p-5 md:p-6">
-          <h3 className="text-heading font-black uppercase mb-2">⚠ Educational Disclaimer</h3>
-          <p className="text-body font-bold leading-relaxed">
-            TradersTape is for educational purposes only. Nothing on this site is financial advice.
-            Always conduct your own research and consult with a licensed financial advisor before
-            making investment decisions. Trading involves substantial risk of loss.
-          </p>
-        </div>
-      </section>
 
       {/* ───────────────────────── 5. The Tape CTA ───────────────────────── */}
       <section className="bg-ink text-bg border-t-[3px] border-ink border-b-[3px] border-ink">
