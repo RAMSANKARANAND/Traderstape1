@@ -60,36 +60,8 @@ export default async function TheTapePage() {
   let initialQuotes: MarketQuote[] = [];
 
   try {
-    const [marketQuotes, metals, crypto, forex] = await Promise.allSettled([
-      getMarketQuotes(),
-      getMetals(),
-      getCrypto(),
-      getForex(),
-    ]);
-
-    if (marketQuotes.status === "fulfilled") {
-      initialQuotes.push(...marketQuotes.value);
-    } else {
-      console.error("The Tape: market quotes fetch failed", marketQuotes.reason);
-    }
-
-    if (metals.status === "fulfilled") {
-      initialQuotes.push(...metalsToMarketQuotes(metals.value));
-    } else {
-      console.error("The Tape: metals fetch failed", metals.reason);
-    }
-
-    if (crypto.status === "fulfilled") {
-      initialQuotes.push(...cryptoToMarketQuotes(crypto.value));
-    } else {
-      console.error("The Tape: crypto fetch failed", crypto.reason);
-    }
-
-    if (forex.status === "fulfilled") {
-      initialQuotes.push(...forexToMarketQuotes(forex.value));
-    } else {
-      console.error("The Tape: forex fetch failed", forex.reason);
-    }
+    const marketQuotes = await getMarketQuotes();
+    initialQuotes = marketQuotes;
   } catch (err) {
     console.error("The Tape: initial fetch failed", err);
   }
