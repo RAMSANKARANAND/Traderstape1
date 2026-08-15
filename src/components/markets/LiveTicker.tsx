@@ -4,78 +4,14 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { MarketQuote } from "@/lib/market/types";
 
-interface TickerItem {
-  symbol: string;
-  name: string;
-  price: number;
-  change: number;
-  changePercent: number;
-  direction: "up" | "down" | "flat";
-  currency?: string;
-  provider: string;
-  updatedAt: string;
-  isStale?: boolean;
-}
-
-interface LiveMarketTickerProps {
-  items: TickerItem[];
-  title?: string;
-}
-
-const FRIENDLY_NAMES: Record<string, string> = {
-  "NIFTY": "NIFTY 50",
-  "NSEI": "NIFTY 50",
-  "^NSEI": "NIFTY 50",
-  "BANKNIFTY": "BANK NIFTY",
-  "NSEBANK": "BANK NIFTY",
-  "BSESN": "SENSEX",
-  "SENSEX": "SENSEX",
-  "INDIAVIX": "INDIA VIX",
-  "USDINR": "USD/INR",
-  "USD/INR": "USD/INR",
-  "EURUSD": "EUR/USD",
-  "EUR/USD": "EUR/USD",
-  "GBPUSD": "GBP/USD",
-  "GBP/USD": "GBP/USD",
-  "BTC": "BTC",
-  "BTC-USD": "BTC",
-  "ETH": "ETH",
-  "ETH-USD": "ETH",
-  "SOL": "SOL",
-  "SOL-USD": "SOL",
-  "XRP": "XRP",
-  "XRP-USD": "XRP",
-  "GOLD": "GOLD",
-  "GC=F": "GOLD",
-  "SILVER": "SILVER",
-  "SI=F": "SILVER",
-};
-
-function getFriendlyName(symbol: string): string {
-  const upper = symbol.toUpperCase();
-  return FRIENDLY_NAMES[upper] || FRIENDLY_NAMES[upper.replace(/[^A-Z]/g, "")] || symbol;
-}
-
-function formatPrice(price: number): string {
-  return price.toFixed(2);
-}
-
-function formatChange(change: number): string {
-  return change >= 0 ? `+${change.toFixed(2)}` : change.toFixed(2);
-}
-
-function formatPercent(percent: number): string {
-  return `${percent >= 0 ? '+' : ''}${percent.toFixed(2)}%`;
-}
-
-export function LiveMarketTicker({ items, title = "Live Market" }: LiveMarketTickerProps) {
-  const [displayItems, setDisplayItems] = useState<TickerItem[]>(items);
+export function LiveMarketTicker({ items }: { items: MarketQuote[] }) {
+  const [displayItems, setDisplayItems] = useState<MarketQuote[]>(items);
   const [isPaused, setIsPaused] = useState(false);
   const animationRef = useRef<number>(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const [lastUpdated, setLastUpdated] = useState(Date.now());
 
-  // Infinite scroll setup
+  // Infinite scroll setup - duplicate items for seamless loop
   useEffect(() => {
     const duplicateItems = [...items, ...items];
     setDisplayItems(duplicateItems);
@@ -107,33 +43,44 @@ export function LiveMarketTicker({ items, title = "Live Market" }: LiveMarketTic
     };
   }, [isPaused, items]);
 
+  const getFriendlyName = (symbol: string): string => {
+    const upper = symbol.toUpperCase();
+    // Simple mapping for common symbols
+    const friendlyNames: Record<string, string> = {
+      "NIFTY": "NIFTY 50",
+      "NSEI": "NIFTY 50",
+      "^NSEI": "NIFTY 50",
+      "BANKNIFTY": "BANK NIFTY",
+      "NSEBANK": "BANK NIFTY",
+      "BSESN": "SENSEX",
+      "SENSEX": "SENSEX",
+      "INDIAVIX": "INDIA VIX",
+      "USDINR": "USD/INR",
+      "EURUSD": "EUR/USD",
+      "GBPUSD": "GBP/USD",
+      "BTC": "BTC",
+      "ETH": "ETH",
+      "SOL": "SOL",
+      "XRP": "XRP",
+      "GOLD": "GOLD",
+      "SILVER": "SILVER",
+    };
+    return friendlyNames[upper] || symbol;
+  };
+
+  const formatPrice = (price: number): string => {
+    return price.toFixed(2);
+  };
+
   const getMarketPath = (symbol: string): string => {
-    const upperSymbol = symbol.toUpperCase();
-    if (upperSymbol === "NIFTY" || upperSymbol === "NSEI" || upperSymbol === "^NSEI") {
-      return "/the-tape?market=india";
-    } else if (upperSymbol === "BANKNIFTY" || upperSymbol === "NSEBANK") {
-      return "/the-tape?market=india";
-    } else if (upperSymbol === "BSESN" || upperSymbol === "SENSEX") {
-      return "/the-tape?market=india";
-    } else if (upperSymbol === "INDIAVIX") {
+    // Simplified routing based on symbol type
+    if (symbol.includes("NSE") || symbol.includes("NIFTY") || symbol.includes("SENSEX") || symbol === "^NSEI") {
       return "/the-tape?market=indices";
-    } else if (upperSymbol.includes("USDINR") || upperSymbol === "USD/INR") {
+    } else if (symbol.includes("USD") || symbol.includes("EUR") || symbol.includes("GBP")) {
       return "/the-tape?market=forex";
-    } else if (upperSymbol === "EURUSD" || upperSymbol === "EUR/USD") {
-      return "/the-tape?market=forex";
-    } else if (upperSymbol === "GBPUSD" || upperSymbol === "GBP/USD") {
-      return "/the-tape?market=forex";
-    } else if (upperSymbol === "BTC" || upperSymbol === "BTC-USD") {
+    } else if (symbol.includes("BTC") || symbol.includes("ETH") || symbol.includes("SOL") || symbol.includes("XRP")) {
       return "/the-tape?market=crypto";
-    } else if (upperSymbol === "ETH" || upperSymbol === "ETH-USD") {
-      return "/the-tape?market=crypto";
-    } else if (upperSymbol === "SOL" || upperSymbol === "SOL-USD") {
-      return "/the-tape?market=crypto";
-    } else if (upperSymbol === "XRP" || upperSymbol === "XRP-USD") {
-      return "/the-tape?market=crypto";
-    } else if (upperSymbol === "GOLD" || upperSymbol === "GC=F") {
-      return "/the-tape?market=metals";
-    } else if (upperSymbol === "SILVER" || upperSymbol === "SI=F") {
+    } else if (symbol.includes("GOLD") || symbol.includes("SILVER")) {
       return "/the-tape?market=metals";
     } else {
       return "/the-tape";
@@ -141,16 +88,14 @@ export function LiveMarketTicker({ items, title = "Live Market" }: LiveMarketTic
   };
 
   return (
-    <div className="card-white brutal-shadow w-full">
-      {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b-[2px] border-ink bg-ink/5">
-        <div className="flex items-center gap-3">
-          <span className="text-live font-black text-sm">LIVE ●</span>
-          <h3 className="text-body font-black uppercase tracking-wide text-ink">
-            {title}
-          </h3>
+    <div className="bg-bg border-2 border-ink w-full overflow-hidden">
+      {/* Header with LIVE indicator and timestamp */}
+      <div className="flex items-center justify-between px-4 py-2 border-b border-ink bg-ink/5">
+        <div className="flex items-center gap-2">
+          <span className="text-accent-bullish font-black text-sm">LIVE ●</span>
+          <h3 className="text-small font-black uppercase text-ink">Market</h3>
         </div>
-        <span className="text-[11px] font-black uppercase opacity-60">
+        <span className="text-[10px] font-black uppercase text-ink/60">
           Updated {Math.floor((Date.now() - lastUpdated) / 1000)}s ago
         </span>
       </div>
@@ -158,7 +103,7 @@ export function LiveMarketTicker({ items, title = "Live Market" }: LiveMarketTic
       {/* Ticker Container */}
       <div
         ref={containerRef}
-        className="flex gap-6 p-4 overflow-x-hidden scroll-smooth whitespace-nowrap"
+        className="flex gap-4 px-4 py-3 overflow-x-auto scroll-smooth whitespace-nowrap cursor-default"
         style={{ scrollBehavior: 'auto' }}
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
@@ -169,74 +114,45 @@ export function LiveMarketTicker({ items, title = "Live Market" }: LiveMarketTic
           const isPositive = item.direction === "up";
           const isNegative = item.direction === "down";
           const friendlyName = getFriendlyName(item.symbol);
-          const cardClass = isPositive ? "card-mint" : isNegative ? "card-coral" : "card-white";
-
+          
           return (
-            <Link
+            <div
               key={`${item.symbol}-${index}`}
-              href={getMarketPath(item.symbol)}
-              className="flex-shrink-0 inline-block brutal-border hover:bg-ink/5 transition-all duration-150 cursor-pointer group"
-              onClick={(e) => {
-                e.preventDefault();
-                window.open(getMarketPath(item.symbol), '_self');
-              }}
+              className="flex items-center gap-3 px-3 py-1 border-r-2 border-ink last:border-r-0"
             >
-              <div className={`${cardClass} flex flex-col items-start gap-2 px-5 py-3 min-w-[160px]`}>
-                {/* Symbol and Friendly Name */}
-                <div className="flex-shrink-0">
-                  <div className="font-black uppercase text-base tracking-tight text-ink group-hover:text-accent-coral transition-colors">
-                    {item.symbol}
-                  </div>
-                  <div className="text-[11px] font-bold uppercase opacity-60">
-                    {friendlyName}
-                  </div>
-                </div>
+              {/* Symbol */}
+              <span className="text-small font-black uppercase text-ink tabular-nums">
+                {item.symbol.replace(/^\^/, "").replace(".NS", "")}
+              </span>
 
-                {/* Price and Change */}
-                <div className="flex-shrink-0 text-right">
-                  <div className={`text-lg font-black tabular-nums leading-none mb-1 ${isPositive ? "text-bullish" : isNegative ? "text-bearish" : "text-ink"}`}>
-                    {formatPrice(item.price)}
-                    {item.isStale && (
-                      <span className="ml-1 text-[8px] font-black bg-yellow-100 text-yellow-800 px-1.5 py-0.5 rounded align-top">
-                        STALE
-                      </span>
-                    )}
-                  </div>
-                  <div className={`text-sm font-bold ${isPositive ? "text-bullish" : isNegative ? "text-bearish" : "text-text-muted"}`}>
-                    {formatChange(item.change)} ({formatPercent(item.changePercent)})
-                  </div>
-                </div>
+              {/* Price */}
+              <span className="text-small font-black tabular-nums text-ink">
+                {formatPrice(item.price)}
+              </span>
 
-                {/* Direction Indicator */}
-                <div className="flex-shrink-0">
-                  {isPositive && (
-                    <div className="w-7 h-7 bg-white border-2 border-ink rounded flex items-center justify-center">
-                      <span className="text-bullish font-black text-sm">↑</span>
-                    </div>
-                  )}
-                  {isNegative && (
-                    <div className="w-7 h-7 bg-white border-2 border-ink rounded flex items-center justify-center">
-                      <span className="text-bearish font-black text-sm">↓</span>
-                    </div>
-                  )}
-                  {item.direction === "flat" && (
-                    <div className="w-7 h-7 bg-white border-2 border-ink rounded flex items-center justify-center">
-                      <span className="text-text-muted font-black text-sm">→</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </Link>
+              {/* Change Percentage with color */}
+              <span className={`text-small font-bold tabular-nums ${isPositive ? "text-accent-bullish" : isNegative ? "text-accent-bearish" : "text-ink/60"}`}>
+                {isPositive ? "+" : ""}{item.changePercent?.toFixed(2)}%
+              </span>
+
+              {/* Directional arrow */}
+              <span className="text-[10px] font-black">
+                {isPositive ? "↑" : isNegative ? "↓" : "→"}
+              </span>
+
+              {/* Separator dot */}
+              <span className="text-ink/20">·</span>
+            </div>
           );
         })}
       </div>
 
-      {/* Resume Animation on Interaction */}
+      {/* Resume Animation Indicator */}
       <div
         className="h-0 overflow-hidden transition-all duration-300"
         style={{ marginTop: isPaused ? '4px' : '0' }}
       >
-        <div className="text-[9px] font-black uppercase opacity-40 text-center">
+        <div className="text-[9px] font-black uppercase text-ink/40 text-center">
           Hover to pause • Touch to pause
         </div>
       </div>
