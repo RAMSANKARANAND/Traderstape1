@@ -43,6 +43,25 @@ export function LiveMarketTicker({ items }: { items: MarketQuote[] }) {
     };
   }, [isPaused, items]);
 
+  // Add global styles to hide scrollbar
+  useEffect(() => {
+    const styleElement = document.createElement('style');
+    styleElement.textContent = `
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .hide-scrollbar {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+    `;
+    document.head.appendChild(styleElement);
+
+    return () => {
+      document.head.removeChild(styleElement);
+    };
+  }, []);
+
   const getFriendlyName = (symbol: string): string => {
     const upper = symbol.toUpperCase();
     // Simple mapping for common symbols
@@ -88,7 +107,7 @@ export function LiveMarketTicker({ items }: { items: MarketQuote[] }) {
   };
 
   return (
-    <div className="bg-bg border-2 border-ink w-full overflow-hidden">
+    <div className="bg-bg border-[4px] border-ink w-full overflow-hidden">
       {/* Header with LIVE indicator and timestamp */}
       <div className="flex items-center justify-between px-4 py-2 border-b border-ink bg-ink/5">
         <div className="flex items-center gap-2">
@@ -103,7 +122,7 @@ export function LiveMarketTicker({ items }: { items: MarketQuote[] }) {
       {/* Ticker Container */}
       <div
         ref={containerRef}
-        className="flex gap-4 px-4 py-3 overflow-x-auto scroll-smooth whitespace-nowrap cursor-default"
+        className="flex gap-4 px-4 py-4 overflow-x-auto scroll-smooth whitespace-nowrap cursor-default hide-scrollbar"
         style={{ scrollBehavior: 'auto' }}
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
@@ -118,15 +137,15 @@ export function LiveMarketTicker({ items }: { items: MarketQuote[] }) {
           return (
             <div
               key={`${item.symbol}-${index}`}
-              className="flex items-center gap-3 px-3 py-1 border-r-2 border-ink last:border-r-0"
+              className="flex items-center gap-3 px-3 py-1 border-r-[1.5px] border-ink last:border-r-0"
             >
               {/* Symbol */}
-              <span className="text-small font-black uppercase text-ink tabular-nums">
+              <span className="text-small font-bold uppercase text-ink tabular-nums">
                 {item.symbol.replace(/^\^/, "").replace(".NS", "")}
               </span>
 
               {/* Price */}
-              <span className="text-small font-black tabular-nums text-ink">
+              <span className="text-small font-bold tabular-nums text-ink">
                 {formatPrice(item.price)}
               </span>
 
