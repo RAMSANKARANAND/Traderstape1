@@ -11,6 +11,8 @@ export default async function TheTapePage() {
   try {
     const marketQuotes = await getMarketQuotes();
     initialQuotes = marketQuotes;
+    console.log("[THE-TAPE DEBUG] Total quotes:", initialQuotes.length);
+    console.log("[THE-TAPE DEBUG] Symbols:", initialQuotes.map(q => q.symbol));
   } catch (err) {
     console.error("The Tape: initial fetch failed", err);
   }

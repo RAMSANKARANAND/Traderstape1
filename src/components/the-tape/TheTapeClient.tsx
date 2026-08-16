@@ -10,15 +10,14 @@ import { Badge } from "@/components/ui/Badge";
 import type { MarketQuote } from "@/lib/market/types";
 import { computeMarketPulse } from "@/lib/market/pulse";
 import type { MarketPulse } from "@/lib/market/pulse";
-import { LiveTicker } from "./LiveTicker";
 import { getTopMovers } from "@/lib/market/utils";
 import { formatPercent } from "@/lib/market/utils";
 
 const INDIAN_INDICES = ["NIFTY 50", "BANK NIFTY", "SENSEX", "INDIA VIX"];
-const FOREX = ["USD/INR", "EUR/USD", "GBP/USD"];
-const METALS = ["XAU/USD", "XAG/USD"];
-const CRYPTO = ["BTC", "ETH"];
-const NSE_STOCKS = ["RELIANCE", "HDFC BANK", "TCS", "INFOSYS", "ICICI BANK", "SBI", "L&T", "AXIS BANK", "KOTAK BANK", "ITC"];
+  const FOREX = ["USD/INR", "EUR/USD", "GBP/USD"];
+  const METALS = ["Gold", "Silver"];
+  const CRYPTO = ["Bitcoin", "Ethereum", "Solana", "Ripple"];
+  const NSE_STOCKS = ["RELIANCE", "HDFC BANK", "TCS", "INFOSYS", "ICICI BANK", "SBI", "L&T", "AXIS BANK", "KOTAK BANK", "ITC"];
 
 interface TheTapeClientProps {
   initialQuotes: MarketQuote[];
@@ -164,7 +163,6 @@ export function TheTapeClient({ initialQuotes }: TheTapeClientProps) {
         {/* Section 1: Tape Live */}
         <section>
           <SectionHeader title="📡 Tape Live" description="A real-time snapshot of today's major financial markets." />
-          <LiveTicker quotes={quotes} />
           <div className="space-y-8">
             <div>
               <h3 className="text-sm font-black uppercase tracking-widest text-text-secondary mb-3">Indian Indices</h3>
