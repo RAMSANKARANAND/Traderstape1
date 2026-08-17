@@ -39,43 +39,43 @@ function setPreviousRate(symbol: string, rate: number): void {
 }
 
 function getFallbackForexQuotes(): MarketQuote[] {
-  const now = new Date().toISOString();
-  return [
-    {
-      symbol: "USDINR",
-      name: "USD/INR",
-      price: 83.45,
-      change: 0.05,
-      changePercent: 0.06,
-      direction: "up",
-      updatedAt: now,
-      provider: "CurrencyAPI (Fallback)",
-      currency: "INR",
-    },
-    {
-      symbol: "EURUSD",
-      name: "EUR/USD",
-      price: 1.0921,
-      change: -0.0002,
-      changePercent: -0.02,
-      direction: "down",
-      updatedAt: now,
-      provider: "CurrencyAPI (Fallback)",
-      currency: "USD",
-    },
-    {
-      symbol: "GBPUSD",
-      name: "GBP/USD",
-      price: 1.2745,
-      change: 0.001,
-      changePercent: 0.08,
-      direction: "up",
-      updatedAt: now,
-      provider: "CurrencyAPI (Fallback)",
-      currency: "USD",
-    },
-  ];
-}
+    const now = new Date().toISOString();
+    return [
+      {
+        symbol: "INRUSD",
+        name: "INR/USD",
+        price: Number((1 / 83.45).toFixed(4)), // ~0.0120
+        change: 0, // fallback: no change data
+        changePercent: 0,
+        direction: "flat",
+        updatedAt: now,
+        provider: "CurrencyAPI (Fallback)",
+        currency: "USD",
+      },
+      {
+        symbol: "EURUSD",
+        name: "EUR/USD",
+        price: 1.0921,
+        change: -0.0002,
+        changePercent: -0.02,
+        direction: "down",
+        updatedAt: now,
+        provider: "CurrencyAPI (Fallback)",
+        currency: "USD",
+      },
+      {
+        symbol: "GBPUSD",
+        name: "GBP/USD",
+        price: 1.2745,
+        change: 0.001,
+        changePercent: 0.08,
+        direction: "up",
+        updatedAt: now,
+        provider: "CurrencyAPI (Fallback)",
+        currency: "USD",
+      },
+    ];
+  }
 
 export const currencyApiProvider: MarketProvider = {
   name: "CurrencyAPI",
@@ -108,22 +108,23 @@ export const currencyApiProvider: MarketProvider = {
       const currentTime = new Date().toISOString();
 
       if (data.data.INR) {
-        const rate = data.data.INR.value;
-        const prev = getPreviousRate("USDINR");
-        const change = prev ? rate - prev : 0;
+        const rate = data.data.INR.value; // INR per 1 USD
+        const invertedRate = 1 / rate;    // USD per 1 INR
+        const prev = getPreviousRate("INRUSD");
+        const change = prev ? invertedRate - prev : 0;
         const changePercent = prev ? (change / prev) * 100 : 0;
         quotes.push({
-          symbol: "USDINR",
-          name: "USD/INR",
-          price: Number(rate.toFixed(2)),
-          change: Number(change.toFixed(2)),
+          symbol: "INRUSD",
+          name: "INR/USD",
+          price: Number(invertedRate.toFixed(4)),
+          change: Number(change.toFixed(4)),
           changePercent: Number(changePercent.toFixed(2)),
           direction: mapDirection(change),
           updatedAt: currentTime,
           provider: "CurrencyAPI",
-          currency: "INR",
+          currency: "USD",
         });
-        setPreviousRate("USDINR", rate);
+        setPreviousRate("INRUSD", invertedRate);
       }
 
       if (data.data.EUR) {

@@ -43,7 +43,7 @@
 	],
 	"vars": {
 		"MAINTENANCE_MODE": "false",
-		"APP_URL": "https://traderstape1new.workers.dev"
+		"APP_URL": "https://traderstape.com"
 	},
 	"triggers": {
 		"crons": [

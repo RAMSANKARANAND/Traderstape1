@@ -26,10 +26,10 @@ export function MarketDetailCard({ quote }: MarketDetailCardProps) {
       </div>
 
       <div>
-        <div className="text-3xl font-black tabular-nums">{formatPrice(quote.price)}</div>
-        <div className="text-sm font-bold text-ink">
-          {formatChange(quote.change)} ({formatPercent(quote.changePercent)})
-        </div>
+        <div className="text-3xl font-black tabular-nums">{quote.symbol === 'INRUSD' ? formatPrice(quote.price, 4) : formatPrice(quote.price)}</div>
+<div className="text-sm font-bold text-ink">
+      {quote.symbol === 'INRUSD' ? formatChange(quote.change, 4) : formatChange(quote.change)} ({formatPercent(quote.changePercent)})
+    </div>
       </div>
 
       <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">

@@ -14,7 +14,7 @@ import { getTopMovers } from "@/lib/market/utils";
 import { formatPercent } from "@/lib/market/utils";
 
 const INDIAN_INDICES = ["NIFTY 50", "BANK NIFTY", "SENSEX", "INDIA VIX"];
-  const FOREX = ["USD/INR", "EUR/USD", "GBP/USD"];
+  const FOREX = ["INR/USD", "EUR/USD", "GBP/USD"];
   const METALS = ["Gold", "Silver"];
   const CRYPTO = ["Bitcoin", "Ethereum", "Solana", "Ripple"];
   const NSE_STOCKS = ["RELIANCE", "HDFC BANK", "TCS", "INFOSYS", "ICICI BANK", "SBI", "L&T", "AXIS BANK", "KOTAK BANK", "ITC"];
