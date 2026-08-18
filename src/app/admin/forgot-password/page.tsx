@@ -27,7 +27,7 @@ export default async function ForgotPasswordPage() {
               
               if (user) {
                 const token = await createPasswordResetToken(user.id);
-                const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/admin/reset-password?token=${token}`;
+                const resetUrl = `${process.env.APP_URL}/admin/reset-password?token=${token}`;
                 console.log("[FORGOT PASSWORD] Sending email to:", user.email);
                 
                 await sendPasswordResetEmail(
