@@ -9,6 +9,7 @@
  */
 
 import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { hash } from "bcryptjs";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types — mirror the Prisma models so call sites stay typed
@@ -1183,6 +1184,37 @@ export async function createPasswordResetToken(userId: string): Promise<string> 
     .bind(generateId(), userId, token, expiresAt, null, now)
     .run();
   return token;
+}
+
+export async function createUser(data: {
+  name: string;
+  email: string;
+  password: string;
+  role: Role;
+  isActive?: boolean;
+}): Promise<void> {
+  const d1 = await getD1();
+  const id = generateId();
+  const now = new Date().toISOString();
+  const hashedPassword = await hash(data.password, 10);
+  const isActive = data.isActive ?? true;
+
+  await d1
+    .prepare(
+      `INSERT INTO User (id, name, email, passwordHash, role, isActive, createdAt, updatedAt)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    )
+    .bind(
+      id,
+      data.name,
+      data.email,
+      hashedPassword,
+      data.role,
+      isActive,
+      now,
+      now,
+    )
+    .run();
 }
 
 export async function getPasswordResetToken(

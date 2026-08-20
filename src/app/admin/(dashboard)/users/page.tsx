@@ -2,6 +2,7 @@ import { getAllUsers, toggleUserActive, createPasswordResetToken } from "@/lib/d
 import { requireRole } from "@/lib/auth-guard";
 import { getSessionUser } from "@/lib/session";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { Card, Badge, SectionTitle, Button } from "@/components/ui";
 import type { Metadata } from "next";
 
@@ -17,9 +18,15 @@ export default async function AdminUsersPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex items-center justify-between mb-8">
-        <SectionTitle className="mb-0">Users</SectionTitle>
-      </div>
+<div className="flex items-center justify-between mb-8">
+         <SectionTitle className="mb-0">Users</SectionTitle>
+         <Link
+           href="/admin/users/new"
+           className="text-xs font-black uppercase bg-accent-yellow text-ink px-3 py-2 brutal-border border-2 border-ink hover:translate-x-0.5 hover:translate-y-0.5 transition-transform"
+         >
+           + New User
+         </Link>
+       </div>
 
       <Card>
         <div className="overflow-x-auto">
