@@ -11,10 +11,9 @@ export const metadata: Metadata = {
 export default async function ResetPasswordPage({
   searchParams,
 }: {
-  searchParams: { token?: string; error?: string };
+  searchParams: Promise<{ token?: string; error?: string }>;
 }) {
-  const token = searchParams.token;
-  const error = searchParams.error;
+  const { token, error } = await searchParams;
 
   if (!token) {
     return (
@@ -114,6 +113,7 @@ export default async function ResetPasswordPage({
   const userId = tokenData.userId; // This is definitely a string
 
   async function handleSubmit(formData: FormData) {
+    "use server";
     const password = formData.get("password") as string;
     const confirmPassword = formData.get("confirmPassword") as string;
 
