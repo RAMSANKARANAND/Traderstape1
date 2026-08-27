@@ -3,6 +3,7 @@ import { getPublishedNewsPosts, getLatestTapeView, getLatestPublishedMorningBrie
 import { getMarketQuotes } from "@/lib/market/service";
 import { formatPrice, formatPercent, getTopMovers } from "@/lib/market/utils";
 import { generateAiContent } from "@/lib/ai/service";
+import { getKvNamespace } from "@/lib/rate-limit";
 import type { MorningBriefContext } from "@/lib/ai/types";
 import { SectionTitle, Badge, NewsCard, Button } from "@/components/ui";
 import { MarketCard } from "@/components/the-tape/MarketCard";
@@ -109,16 +110,37 @@ export default async function HomePage() {
     }] : []
   };
 
-  // Generate AI-powered morning brief
-  let aiMorningBriefResult: Awaited<ReturnType<typeof generateAiContent>> = { success: false, mode: "mock", message: "AI unavailable", data: undefined };
-  try {
-    aiMorningBriefResult = await generateAiContent({
-      action: "generate-morning-brief",
-      briefContext: morningBriefContext,
-    });
-  } catch (error) {
-    console.error("AI morning brief generation failed:", error);
-  }
+// Generate AI-powered morning brief with KV caching
+   let aiMorningBriefResult: Awaited<ReturnType<typeof generateAiContent>> = { success: false, mode: "mock", message: "AI unavailable", data: undefined };
+   try {
+     const CACHE_KEY = "ai-morning-brief-cache";
+     const kv = await getKvNamespace();
+     
+     if (kv) {
+       const cached = await kv.get(CACHE_KEY);
+       if (cached) {
+         console.log("[MORNING BRIEF CACHE] HIT");
+         aiMorningBriefResult = JSON.parse(cached);
+       } else {
+         console.log("[MORNING BRIEF CACHE] MISS");
+         aiMorningBriefResult = await generateAiContent({
+           action: "generate-morning-brief",
+           briefContext: morningBriefContext,
+         });
+         // Cache for 1 hour (3600 seconds)
+         await kv.put(CACHE_KEY, JSON.stringify(aiMorningBriefResult), { expirationTtl: 3600 });
+       }
+     } else {
+       // Fallback if KV unavailable: generate live (existing behavior)
+       console.log("[MORNING BRIEF CACHE] KV unavailable, generating live");
+       aiMorningBriefResult = await generateAiContent({
+         action: "generate-morning-brief",
+         briefContext: morningBriefContext,
+       });
+     }
+   } catch (error) {
+     console.error("AI morning brief generation failed:", error);
+   }
 
   // Parse the AI response into the format expected by MorningMarketBriefCard
   let morningBrief: MorningBriefData = null;
