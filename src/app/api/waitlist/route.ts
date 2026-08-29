@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getKvNamespace, checkRateLimit } from "@/lib/rate-limit";
+import { generateId } from "@/lib/db-raw";
 
 interface WaitlistRequest {
   email: string;
@@ -43,9 +44,10 @@ export async function POST(request: NextRequest) {
     const db = env.traderstape;
 
     try {
+      const id = generateId();
       await db
-        .prepare("INSERT INTO WaitlistEmail (email) VALUES (?)")
-        .bind(email.toLowerCase())
+        .prepare("INSERT INTO WaitlistEmail (id, email) VALUES (?, ?)")
+        .bind(id, email.toLowerCase())
         .run();
 
       return NextResponse.json({ success: true });
