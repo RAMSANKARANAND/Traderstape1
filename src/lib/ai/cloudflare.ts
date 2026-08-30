@@ -44,13 +44,38 @@ async function callCloudflareAI(messages: CfMessage[]): Promise<string> {
 
   const json = (await res.json()) as CfRunResponse;
 
-  if (!json.success || !json.result?.response) {
+  if (!json.success || !json.result) {
     const errMsg =
       json.errors?.map((e) => e.message).join(", ") || "Unknown Cloudflare AI error";
     throw new Error(errMsg);
   }
 
-  return json.result.response.trim();
+  const responseValue = json.result.response;
+
+  // Log the actual shape for diagnosis
+  console.log("[AI DEBUG] result.response type:", typeof responseValue);
+  if (typeof responseValue !== "string") {
+    console.log("[AI DEBUG] Full json.result:", JSON.stringify(json.result));
+  }
+
+  // Handle string response (expected case)
+  if (typeof responseValue === "string") {
+    return responseValue.trim();
+  }
+
+  // Handle object response (some models nest text differently)
+  if (responseValue && typeof responseValue === "object") {
+    const obj = responseValue as Record<string, unknown>;
+    if (typeof obj.text === "string") return obj.text.trim();
+    if (typeof obj.content === "string") return obj.content.trim();
+    if (Array.isArray(obj.content) && obj.content[0]?.text) {
+      return String(obj.content[0].text).trim();
+    }
+  }
+
+  throw new Error(
+    `Unexpected response shape from Cloudflare AI: ${JSON.stringify(json.result)}`
+  );
 }
 
 const JSON_SEO_INSTRUCTION =
