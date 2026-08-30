@@ -256,15 +256,33 @@ export async function generateWithCloudflare(req: AiRequest): Promise<AiResponse
           };
         }
 } catch (err) {
-         console.error("[AI DEBUG] Raw response that failed to parse:", raw);
-         console.error("[AI DEBUG] After stripJsonFences:", stripJsonFences(raw));
-         console.error("[AI DEBUG] Parse error:", err);
-         return {
-           success: false,
-           mode: "cloudflare",
-           message: "Failed to parse news roundup summary from AI response.",
-         };
-       }
+          console.error("[AI DEBUG] Raw response that failed to parse:", raw);
+          console.error("[AI DEBUG] After stripJsonFences:", stripJsonFences(raw));
+          console.error("[AI DEBUG] Parse error:", err);
+          // Attempt repair: model sometimes omits quotes around the summary value
+          // Pattern observed: {"summary": <unquoted text>, "category": "X"}
+const repairMatch = stripJsonFences(raw).match(
+             /\{"summary":\s*([\s\S]*?),\s*"category":\s*"(Stocks|Crypto|Forex|Geopolitical)"\s*\}/
+           );
+          if (repairMatch) {
+            const repairedSummary = repairMatch[1].trim().replace(/^["']|["']$/g, "");
+            const repairedCategory = repairMatch[2];
+            if (repairedSummary && repairedSummary.length > 0) {
+              console.log("[AI DEBUG] Repaired malformed JSON successfully");
+              return {
+                success: true,
+                mode: "cloudflare",
+                message: "News roundup summary generated (repaired).",
+                data: { summary: repairedSummary, category: repairedCategory },
+              };
+            }
+          }
+          return {
+            success: false,
+            mode: "cloudflare",
+            message: "Failed to print news roundup summary from AI response.",
+          };
+        }
     }
     default:
       return {
