@@ -145,6 +145,7 @@ function normalizeNewlines(text: string): string {
 export async function generateWithCloudflare(req: AiRequest): Promise<AiResponse> {
   const messages = buildMessages(req);
   const raw = await callCloudflareAI(messages);
+  console.log("[AI DEBUG] Raw response length:", raw.length, "First 200 chars:", raw.slice(0, 200));
 
   switch (req.action) {
     case "generate-news-draft":
@@ -254,13 +255,16 @@ export async function generateWithCloudflare(req: AiRequest): Promise<AiResponse
             message: "Invalid response from AI for news roundup summary.",
           };
         }
-      } catch {
-        return {
-          success: false,
-          mode: "cloudflare",
-          message: "Failed to parse news roundup summary from AI response.",
-        };
-      }
+} catch (err) {
+         console.error("[AI DEBUG] Raw response that failed to parse:", raw);
+         console.error("[AI DEBUG] After stripJsonFences:", stripJsonFences(raw));
+         console.error("[AI DEBUG] Parse error:", err);
+         return {
+           success: false,
+           mode: "cloudflare",
+           message: "Failed to parse news roundup summary from AI response.",
+         };
+       }
     }
     default:
       return {
