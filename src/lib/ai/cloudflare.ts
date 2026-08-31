@@ -62,6 +62,14 @@ const JSON_TAGS_INSTRUCTION =
   "\n\nRespond with ONLY valid JSON in this exact shape, no markdown fences, no commentary: " +
   '{"tags": string[]}.';
 
+function getStringFromRaw(raw: unknown): string {
+  if (typeof raw === "string") return raw;
+  if (raw && typeof raw === "object" && "response" in raw && typeof raw.response === "string") {
+    return raw.response;
+  }
+  return "";
+}
+
 function buildMessages(req: AiRequest): CfMessage[] {
   switch (req.action) {
     case "generate-news-draft": {
@@ -145,7 +153,7 @@ function normalizeNewlines(text: string): string {
 export async function generateWithCloudflare(req: AiRequest): Promise<AiResponse> {
   const messages = buildMessages(req);
   const raw = await callCloudflareAI(messages);
-  console.log("[AI DEBUG] Raw response length:", raw.length, "First 200 chars:", raw.slice(0, 200));
+  const safeRaw = getStringFromRaw(raw);
 
   switch (req.action) {
     case "generate-news-draft":
@@ -153,32 +161,32 @@ export async function generateWithCloudflare(req: AiRequest): Promise<AiResponse
         success: true,
         mode: "cloudflare",
         message: "News draft generated successfully.",
-        data: { content: normalizeNewlines(raw) },
+        data: { content: normalizeNewlines(safeRaw) },
       };
     case "rewrite":
       return {
         success: true,
         mode: "cloudflare",
         message: "Content rewritten successfully.",
-        data: { content: normalizeNewlines(raw) },
+        data: { content: normalizeNewlines(safeRaw) },
       };
     case "summarize":
       return {
         success: true,
         mode: "cloudflare",
         message: "Content summarized.",
-        data: { summary: normalizeNewlines(raw) },
+        data: { summary: normalizeNewlines(safeRaw) },
       };
     case "generate-tape-view":
       return {
         success: true,
         mode: "cloudflare",
         message: "Tape view analysis generated.",
-        data: { content: normalizeNewlines(raw) },
+        data: { content: normalizeNewlines(safeRaw) },
       };
     case "generate-seo": {
       try {
-        const parsed = JSON.parse(stripJsonFences(raw)) as {
+        const parsed = JSON.parse(stripJsonFences(safeRaw)) as {
           seoTitle: string;
           metaDescription: string;
           keywords: string[];
@@ -203,7 +211,7 @@ export async function generateWithCloudflare(req: AiRequest): Promise<AiResponse
     }
     case "generate-tags": {
       try {
-        const parsed = JSON.parse(stripJsonFences(raw)) as { tags: string[] };
+        const parsed = JSON.parse(stripJsonFences(safeRaw)) as { tags: string[] };
         return {
           success: true,
           mode: "cloudflare",
@@ -223,66 +231,75 @@ export async function generateWithCloudflare(req: AiRequest): Promise<AiResponse
         success: true,
         mode: "cloudflare",
         message: "Morning brief generated.",
-        data: { content: normalizeNewlines(raw) },
+        data: { content: normalizeNewlines(safeRaw) },
       };
     }
-    case "generate-news-roundup-summary": {
-      // Expecting JSON: {summary: string|null, category: "Stocks"|"Crypto"|"Forex"|"Geopolitical"|null}
-      try {
-        const parsed = JSON.parse(stripJsonFences(raw)) as {
-          summary: string | null;
-          category: "Stocks" | "Crypto" | "Forex" | "Geopolitical" | null;
-        };
-        // Validate category
-        const validCats = ["Stocks", "Crypto", "Forex", "Geopolitical"];
+case "generate-news-roundup-summary": {
+      const validCats = ["Stocks", "Crypto", "Forex", "Geopolitical"];
+
+      // Case 1: raw is already a structured object with summary/category fields
+      if (raw && typeof raw === "object" && "summary" in raw && "category" in raw) {
+        const obj = raw as { summary: string | null; category: string | null };
         if (
-          (parsed.summary === null && parsed.category === null) ||
-          (typeof parsed.summary === "string" &&
-            parsed.summary.trim() !== "" &&
-            typeof parsed.category === "string" &&
-            validCats.includes(parsed.category))
+          typeof obj.summary === "string" &&
+          obj.summary.trim() !== "" &&
+          typeof obj.category === "string" &&
+          validCats.includes(obj.category)
         ) {
           return {
             success: true,
             mode: "cloudflare",
             message: "News roundup summary generated.",
-            data: { summary: parsed.summary ?? undefined, category: parsed.category ?? undefined },
+            data: { summary: obj.summary, category: obj.category },
           };
-        } else {
+        }
+        return {
+          success: false,
+          mode: "cloudflare",
+          message: "AI returned null or invalid summary/category.",
+        };
+      }
+
+      // Case 2: raw is a string that needs JSON parsing
+      if (typeof raw === "string") {
+        try {
+          const parsed = JSON.parse(stripJsonFences(raw)) as {
+            summary: string | null;
+            category: "Stocks" | "Crypto" | "Forex" | "Geopolitical" | null;
+          };
+          if (
+            typeof parsed.summary === "string" &&
+            parsed.summary.trim() !== "" &&
+            typeof parsed.category === "string" &&
+            validCats.includes(parsed.category)
+          ) {
+            return {
+              success: true,
+              mode: "cloudflare",
+              message: "News roundup summary generated.",
+              data: { summary: parsed.summary, category: parsed.category },
+            };
+          }
           return {
             success: false,
             mode: "cloudflare",
             message: "Invalid response from AI for news roundup summary.",
           };
-        }
-} catch (err) {
-          console.error("[AI DEBUG] Raw response that failed to parse:", raw);
-          console.error("[AI DEBUG] After stripJsonFences:", stripJsonFences(raw));
-          console.error("[AI DEBUG] Parse error:", err);
-          // Attempt repair: model sometimes omits quotes around the summary value
-          // Pattern observed: {"summary": <unquoted text>, "category": "X"}
-const repairMatch = stripJsonFences(raw).match(
-             /\{"summary":\s*([\s\S]*?),\s*"category":\s*"(Stocks|Crypto|Forex|Geopolitical)"\s*\}/
-           );
-          if (repairMatch) {
-            const repairedSummary = repairMatch[1].trim().replace(/^["']|["']$/g, "");
-            const repairedCategory = repairMatch[2];
-            if (repairedSummary && repairedSummary.length > 0) {
-              console.log("[AI DEBUG] Repaired malformed JSON successfully");
-              return {
-                success: true,
-                mode: "cloudflare",
-                message: "News roundup summary generated (repaired).",
-                data: { summary: repairedSummary, category: repairedCategory },
-              };
-            }
-          }
+        } catch (err) {
+          console.error("[AI DEBUG] String parse failed:", err);
           return {
             success: false,
             mode: "cloudflare",
-            message: "Failed to print news roundup summary from AI response.",
+            message: "Failed to parse news roundup summary from AI response.",
           };
         }
+      }
+
+      return {
+        success: false,
+        mode: "cloudflare",
+        message: "Unexpected AI response shape for news roundup summary.",
+      };
     }
     default:
       return {
