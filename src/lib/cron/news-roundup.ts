@@ -32,7 +32,7 @@ export async function runNewsRoundup(): Promise<NewsRoundupResult> {
   const feeds = getEnabledCronFeeds();
   console.log(`[News Roundup Cron] Processing ${feeds.length} feeds`);
 
-  const feedItems: { item: any; feedCategory: string }[] = [];
+  const feedItems: { item: any; feedCategory: string; feedName: string }[] = [];
 
   for (const feed of feeds) {
     stats.fetched++;
@@ -42,7 +42,7 @@ export async function runNewsRoundup(): Promise<NewsRoundupResult> {
       continue;
     }
     for (const item of result.items) {
-      feedItems.push({ item, feedCategory: feed.category });
+      feedItems.push({ item, feedCategory: feed.category, feedName: feed.name });
     }
   }
 
@@ -57,8 +57,10 @@ export async function runNewsRoundup(): Promise<NewsRoundupResult> {
   stats.newItems = toProcess.length;
 
   const urlToFeedCategory = new Map<string, string>();
-  for (const { item, feedCategory } of feedItems) {
+  const urlToFeedName = new Map<string, string>();
+  for (const { item, feedCategory, feedName } of feedItems) {
     urlToFeedCategory.set(item.url, feedCategory);
+    urlToFeedName.set(item.url, feedName);
   }
 
   const titlesToCheck = toProcess.map((item) => item.title);
@@ -164,6 +166,7 @@ export async function runNewsRoundup(): Promise<NewsRoundupResult> {
       authorId: systemUserId,
       publishedAt: item.publishedAt,
       isPublished: false,
+      sourceName: urlToFeedName.get(item.url) ?? item.sourceName,
     });
     stats.saved++;
   }

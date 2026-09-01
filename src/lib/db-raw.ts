@@ -69,6 +69,7 @@ export interface NewsPost {
   seoTitle: string | null;
   seoDescription: string | null;
   ogImageUrl: string | null;
+  sourceName: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -306,7 +307,7 @@ export async function getPublishedNewsPosts(
   const take = options?.take;
 
   const selectColumns = `SELECT n.id, n.title, n.slug, n.category, n.summary, 
-        n.authorId, n.publishedAt, n.isPublished, n.isBreaking, n.isFeatured,
+        n.body, n.sourceName, n.authorId, n.publishedAt, n.isPublished, n.isBreaking, n.isFeatured,
         n.isTrending, n.isEditorPick, n.seoTitle, n.seoDescription, n.ogImageUrl,
         n.createdAt, n.updatedAt,
         u.name as authorName`;
@@ -334,6 +335,7 @@ export async function getPublishedNewsPosts(
     category: row.category as NewsCategory,
     summary: row.summary as string,
     body: row.body as string ?? "",
+    sourceName: (row.sourceName as string) || null,
     authorId: row.authorId as string,
     publishedAt: toDate(row.publishedAt),
     isPublished: toBool(row.isPublished),
@@ -373,6 +375,7 @@ export async function getNewsPostBySlug(
     category: row.category as NewsCategory,
     summary: row.summary as string,
     body: row.body as string,
+    sourceName: (row.sourceName as string) || null,
     authorId: row.authorId as string,
     publishedAt: toDate(row.publishedAt),
     isPublished: toBool(row.isPublished),
@@ -393,18 +396,19 @@ export async function getNewsPostById(id: string): Promise<NewsPost | null> {
   const d1 = await getD1();
   const row = await d1.prepare("SELECT * FROM NewsPost WHERE id = ?").bind(id).first();
   if (!row) return null;
-  return {
+return {
     id: row.id as string,
     title: row.title as string,
     slug: row.slug as string,
     category: row.category as NewsCategory,
     summary: row.summary as string,
     body: row.body as string,
+    sourceName: (row.sourceName as string) || null,
     authorId: row.authorId as string,
     publishedAt: toDate(row.publishedAt),
     isPublished: toBool(row.isPublished),
     isBreaking: toBool(row.isBreaking),
-    isFeatured: toBool(row.isFeatured),
+    isFeatured: toBool(row.isBreaking),
     isTrending: toBool(row.isTrending),
     isEditorPick: toBool(row.isEditorPick),
     seoTitle: (row.seoTitle as string) || null,
@@ -420,7 +424,7 @@ export async function getAllNewsPosts(): Promise<NewsPostWithAuthor[]> {
   const result = await d1
     .prepare(
       `SELECT n.id, n.title, n.slug, n.category, n.summary, 
-        n.body, n.authorId, n.publishedAt, n.isPublished, n.isBreaking, n.isFeatured,
+        n.body, n.sourceName, n.authorId, n.publishedAt, n.isPublished, n.isBreaking, n.isFeatured,
         n.isTrending, n.isEditorPick, n.seoTitle, n.seoDescription, n.ogImageUrl,
         n.createdAt, n.updatedAt,
         u.name as authorName
@@ -436,6 +440,7 @@ export async function getAllNewsPosts(): Promise<NewsPostWithAuthor[]> {
     category: row.category as NewsCategory,
     summary: row.summary as string,
     body: row.body as string,
+    sourceName: (row.sourceName as string) || null,
     authorId: row.authorId as string,
     publishedAt: toDate(row.publishedAt),
     isPublished: toBool(row.isPublished),
@@ -486,6 +491,7 @@ export async function createNewsPost(data: {
   seoTitle?: string | null;
   seoDescription?: string | null;
   ogImageUrl?: string | null;
+  sourceName?: string | null;
   isPublished: boolean;
   publishedAt: Date | null;
 }): Promise<void> {
@@ -494,8 +500,8 @@ export async function createNewsPost(data: {
   const now = new Date().toISOString();
   await d1
     .prepare(
-      `INSERT INTO NewsPost (id, title, slug, category, summary, body, authorId, publishedAt, isPublished, isBreaking, isFeatured, isTrending, isEditorPick, seoTitle, seoDescription, ogImageUrl, createdAt, updatedAt)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, ?, ?, ?, ?, ?)`,
+      `INSERT INTO NewsPost (id, title, slug, category, summary, body, authorId, publishedAt, isPublished, isBreaking, isFeatured, isTrending, isEditorPick, seoTitle, seoDescription, ogImageUrl, sourceName, createdAt, updatedAt)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, ?, ?, ?, ?, ?, ?)`,
     )
     .bind(
       id,
@@ -510,6 +516,7 @@ export async function createNewsPost(data: {
       data.seoTitle ?? null,
       data.seoDescription ?? null,
       data.ogImageUrl ?? null,
+      data.sourceName ?? null,
       now,
       now,
     )

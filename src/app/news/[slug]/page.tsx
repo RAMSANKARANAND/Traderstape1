@@ -99,6 +99,11 @@ export default async function ArticlePage({
               })}
             </span>
           )}
+          {post.sourceName && (
+            <span className="text-xs font-bold uppercase opacity-70">
+              Source: {post.sourceName}
+            </span>
+          )}
         </div>
 
         <h1 className="text-3xl md:text-4xl font-black uppercase leading-tight mb-4">
@@ -112,21 +117,7 @@ export default async function ArticlePage({
 <Card className="mb-8">
   <p className="text-lg leading-relaxed text-base">{post.summary}</p>
 </Card>
-
-<div className="prose prose-lg max-w-none mt-6">
-          <div className="prose-invert text-base leading-6">
-            <ReactMarkdown>
-              {normalizeBodyContent(post.body)}
-            </ReactMarkdown>
-          </div>
-        </div>
-      </article>
-
-      <div className="mt-12 pt-8 brutal-border-t border-t-3 border-ink">
-        <p className="text-xs font-bold opacity-60">
-          Traderstape is for educational purposes only. Nothing on this site is financial advice.
-        </p>
-      </div>
-    </div>
-  );
+</article>
+</div>
+);
 }
