@@ -107,11 +107,11 @@ export function LiveMarketTicker({ items }: { items: MarketQuote[] }) {
   };
 
   return (
-    <div className="bg-bg border-[4px] border-ink w-full overflow-hidden">
+    <div className="ng-card">
       {/* Header with LIVE indicator and timestamp */}
       <div className="flex items-center justify-between px-4 py-2 border-b border-ink bg-ink/5">
         <div className="flex items-center gap-2">
-          <span className="text-accent-bullish font-black text-sm">LIVE ●</span>
+          <span className="ng-pill-navy">LIVE</span>
           <h3 className="text-small font-black uppercase text-ink">Market</h3>
         </div>
         <span className="text-[10px] font-black uppercase text-ink/60">
@@ -140,17 +140,17 @@ export function LiveMarketTicker({ items }: { items: MarketQuote[] }) {
               className="flex items-center gap-3 px-3 py-1 border-r-[1.5px] border-ink last:border-r-0"
             >
               {/* Symbol */}
-              <span className="text-small font-bold uppercase text-ink tabular-nums">
+              <span className="text-small font-bold uppercase tabular-nums" style={{ color: 'var(--ng-navy-text)' }}>
                 {item.symbol.replace(/^\^/, "").replace(".NS", "")}
               </span>
 
               {/* Price */}
-              <span className="text-small font-bold tabular-nums text-ink">
+              <span className="text-small font-bold tabular-nums" style={{ color: 'var(--ng-navy-text)' }}>
                 {formatPrice(item.price)}
               </span>
 
               {/* Change Percentage with color */}
-              <span className={`text-small font-bold tabular-nums ${isPositive ? "text-accent-bullish" : isNegative ? "text-accent-bearish" : "text-ink/60"}`}>
+              <span className={`text-small font-bold tabular-nums ${isPositive ? "ng-pill-positive" : isNegative ? "ng-pill-negative" : "text-ink/60"}`}>
                 {isPositive ? "+" : ""}{item.changePercent?.toFixed(2)}%
               </span>
 
