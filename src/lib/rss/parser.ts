@@ -69,18 +69,18 @@ function parseRss2(channel: any): ParsedFeed {
     itemsArray = Array.isArray(channel.item) ? channel.item : [channel.item];
   }
 
-  const items = itemsArray.map((item: any) => ({
-    title: getTextContent(item.title),
+const items = itemsArray.map((item: any) => ({
+    title: cleanHtml(getTextContent(item.title)),
     link: getTextContent(item.link),
     pubDate: getTextContent(item.pubDate),
-    description: getTextContent(item.description),
+    description: cleanHtml(getTextContent(item.description)),
     content: getTextContent(item['content:encoded']) || getTextContent(item.content),
-    contentSnippet: getTextContent(item.description),
+    contentSnippet: cleanHtml(getTextContent(item.description)),
     author: getTextContent(item.author) || getTextContent(item['dc:creator']),
-    categories: Array.isArray(item.category) 
+    categories: Array.isArray(item.category)
       ? item.category.map((cat: any) => getTextContent(cat)).filter(Boolean)
-      : item.category 
-        ? [getTextContent(item.category)].filter(Boolean) 
+      : item.category
+        ? [getTextContent(item.category)].filter(Boolean)
         : [],
     guid: getTextContent(item.guid) || getTextContent(item.link),
     isoDate: getTextContent(item.pubDate),
@@ -156,7 +156,7 @@ function parseAtom(feed: any): ParsedFeed {
     const guid = getTextContent(entry.id) || getLinkFromEntry(entry);
     
     return {
-      title: getTextContent(entry.title),
+      title: cleanHtml(getTextContent(entry.title)),
       link: getLinkFromEntry(entry),
       pubDate,
       description: summaryEl ? cleanHtml(getTextContent(summaryEl)) : '',
@@ -213,7 +213,7 @@ export function parseFeed(xmlText: string, feedUrl: string): ParsedFeed {
 
 export function normalizeItems(parsed: ParsedFeed, sourceName: string, sourceUrl: string): NormalizedFeedItem[] {
   return parsed.items.map((item) => ({
-    title: item.title || 'Untitled',
+    title: cleanHtml(item.title || 'Untitled'),
     url: item.link || item.guid || '',
     publishedAt: parseDate(item.pubDate || item.isoDate || ''),
     summary: cleanHtml(item.contentSnippet || item.description || ''),
