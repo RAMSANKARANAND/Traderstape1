@@ -128,8 +128,8 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
               <h2 className="text-xl font-black uppercase tracking-wide mb-4 brutal-border-b border-b-3 border-ink pb-2">
                 Latest News
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {latest.map((post) => (
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+                  {latest.map((post) => (
                   <NewsCard
                     key={post.id}
                     title={post.title}
@@ -152,8 +152,8 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
                   Trending
                 </h2>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {trending.map((post) => (
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+                  {trending.map((post) => (
                   <NewsCard
                     key={post.id}
                     title={post.title}
@@ -176,8 +176,8 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
                   Editor's Picks
                 </h2>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {editorPicks.map((post) => (
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+                  {editorPicks.map((post) => (
                   <NewsCard
                     key={post.id}
                     title={post.title}

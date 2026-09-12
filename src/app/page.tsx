@@ -461,7 +461,7 @@ const organizationJsonLd = {
               All News →
             </Link>
           </div>
-          <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 ${finalMorningBrief ? "lg:grid-cols-3" : "lg:grid-cols-2"}`}>
+          <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch ${finalMorningBrief ? "lg:grid-cols-3" : "lg:grid-cols-2"}`}>
             {latestNews.map((post) => (
               <NewsCard
                 key={post.id}
