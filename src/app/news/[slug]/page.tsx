@@ -1,12 +1,8 @@
 import { getNewsPostBySlug } from "@/lib/db-raw";
-import { Badge, Card } from "@/components/ui";
+import { Badge } from "@/components/ui";
 import Link from "next/link";
-import ReactMarkdown from "react-markdown";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-function normalizeBodyContent(content: string): string {
-  return content.replace(/\\n/g, "\n");
-}
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
@@ -76,7 +72,8 @@ export default async function ArticlePage({
 
       <Link
         href="/news"
-        className="inline-block mb-6 font-black uppercase text-sm hover:text-accent-coral transition-colors duration-100"
+        className="inline-block mb-6 font-black uppercase text-sm hover:text-[var(--ng-gold)] transition-colors duration-100"
+        style={{ color: 'var(--ng-navy-text)' }}
       >
         ← Back to News
       </Link>
@@ -89,9 +86,9 @@ export default async function ArticlePage({
 
       <article>
         <div className="flex items-center gap-3 mb-4">
-          <Badge variant="default">{post.category}</Badge>
+          <Badge variant="flat" className="ng-pill-navy text-[10px]">{post.category}</Badge>
           {post.publishedAt && (
-            <span className="text-xs font-bold uppercase">
+            <span className="text-xs font-bold uppercase" style={{ color: 'var(--ng-navy-text)' }}>
               {new Date(post.publishedAt).toLocaleDateString("en-IN", {
                 day: "numeric",
                 month: "long",
@@ -100,13 +97,13 @@ export default async function ArticlePage({
             </span>
           )}
           {post.sourceName && (
-            <span className="text-xs font-bold uppercase opacity-70">
+            <span className="text-xs font-bold uppercase opacity-70" style={{ color: 'var(--ng-navy-text)' }}>
               Source: {post.sourceName}
             </span>
           )}
         </div>
 
-        <h1 className="text-3xl md:text-4xl font-black uppercase leading-tight mb-4">
+        <h1 className="text-3xl md:text-4xl font-black uppercase leading-tight mb-4" style={{ color: 'var(--ng-navy-text)' }}>
           {post.title}
         </h1>
 
@@ -114,9 +111,9 @@ export default async function ArticlePage({
           By {post.author.name}
         </p>
 
-<Card className="mb-8">
-  <p className="text-lg leading-relaxed text-base">{post.summary}</p>
-</Card>
+  <div className="ng-card p-5 mb-8">
+    <p className="text-lg leading-relaxed text-base">{post.summary}</p>
+  </div>
 </article>
 </div>
 );
