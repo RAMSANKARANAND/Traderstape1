@@ -16,13 +16,13 @@ export const metadata: Metadata = {
 
 const categories = [
   { value: "", label: "All" },
-  { value: "NSE", label: "NSE", color: "card-sky", badge: "forex" },
-  { value: "FOREX", label: "Forex", color: "card-mint", badge: "bullish" },
-  { value: "CRYPTO", label: "Crypto", color: "card-gold", badge: "gold" },
-  { value: "COMMODITIES", label: "Commodities", color: "card-gold", badge: "gold" },
-  { value: "GLOBAL_MARKETS", label: "Global Markets", color: "card-lavender", badge: "ai" },
-  { value: "WEEKLY_OUTLOOK", label: "Weekly Outlook", color: "card-coral", badge: "bearish" },
-  { value: "SPECIAL_REPORT", label: "Special Report", color: "card-coral", badge: "bearish" },
+  { value: "NSE", label: "NSE" },
+  { value: "FOREX", label: "Forex" },
+  { value: "CRYPTO", label: "Crypto" },
+  { value: "COMMODITIES", label: "Commodities" },
+  { value: "GLOBAL_MARKETS", label: "Global Markets" },
+  { value: "WEEKLY_OUTLOOK", label: "Weekly Outlook" },
+  { value: "SPECIAL_REPORT", label: "Special Report" },
 ];
 
 const categoryLabels: Record<string, string> = {
@@ -35,31 +35,9 @@ const categoryLabels: Record<string, string> = {
   SPECIAL_REPORT: "Special Report",
 };
 
-const categoryCardBg: Record<string, string> = {
-  NSE: "card-sky",
-  FOREX: "card-mint",
-  CRYPTO: "card-gold",
-  COMMODITIES: "card-gold",
-  GLOBAL_MARKETS: "card-lavender",
-  WEEKLY_OUTLOOK: "card-coral",
-  SPECIAL_REPORT: "card-coral",
-};
-
-const categoryBadgeVariant: Record<string, string> = {
-  NSE: "forex",
-  FOREX: "bullish",
-  CRYPTO: "gold",
-  COMMODITIES: "gold",
-  GLOBAL_MARKETS: "ai",
-  WEEKLY_OUTLOOK: "bearish",
-  SPECIAL_REPORT: "bearish",
-};
-
 const tabVariant = (cat: typeof categories[0], active: boolean) => {
-  if (active) return "bg-ink text-bg brutal-border shadow-[3px_3px_0_#000]";
-  if (!cat.color) return "bg-bg text-ink brutal-border shadow-[3px_3px_0_#000] hover:bg-accent-yellow";
-  const colorClass = `bg-${cat.color.replace("card-", "")} text-ink brutal-border shadow-[3px_3px_0_#000]`;
-  return colorClass;
+  if (active) return "ng-btn-navy";
+  return "bg-white border-[1px] border-[var(--ng-border)] text-[var(--ng-navy-text)] font-black uppercase text-sm hover:border-[var(--ng-gold)] transition-all duration-100";
 };
 
 interface TapeViewArticle {
@@ -97,11 +75,11 @@ export default async function TapeViewsPage({
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <SectionTitle className="mb-2">
+      <SectionTitle className="mb-2" style={{ color: 'var(--ng-navy-text)' }}>
         Tape Views
       </SectionTitle>
 
-      <p className="text-sm font-bold opacity-60 mb-8 uppercase tracking-wide">
+      <p className="text-sm font-bold opacity-60 mb-8 uppercase tracking-wide" style={{ color: 'var(--ng-navy-text)' }}>
         Original editorial market analysis for educational purposes
       </p>
 
@@ -114,9 +92,7 @@ export default async function TapeViewsPage({
                 ? `/tape-views?category=${cat.value}`
                 : "/tape-views"
             }
-            className={`px-4 py-2 font-black uppercase text-sm transition-all duration-100 ${
-              tabVariant(cat, category === cat.value || (!category && !cat.value))
-            }`}
+            className={`px-4 py-2 ${tabVariant(cat, category === cat.value || (!category && !cat.value))}`}
           >
             {cat.label}
           </Link>
@@ -136,46 +112,41 @@ export default async function TapeViewsPage({
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
           {articles.map((article) => {
-            const cardBg = categoryCardBg[article.category] || "card-white";
-            const badgeVariant = (categoryBadgeVariant[article.category] || "flat") as "default" | "flat" | "up" | "down" | "bullish" | "bearish" | "neutral" | "ai" | "breaking" | "forex" | "crypto" | "gold" | "live";
             return (
               <Link
                 key={article.id}
                 href={`/tape-views/${article.slug}`}
-                className="block"
+                className="block h-full"
               >
-                <div className={`${cardBg} brutal-shadow p-5 page-enter`}>
-                <div className="flex items-start justify-between mb-3">
-                  <Badge
-                    variant={badgeVariant}
-                    className="text-[10px] px-2 py-0.5"
-                  >
-                    {categoryLabels[article.category] || article.category}
-                  </Badge>
+                <div className="ng-card p-5 page-enter flex flex-col h-full">
+                  <div className="flex items-start justify-between mb-3">
+                    <Badge variant="flat" className="ng-pill-navy text-[10px] px-2 py-0.5">
+                      {categoryLabels[article.category] || article.category}
+                    </Badge>
 
-                  <Badge
-                    variant={
-                      article.bias === "BULLISH"
-                        ? "bullish"
-                        : article.bias === "BEARISH"
-                        ? "bearish"
-                        : "neutral"
-                    }
-                    className="text-[10px] px-2 py-0.5"
-                  >
-                    {article.bias}
-                  </Badge>
-                </div>
+                    <Badge
+                      variant="flat"
+                      className={
+                        article.bias === "BULLISH"
+                          ? "ng-pill-positive text-[10px] px-2 py-0.5"
+                          : article.bias === "BEARISH"
+                          ? "ng-pill-negative text-[10px] px-2 py-0.5"
+                          : "ng-pill-neutral text-[10px] px-2 py-0.5"
+                      }
+                    >
+                      {article.bias}
+                    </Badge>
+                  </div>
 
-                <h3 className="text-xl font-black uppercase mb-2 leading-tight">
-                  {article.title}
-                </h3>
+                  <h3 className="text-xl font-black uppercase mb-2 leading-tight line-clamp-2" style={{ color: 'var(--ng-navy-text)' }}>
+                    {article.title}
+                  </h3>
 
-                <p className="text-sm font-bold opacity-70 mb-4 leading-relaxed">
-                  {article.todayView}
-                </p>
+                  <p className="text-sm font-bold opacity-70 mb-4 leading-relaxed line-clamp-3">
+                    {article.todayView}
+                  </p>
                 </div>
               </Link>
             );
