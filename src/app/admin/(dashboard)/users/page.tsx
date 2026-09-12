@@ -89,7 +89,7 @@ export default async function AdminUsersPage() {
                         >
                           <button
                             type="submit"
-                            className="text-xs font-black uppercase bg-accent-coral text-white px-2 py-1 brutal-border border-2 border-accent-coral"
+                            className="text-xs font-black uppercase bg-accent-mint text-ink px-2 py-1 brutal-border border-2 border-ink"
                           >
                             Send Reset Link
                           </button>
