@@ -34,17 +34,20 @@ export function MorningMarketBriefCard({ data, lastUpdated, onReadFull }: Mornin
   const sentimentVariantKey = sentimentVariant[data.sentiment] ?? "neutral";
 
   return (
-    <div className="ng-card flex flex-col p-5 gap-4 h-full card-lift">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Badge variant="ai" className="text-[10px]">AI</Badge>
-          <h2 className="text-card-title font-black uppercase tracking-tight">Morning Market Brief</h2>
-        </div>
-        <span className="text-[10px] font-black uppercase opacity-50">
-          {new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
-        </span>
+    <div className="ng-card flex flex-col h-full">
+      {/* Navy header strip */}
+      <div className="flex items-center gap-2 px-3.5 py-2.5" style={{ background: 'var(--ng-navy)' }}>
+        <Badge variant="flat" className="ng-pill-gold text-[10px]">AI</Badge>
+        <span className="text-card-title font-black uppercase tracking-tight" style={{ color: '#ffffff' }}>Morning Market Brief</span>
+        {lastUpdated && (
+          <span className="text-[10px] font-black uppercase opacity-60 ml-auto" style={{ color: 'var(--ng-gold-on-navy)' }}>
+            Updated: {lastUpdated}
+          </span>
+        )}
       </div>
+
+      {/* White body content */}
+      <div className="p-3.5 flex flex-col flex-1 gap-4">
 
       {/* Market Sentiment + Confidence */}
       <div className="flex flex-wrap items-center gap-3">
@@ -58,11 +61,6 @@ export function MorningMarketBriefCard({ data, lastUpdated, onReadFull }: Mornin
           </div>
           <span className="text-small font-black uppercase opacity-70">{data.confidence}%</span>
         </div>
-        {lastUpdated && (
-          <span className="text-[10px] font-black uppercase opacity-40 ml-auto">
-            Updated: {lastUpdated}
-          </span>
-        )}
       </div>
 
       {/* Today's Focus */}
@@ -80,17 +78,17 @@ export function MorningMarketBriefCard({ data, lastUpdated, onReadFull }: Mornin
 
       {/* Global Overview */}
       <div className="grid grid-cols-3 gap-2 text-center">
-        <div className="brutal-border brutal-shadow p-2 bg-white">
-          <div className="text-[10px] font-black uppercase opacity-60">US Markets</div>
-          <div className="text-small font-black">{data.globalOverview.us}</div>
+        <div className="ng-card p-2">
+          <div className="text-[10px] font-black uppercase opacity-60" style={{ color: 'var(--ng-navy-text)' }}>US Markets</div>
+          <div className="text-small font-black" style={{ color: 'var(--ng-navy-text)' }}>{data.globalOverview.us}</div>
         </div>
-        <div className="brutal-border brutal-shadow p-2 bg-white">
-          <div className="text-[10px] font-black uppercase opacity-60">Europe</div>
-          <div className="text-small font-black">{data.globalOverview.europe}</div>
+        <div className="ng-card p-2">
+          <div className="text-[10px] font-black uppercase opacity-60" style={{ color: 'var(--ng-navy-text)' }}>Europe</div>
+          <div className="text-small font-black" style={{ color: 'var(--ng-navy-text)' }}>{data.globalOverview.europe}</div>
         </div>
-        <div className="brutal-border brutal-shadow p-2 bg-white">
-          <div className="text-[10px] font-black uppercase opacity-60">Asia</div>
-          <div className="text-small font-black">{data.globalOverview.asia}</div>
+        <div className="ng-card p-2">
+          <div className="text-[10px] font-black uppercase opacity-60" style={{ color: 'var(--ng-navy-text)' }}>Asia</div>
+          <div className="text-small font-black" style={{ color: 'var(--ng-navy-text)' }}>{data.globalOverview.asia}</div>
         </div>
       </div>
 
@@ -117,12 +115,12 @@ export function MorningMarketBriefCard({ data, lastUpdated, onReadFull }: Mornin
       </div>
 
       {/* AI Summary */}
-      <div className="bg-white border-2 border-ink p-3">
+      <div className="ng-card p-3" style={{ borderLeft: '3px solid var(--ng-gold)' }}>
         <div className="flex items-center gap-2 mb-1">
           <Badge variant="ai" className="text-[9px]">AI</Badge>
-          <span className="text-[10px] font-black uppercase opacity-70">Summary</span>
+          <span className="text-[10px] font-black uppercase opacity-70" style={{ color: 'var(--ng-navy-text)' }}>Summary</span>
         </div>
-        <p className="text-small font-bold leading-relaxed opacity-80">{data.summary}</p>
+        <p className="text-small font-bold leading-relaxed opacity-80" style={{ color: 'var(--ng-navy-text)' }}>{data.summary}</p>
       </div>
 
       {/* CTA */}
@@ -130,6 +128,7 @@ export function MorningMarketBriefCard({ data, lastUpdated, onReadFull }: Mornin
         <Button variant="primary" size="sm" onClick={onReadFull}>
           Read Full Market Brief
         </Button>
+      </div>
       </div>
     </div>
   );

@@ -218,22 +218,24 @@ const organizationJsonLd = {
           )}
           
            {/* ── Card 2: Market Snapshot ── */}
-           <div className="ng-card p-5 flex flex-col gap-0 h-full">
-             <div className="flex items-center justify-between mb-3">
-               <Badge variant="live" className="ng-pill-navy text-[10px]">LIVE</Badge>
-               <h3 className="text-card-title font-black uppercase tracking-tight ml-auto">Market Snapshot</h3>
+           <div className="ng-card flex flex-col h-full">
+             <div className="flex items-center gap-2 px-3.5 py-2.5" style={{ background: 'var(--ng-navy)' }}>
+               <Badge variant="flat" className="ng-pill-gold text-[10px]">LIVE</Badge>
+               <span className="text-card-title font-black uppercase tracking-tight ml-auto" style={{ color: '#ffffff' }}>Market Snapshot</span>
              </div>
-             {indian.slice(0, 5).map((quote) => (
-               <div key={quote.symbol} className="flex items-center justify-between border-b border-ink/10 py-2 last:border-0">
-                 <span className="text-small font-black uppercase opacity-60 tracking-wide" style={{ color: 'var(--ng-navy-text)' }}>{quote.symbol.replace(/^\^/, "").replace(".NS", "")}</span>
-                 <div className="text-right">
-                   <span className="text-card-title font-black tabular-nums mr-2" style={{ color: 'var(--ng-navy-text)' }}>{formatPrice(quote.price)}</span>
-                   <span className={`text-small font-bold tabular-nums ${quote.change >= 0 ? "ng-pill-positive" : "ng-pill-negative"}`}>
-                     {quote.change >= 0 ? "+" : ""}{quote.changePercent?.toFixed(2)}%
-                   </span>
-                 </div>
-               </div>
-             ))}
+             <div className="flex flex-col flex-1">
+              {indian.slice(0, 5).map((quote) => (
+                <div key={quote.symbol} className="flex items-center justify-between border-b border-ink/10 py-2 last:border-0 px-3.5">
+                  <span className="text-small font-black uppercase opacity-60 tracking-wide" style={{ color: 'var(--ng-navy-text)' }}>{quote.symbol.replace(/^\^/, "").replace(".NS", "")}</span>
+                  <div className="text-right">
+                    <span className="text-card-title font-black tabular-nums mr-2" style={{ color: 'var(--ng-navy-text)' }}>{formatPrice(quote.price)}</span>
+                    <span className={`text-small font-bold tabular-nums ${quote.change >= 0 ? "ng-pill-positive" : "ng-pill-negative"}`}>
+                      {quote.change >= 0 ? "+" : ""}{quote.changePercent?.toFixed(2)}%
+                    </span>
+                  </div>
+                </div>
+              ))}
+             </div>
            </div>
 
           {/* ── Card 3: Featured Tape View ── */}
