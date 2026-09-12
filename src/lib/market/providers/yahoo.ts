@@ -49,6 +49,15 @@ const YAHOO_STOCKS = [
   { symbol: "ITC.NS", name: "ITC" },
 ];
 
+const YAHOO_COMMODITIES_FX = [
+  { symbol: "GC=F", name: "GOLD" },
+  { symbol: "SI=F", name: "SILVER" },
+  { symbol: "CL=F", name: "CRUDE OIL" },
+  { symbol: "EURUSD=X", name: "EUR/USD" },
+  { symbol: "GBPUSD=X", name: "GBP/USD" },
+  { symbol: "USDJPY=X", name: "USD/JPY" },
+];
+
 function mapDirection(change: number): "up" | "down" | "flat" {
   if (change > 0) return "up";
   if (change < 0) return "down";
@@ -80,7 +89,7 @@ export const yahooProvider: MarketProvider = {
     const timeoutId = setTimeout(() => controller.abort(), 10000);
 
     try {
-      const allSymbols = [...YAHOO_INDICES, ...YAHOO_STOCKS];
+       const allSymbols = [...YAHOO_INDICES, ...YAHOO_STOCKS, ...YAHOO_COMMODITIES_FX];
 
       const fetchPromises = allSymbols.map(async ({ symbol, name }) => {
         const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=1d`;

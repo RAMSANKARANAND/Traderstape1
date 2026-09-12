@@ -4,12 +4,12 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { MarketQuote } from "@/lib/market/types";
 
-export function LiveMarketTicker({ items }: { items: MarketQuote[] }) {
+export function LiveMarketTicker({ items, initialLastUpdated }: { items: MarketQuote[]; initialLastUpdated?: number }) {
   const [displayItems, setDisplayItems] = useState<MarketQuote[]>(items);
   const [isPaused, setIsPaused] = useState(false);
   const animationRef = useRef<number>(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [lastUpdated, setLastUpdated] = useState(Date.now());
+  const [lastUpdated, setLastUpdated] = useState(() => initialLastUpdated ?? Date.now());
 
   // Infinite scroll setup - duplicate items for seamless loop
   useEffect(() => {

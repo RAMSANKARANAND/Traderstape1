@@ -185,16 +185,41 @@ const organizationJsonLd = {
     url: "https://traderstape.com",
   };
 
-  // Filter market quotes for Indian indices and global indices
-  const indian = marketQuotes.filter((q) =>
-    ["^NSEI", "^NSEBANK", "^BSESN", "^INDIAVIX", "RELIANCE.NS"].includes(q.symbol)
-  );
-  const global = marketQuotes.filter((q) =>
-    ["^GSPC", "^IXIC", "^DJI", "^N225", "^FTSE", "^GDAXI", "^HSI", "GOLD", "BTC"].includes(q.symbol)
-  );
+   // Filter market quotes for the Market Snapshot card
+   const snapshotSymbols = [
+     "^NSEI", "^NSEBANK", "^BSESN", "^INDIAVIX", "RELIANCE.NS",
+     "GC=F", "SI=F", "CL=F", "EURUSD=X", "GBPUSD=X", "USDJPY=X",
+   ];
+   const snapshot = marketQuotes.filter((q) => snapshotSymbols.includes(q.symbol));
 
-  console.log("[HOME PAGE] latestTapeView:", JSON.stringify(latestTapeView));
-  console.log("[HOME PAGE] global quotes:", global.map(q => q.symbol));
+   const getSnapshotLabel = (symbol: string): string => {
+     const labels: Record<string, string> = {
+       "^NSEI": "NIFTY 50", "^NSEBANK": "BANK NIFTY", "^BSESN": "SENSEX",
+       "^INDIAVIX": "INDIA VIX", "RELIANCE.NS": "RELIANCE",
+       "GC=F": "GOLD", "SI=F": "SILVER", "CL=F": "CRUDE",
+       "EURUSD=X": "EUR/USD", "GBPUSD=X": "GBP/USD", "USDJPY=X": "USD/JPY",
+     };
+     return labels[symbol] || symbol.replace(/^\^/, "").replace(".NS", "");
+   };
+
+   const indices = snapshot.filter((q) => ["^NSEI", "^NSEBANK", "^BSESN", "^INDIAVIX", "RELIANCE.NS"].includes(q.symbol));
+   const commodities = snapshot.filter((q) => ["GC=F", "SI=F", "CL=F", "EURUSD=X", "GBPUSD=X", "USDJPY=X"].includes(q.symbol));
+
+   const global = marketQuotes.filter((q) =>
+     ["^GSPC", "^IXIC", "^DJI", "^N225", "^FTSE", "^GDAXI", "^HSI", "GOLD", "BTC"].includes(q.symbol)
+   );
+
+   console.log("[HOME PAGE] latestTapeView:", JSON.stringify(latestTapeView));
+   console.log("[HOME PAGE] snapshot symbols:", snapshot.map(q => q.symbol));
+
+   const getLastUpdatedFromQuotes = (quotes: MarketQuote[]): number => {
+     if (!quotes || quotes.length === 0) return Date.now();
+     return Math.max(...quotes.map(q => new Date(q.updatedAt).getTime()));
+   };
+
+   const globalLastUpdated = getLastUpdatedFromQuotes(global);
+   const snapshotLastUpdated = getLastUpdatedFromQuotes(snapshot);
+   const tickerLastUpdated = Math.max(globalLastUpdated, snapshotLastUpdated, Date.now());
 
   return (
     <div>
@@ -219,22 +244,44 @@ const organizationJsonLd = {
           
            {/* ── Card 2: Market Snapshot ── */}
            <div className="ng-card flex flex-col h-full">
-              <div className="flex items-center gap-2 px-3.5 py-2.5" style={{ background: 'var(--ng-navy)' }}>
-                <Badge variant="flat" className="ng-pill-gold text-[10px]">LIVE</Badge>
-                <span className="text-card-title font-black uppercase tracking-tight" style={{ color: '#ffffff' }}>Market Snapshot</span>
-              </div>
+             <div className="flex items-center gap-2 px-3.5 py-2.5" style={{ background: 'var(--ng-navy)' }}>
+               <Badge variant="flat" className="ng-pill-gold text-[10px]">LIVE</Badge>
+               <span className="text-card-title font-black uppercase tracking-tight" style={{ color: '#ffffff' }}>Market Snapshot</span>
+             </div>
              <div className="flex flex-col flex-1">
-              {indian.slice(0, 5).map((quote) => (
-                <div key={quote.symbol} className="flex items-center justify-between border-b border-ink/10 py-2 last:border-0 px-3.5">
-                  <span className="text-small font-black uppercase opacity-60 tracking-wide" style={{ color: 'var(--ng-navy-text)' }}>{quote.symbol.replace(/^\^/, "").replace(".NS", "")}</span>
-                  <div className="text-right">
-                    <span className="text-card-title font-black tabular-nums mr-2" style={{ color: 'var(--ng-navy-text)' }}>{formatPrice(quote.price)}</span>
-                    <span className={`text-small font-bold tabular-nums ${quote.change >= 0 ? "ng-pill-positive" : "ng-pill-negative"}`}>
-                      {quote.change >= 0 ? "+" : ""}{quote.changePercent?.toFixed(2)}%
-                    </span>
-                  </div>
-                </div>
-              ))}
+               <div className="px-3.5 pb-2">
+                 <h4 className="text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: 'var(--ng-navy-text)' }}>Indices &amp; Equities</h4>
+                 <div className="space-y-1">
+                   {indices.map((quote) => (
+                     <div key={quote.symbol} className="flex items-center justify-between border-b border-ink/10 py-1.5 last:border-0">
+                       <span className="text-small font-black uppercase opacity-60 tracking-wide" style={{ color: 'var(--ng-navy-text)' }}>{getSnapshotLabel(quote.symbol)}</span>
+                       <div className="text-right">
+                         <span className="text-card-title font-black tabular-nums mr-2" style={{ color: 'var(--ng-navy-text)' }}>{formatPrice(quote.price)}</span>
+                         <span className={`text-small font-bold tabular-nums ${quote.change >= 0 ? "ng-pill-positive" : "ng-pill-negative"}`}>
+                           {quote.change >= 0 ? "+" : ""}{quote.changePercent?.toFixed(2)}%
+                         </span>
+                       </div>
+                     </div>
+                   ))}
+                 </div>
+               </div>
+
+               <div className="px-3.5 pt-3">
+                 <h4 className="text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: 'var(--ng-navy-text)' }}>Metals &amp; Currency</h4>
+                 <div className="space-y-1">
+                   {commodities.map((quote) => (
+                     <div key={quote.symbol} className="flex items-center justify-between border-b border-ink/10 py-1.5 last:border-0">
+                       <span className="text-small font-black uppercase opacity-60 tracking-wide" style={{ color: 'var(--ng-navy-text)' }}>{getSnapshotLabel(quote.symbol)}</span>
+                       <div className="text-right">
+                         <span className="text-card-title font-black tabular-nums mr-2" style={{ color: 'var(--ng-navy-text)' }}>{formatPrice(quote.price)}</span>
+                         <span className={`text-small font-bold tabular-nums ${quote.change >= 0 ? "ng-pill-positive" : "ng-pill-negative"}`}>
+                           {quote.change >= 0 ? "+" : ""}{quote.changePercent?.toFixed(2)}%
+                         </span>
+                       </div>
+                     </div>
+                   ))}
+                 </div>
+               </div>
              </div>
            </div>
 
