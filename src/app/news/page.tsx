@@ -37,10 +37,8 @@ function formatDate(date: Date | null): string {
 }
 
 const tabVariant = (cat: typeof categories[0], active: boolean) => {
-  if (active) return "bg-ink text-bg brutal-border shadow-[3px_3px_0_#000]";
-  if (!cat.color) return "bg-bg text-ink brutal-border shadow-[3px_3px_0_#000] hover:bg-accent-yellow";
-  const colorClass = `bg-${cat.color.replace("card-", "")} text-ink brutal-border shadow-[3px_3px_0_#000]`;
-  return colorClass;
+  if (active) return "ng-btn-navy";
+  return "bg-white border-[1px] border-[var(--ng-border)] text-[var(--ng-navy-text)] font-black uppercase text-sm hover:border-[var(--ng-gold)] transition-all duration-100";
 };
 
 export default async function NewsPage({ searchParams }: NewsPageProps) {
@@ -82,9 +80,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
           <Link
             key={cat.value}
             href={cat.value ? `/news?category=${cat.value}` : "/news"}
-            className={`px-4 py-2 font-black uppercase text-sm transition-all duration-100 ${
-              tabVariant(cat, category === cat.value || (!category && !cat.value))
-            }`}
+            className={`px-4 py-2 ${tabVariant(cat, category === cat.value || (!category && !cat.value))}`}
           >
             {cat.label}
           </Link>
