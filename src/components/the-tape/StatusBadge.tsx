@@ -9,15 +9,15 @@ interface StatusBadgeProps {
 
 export function StatusBadge({ status }: StatusBadgeProps) {
   const config = {
-    bullish: { variant: "up" as const, label: "Bullish" },
-    bearish: { variant: "down" as const, label: "Bearish" },
-    neutral: { variant: "flat" as const, label: "Neutral" },
+    bullish: { variant: "up" as const, label: "Bullish", pill: "ng-pill-positive" },
+    bearish: { variant: "down" as const, label: "Bearish", pill: "ng-pill-negative" },
+    neutral: { variant: "flat" as const, label: "Neutral", pill: "ng-pill-neutral" },
   };
 
-  const { variant, label } = config[status];
+  const { variant, label, pill } = config[status];
 
   return (
-    <Badge variant={variant}>
+    <Badge variant={variant} className={pill}>
       {label}
     </Badge>
   );

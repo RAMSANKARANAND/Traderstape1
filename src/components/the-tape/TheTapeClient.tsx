@@ -126,14 +126,14 @@ export function TheTapeClient({ initialQuotes }: TheTapeClientProps) {
     <div className="min-h-screen bg-bg p-4 md:p-8 page-enter">
       <header className="mb-12 max-w-7xl mx-auto">
         <div className="flex flex-wrap items-center gap-4 mb-2">
-          <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none">
+          <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none" style={{ color: 'var(--ng-navy-text)' }}>
             The Tape
           </h1>
-          <Badge variant="default" className="bg-red-600 text-white animate-pulse">
+          <Badge variant="default" className="ng-pill-gold text-[10px] font-black uppercase animate-pulse">
             LIVE
           </Badge>
         </div>
-        <p className="text-xl md:text-2xl font-medium text-text-secondary mb-6">
+        <p className="text-xl md:text-2xl font-medium text-text-secondary mb-6" style={{ color: 'var(--ng-navy-text)' }}>
           Real-time Market Intelligence
         </p>
         <div className="flex flex-wrap items-center gap-3 text-xs font-black uppercase tracking-widest text-text-secondary">
@@ -142,7 +142,7 @@ export function TheTapeClient({ initialQuotes }: TheTapeClientProps) {
             Market Open
           </span>
           <span className="opacity-40">|</span>
-          <span>{lastUpdated}</span>
+          <span style={{ color: 'var(--ng-navy-text)' }}>{lastUpdated}</span>
         </div>
       </header>
 
@@ -165,7 +165,7 @@ export function TheTapeClient({ initialQuotes }: TheTapeClientProps) {
           <SectionHeader title="📡 Tape Live" description="A real-time snapshot of today's major financial markets." />
           <div className="space-y-8">
             <div>
-              <h3 className="text-sm font-black uppercase tracking-widest text-text-secondary mb-3">Indian Indices</h3>
+              <h3 className="text-sm font-black uppercase tracking-widest mb-3" style={{ color: 'var(--ng-navy-text)' }}>Indian Indices</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {getFiltered(INDIAN_INDICES).map((q) => (
                   <MarketDetailCard key={q.symbol} quote={q} />
@@ -174,7 +174,7 @@ export function TheTapeClient({ initialQuotes }: TheTapeClientProps) {
             </div>
 
             <div>
-              <h3 className="text-sm font-black uppercase tracking-widest text-text-secondary mb-3">Forex</h3>
+              <h3 className="text-sm font-black uppercase tracking-widest mb-3" style={{ color: 'var(--ng-navy-text)' }}>Forex</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {getFiltered(FOREX).map((q) => (
                   <MarketDetailCard key={q.symbol} quote={q} />
@@ -183,7 +183,7 @@ export function TheTapeClient({ initialQuotes }: TheTapeClientProps) {
             </div>
 
             <div>
-              <h3 className="text-sm font-black uppercase tracking-widest text-text-secondary mb-3">Metals</h3>
+              <h3 className="text-sm font-black uppercase tracking-widest mb-3" style={{ color: 'var(--ng-navy-text)' }}>Metals</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {getFiltered(METALS).map((q) => (
                   <MarketDetailCard key={q.symbol} quote={q} />
@@ -192,7 +192,7 @@ export function TheTapeClient({ initialQuotes }: TheTapeClientProps) {
             </div>
 
             <div>
-              <h3 className="text-sm font-black uppercase tracking-widest text-text-secondary mb-3">Crypto</h3>
+              <h3 className="text-sm font-black uppercase tracking-widest mb-3" style={{ color: 'var(--ng-navy-text)' }}>Crypto</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {getFiltered(CRYPTO).map((q) => (
                   <MarketDetailCard key={q.symbol} quote={q} />
@@ -206,16 +206,16 @@ export function TheTapeClient({ initialQuotes }: TheTapeClientProps) {
         <section id="movers">
           <SectionHeader title="Top Movers" description="Biggest gainers and losers across all asset classes." />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="card-mint p-4 md:p-5">
-              <h3 className="text-sm font-black uppercase tracking-widest text-text-secondary mb-3">Top 10 Gainers</h3>
+            <div className="ng-card p-4 md:p-5">
+              <h3 className="text-sm font-black uppercase tracking-widest mb-3" style={{ color: 'var(--ng-positive)' }}>Top 10 Gainers</h3>
               <div className="space-y-2">
                 {getTopMovers(quotes, 10).gainers.map((quote) => (
                   <MarketDetailCard key={quote.symbol} quote={quote} />
                 ))}
               </div>
             </div>
-            <div className="card-coral p-4 md:p-5">
-              <h3 className="text-sm font-black uppercase tracking-widest text-text-secondary mb-3">Top 10 Losers</h3>
+            <div className="ng-card p-4 md:p-5">
+              <h3 className="text-sm font-black uppercase tracking-widest mb-3" style={{ color: 'var(--ng-negative)' }}>Top 10 Losers</h3>
               <div className="space-y-2">
                 {getTopMovers(quotes, 10).losers.map((quote) => (
                   <MarketDetailCard key={quote.symbol} quote={quote} />

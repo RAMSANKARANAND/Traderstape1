@@ -1,5 +1,4 @@
 import React from "react";
-import { Card } from "../ui/Card";
 import { StatusBadge } from "./StatusBadge";
 import type { MarketQuote } from "@/lib/market/types";
 import { formatPrice, formatChange, formatPercent, formatVolume, getStaleLevel, formatTimestamp } from "@/lib/market/utils";
@@ -10,15 +9,16 @@ interface MarketDetailCardProps {
 
 export function MarketDetailCard({ quote }: MarketDetailCardProps) {
   const stale = getStaleLevel(quote.updatedAt);
+  const changeColor = quote.changePercent >= 0 ? "var(--ng-positive)" : "var(--ng-negative)";
 
   return (
-    <Card className="flex flex-col justify-between h-full p-4 gap-4 card-lift">
+    <div className="ng-card flex flex-col justify-between h-full p-4 gap-4">
       <div className="flex justify-between items-start gap-2">
-        <span className="font-black uppercase text-sm tracking-tight leading-tight">{quote.name}</span>
+        <span className="font-black uppercase text-sm tracking-tight leading-tight" style={{ color: 'var(--ng-navy-text)' }}>{quote.name}</span>
         <div className="flex flex-col items-end gap-1">
           <StatusBadge status={quote.direction === "up" ? "bullish" : quote.direction === "down" ? "bearish" : "neutral"} />
           {quote.marketState && (
-            <span className={`text-[10px] font-black uppercase ${quote.marketState === "LIVE" ? "text-accent-bullish" : quote.marketState === "PRE-OPEN" ? "text-accent-neutral" : "text-text-muted"}`}>
+            <span className={`ng-pill-navy text-[10px] font-black uppercase ${quote.marketState === "LIVE" ? "" : ""}`}>
               ● {quote.marketState}
             </span>
           )}
@@ -26,10 +26,10 @@ export function MarketDetailCard({ quote }: MarketDetailCardProps) {
       </div>
 
       <div>
-        <div className="text-3xl font-black tabular-nums">{quote.symbol === 'INRUSD' ? formatPrice(quote.price, 4) : formatPrice(quote.price)}</div>
-<div className="text-sm font-bold text-ink">
-      {quote.symbol === 'INRUSD' ? formatChange(quote.change, 4) : formatChange(quote.change)} ({formatPercent(quote.changePercent)})
-    </div>
+        <div className="text-3xl font-black tabular-nums" style={{ color: 'var(--ng-navy-text)' }}>{quote.symbol === 'INRUSD' ? formatPrice(quote.price, 4) : formatPrice(quote.price)}</div>
+        <div className="text-sm font-bold" style={{ color: 'var(--ng-navy-text)' }}>
+          {quote.symbol === 'INRUSD' ? formatChange(quote.change, 4) : formatChange(quote.change)} ({formatPercent(quote.changePercent)})
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
@@ -63,7 +63,7 @@ export function MarketDetailCard({ quote }: MarketDetailCardProps) {
           {stale === "stale" ? "🔴 Stale" : "🟡 Delayed"}
         </div>
       )}
-    </Card>
+    </div>
   );
 }
 
@@ -77,11 +77,7 @@ function Row({ label, value }: { label: string; value: string }) {
 }
 
 function BadgeProvider({ provider }: { provider: string }) {
-  let variant: "default" | "up" | "down" | "flat" = "default";
-  if (provider.includes("Yahoo")) variant = "default";
-  else if (provider.includes("CoinGecko")) variant = "up";
-  else if (provider.includes("Frankfurter")) variant = "down";
   return (
-    <span className="inline-block bg-ink text-white px-1.5 py-0.5">{provider}</span>
+    <span className="ng-pill-navy inline-block px-1.5 py-0.5">{provider}</span>
   );
 }

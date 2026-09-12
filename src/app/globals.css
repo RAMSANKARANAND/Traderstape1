@@ -590,6 +590,16 @@ body::before {
   display: inline-block;
 }
 
+.ng-pill-neutral {
+  background: #e5e7eb;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
 .ng-btn-gold {
   background: var(--ng-gold);
   color: var(--ng-gold-text);
