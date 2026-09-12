@@ -1,10 +1,10 @@
-import React from "react";
 import { getPublishedNewsPosts, getLatestTapeView, getLatestPublishedMorningBrief, getTrendingCategories } from "@/lib/db-raw";
 import { getMarketQuotes } from "@/lib/market/service";
 import { formatPrice, formatPercent, getTopMovers } from "@/lib/market/utils";
 import { generateAiContent } from "@/lib/ai/service";
 import { getKvNamespace } from "@/lib/rate-limit";
 import type { MorningBriefContext } from "@/lib/ai/types";
+import type { MarketQuote } from "@/lib/market/types";
 import { SectionTitle, Badge, NewsCard, Button } from "@/components/ui";
 import { MarketCard } from "@/components/the-tape/MarketCard";
 import { MorningMarketBriefCard } from "@/components/ai/MorningMarketBriefCard";
@@ -12,6 +12,8 @@ import { LiveMarketTicker } from "@/components/markets/LiveTicker";
 import { useMarketTicker } from "@/hooks/useMarketTicker";
 import Link from "next/link";
 import NewsletterSignup from "@/components/home/NewsletterSignup";
+
+import React from "react";
 
 type MorningBriefData = {
   sentiment: string;
@@ -205,14 +207,11 @@ const organizationJsonLd = {
    const indices = snapshot.filter((q) => ["^NSEI", "^NSEBANK", "^BSESN", "^INDIAVIX", "RELIANCE.NS"].includes(q.symbol));
    const commodities = snapshot.filter((q) => ["GC=F", "SI=F", "CL=F", "EURUSD=X", "GBPUSD=X", "USDJPY=X"].includes(q.symbol));
 
-   const global = marketQuotes.filter((q) =>
-     ["^GSPC", "^IXIC", "^DJI", "^N225", "^FTSE", "^GDAXI", "^HSI", "GOLD", "BTC"].includes(q.symbol)
-   );
+const global = marketQuotes.filter((q) =>
+      ["^GSPC", "^IXIC", "^DJI", "^N225", "^FTSE", "^GDAXI", "^HSI", "GOLD", "BTC"].includes(q.symbol)
+    );
 
-   console.log("[HOME PAGE] latestTapeView:", JSON.stringify(latestTapeView));
-   console.log("[HOME PAGE] snapshot symbols:", snapshot.map(q => q.symbol));
-
-   const getLastUpdatedFromQuotes = (quotes: MarketQuote[]): number => {
+    const getLastUpdatedFromQuotes = (quotes: MarketQuote[]): number => {
      if (!quotes || quotes.length === 0) return Date.now();
      return Math.max(...quotes.map(q => new Date(q.updatedAt).getTime()));
    };
@@ -248,42 +247,49 @@ const organizationJsonLd = {
                <Badge variant="flat" className="ng-pill-gold text-[10px]">LIVE</Badge>
                <span className="text-card-title font-black uppercase tracking-tight" style={{ color: '#ffffff' }}>Market Snapshot</span>
              </div>
-             <div className="flex flex-col flex-1">
-               <div className="px-3.5 pb-2">
-                 <h4 className="text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: 'var(--ng-navy-text)' }}>Indices &amp; Equities</h4>
-                 <div className="space-y-1">
-                   {indices.map((quote) => (
-                     <div key={quote.symbol} className="flex items-center justify-between border-b border-ink/10 py-1.5 last:border-0">
-                       <span className="text-small font-black uppercase opacity-60 tracking-wide" style={{ color: 'var(--ng-navy-text)' }}>{getSnapshotLabel(quote.symbol)}</span>
-                       <div className="text-right">
-                         <span className="text-card-title font-black tabular-nums mr-2" style={{ color: 'var(--ng-navy-text)' }}>{formatPrice(quote.price)}</span>
-                         <span className={`text-small font-bold tabular-nums ${quote.change >= 0 ? "ng-pill-positive" : "ng-pill-negative"}`}>
-                           {quote.change >= 0 ? "+" : ""}{quote.changePercent?.toFixed(2)}%
-                         </span>
-                       </div>
-                     </div>
-                   ))}
-                 </div>
-               </div>
+              <div className="flex flex-col flex-1">
+                <div className="px-3.5 py-2">
+                  <h4 className="text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: 'var(--ng-navy-text)' }}>Indices &amp; Equities</h4>
+                  <div className="space-y-1">
+                    {indices.map((quote) => (
+                      <div key={quote.symbol} className="flex items-center justify-between border-b border-ink/10 py-1.5 last:border-0">
+                        <span className="text-small font-black uppercase opacity-60 tracking-wide" style={{ color: 'var(--ng-navy-text)' }}>{getSnapshotLabel(quote.symbol)}</span>
+                        <div className="text-right">
+                          <span className="text-card-title font-black tabular-nums mr-2" style={{ color: 'var(--ng-navy-text)' }}>{formatPrice(quote.price)}</span>
+                          <span className={`text-small font-bold tabular-nums ${quote.changePercent >= 0 ? "ng-pill-positive" : "ng-pill-negative"}`}>
+                            {quote.changePercent >= 0 ? "+" : ""}{quote.changePercent?.toFixed(2)}%
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
-               <div className="px-3.5 pt-3">
-                 <h4 className="text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: 'var(--ng-navy-text)' }}>Metals &amp; Currency</h4>
-                 <div className="space-y-1">
-                   {commodities.map((quote) => (
-                     <div key={quote.symbol} className="flex items-center justify-between border-b border-ink/10 py-1.5 last:border-0">
-                       <span className="text-small font-black uppercase opacity-60 tracking-wide" style={{ color: 'var(--ng-navy-text)' }}>{getSnapshotLabel(quote.symbol)}</span>
-                       <div className="text-right">
-                         <span className="text-card-title font-black tabular-nums mr-2" style={{ color: 'var(--ng-navy-text)' }}>{formatPrice(quote.price)}</span>
-                         <span className={`text-small font-bold tabular-nums ${quote.change >= 0 ? "ng-pill-positive" : "ng-pill-negative"}`}>
-                           {quote.change >= 0 ? "+" : ""}{quote.changePercent?.toFixed(2)}%
-                         </span>
-                       </div>
-                     </div>
-                   ))}
-                 </div>
-               </div>
-             </div>
-           </div>
+                <div className="px-3.5 pt-3 border-t border-ink/10">
+                  <h4 className="text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: 'var(--ng-navy-text)' }}>Metals &amp; Currency</h4>
+                  <div className="space-y-1">
+                    {commodities.map((quote) => (
+                      <div key={quote.symbol} className="flex items-center justify-between border-b border-ink/10 py-1.5 last:border-0">
+                        <span className="text-small font-black uppercase opacity-60 tracking-wide" style={{ color: 'var(--ng-navy-text)' }}>{getSnapshotLabel(quote.symbol)}</span>
+                        <div className="text-right">
+                          <span className="text-card-title font-black tabular-nums mr-2" style={{ color: 'var(--ng-navy-text)' }}>{formatPrice(quote.price)}</span>
+                          <span className={`text-small font-bold tabular-nums ${quote.changePercent >= 0 ? "ng-pill-positive" : "ng-pill-negative"}`}>
+                            {quote.changePercent >= 0 ? "+" : ""}{quote.changePercent?.toFixed(2)}%
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* CTA */}
+              <div className="px-3.5 py-2.5 border-t border-ink/10">
+                <Link href="/the-tape" className="inline-block ng-btn-gold text-bg px-3.5 py-1.5 font-black uppercase text-[11px] tracking-wide hover:bg-accent-coral hover:text-white transition-colors">
+                  View Full Market Data →
+                </Link>
+              </div>
+            </div>
 
           {/* ── Card 3: Featured Tape View ── */}
           {latestTapeView ? (
