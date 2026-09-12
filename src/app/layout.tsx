@@ -59,15 +59,15 @@ export default function RootLayout({
         <WelcomeDisclaimerModal />
 
         {/* Navigation */}
-        <header className="card-white border-b-[3px] border-ink shadow-[3px_3px_0_#000] sticky top-0 z-40 h-[72px] flex items-center">
+        <header className="border-b-[3px] border-[var(--ng-gold)] sticky top-0 z-40 h-[72px] flex items-center" style={{ background: 'var(--ng-navy)' }}>
           <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full" aria-label="Main navigation">
             <div className="flex items-center justify-between h-full">
-              <Link href="/" className="card-white brutal-border brutal-shadow px-3 py-1 hover:bg-ink hover:text-white transition-colors duration-100" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+              <Link href="/" className="px-3 py-1 transition-colors duration-100" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '20px', fontWeight: 500 }}>
-                  <span style={{ color: 'var(--ng-navy)' }}>trader</span>
+                  <span style={{ color: '#ffffff' }}>trader</span>
                   <span style={{ color: 'var(--ng-gold)' }}>stape</span>
                 </span>
-                <span style={{ color: 'var(--text-secondary)', fontSize: '11px', verticalAlign: 'super' }}>™</span>
+                <span style={{ color: 'var(--ng-gold-on-navy)', fontSize: '11px', verticalAlign: 'super' }}>™</span>
                 <span style={{ position: 'relative', width: '22px', height: '22px', background: 'var(--ng-gold)', borderRadius: '50%', overflow: 'hidden', display: 'inline-block' }}>
                   <span className="currency-cycle" style={{ animationDelay: '0s' }}>₹</span>
                   <span className="currency-cycle" style={{ animationDelay: '1s' }}>$</span>
@@ -86,10 +86,10 @@ export default function RootLayout({
 
               {/* Mobile Nav Toggle */}
               <details className="md:hidden relative">
-                <summary className="list-none cursor-pointer brutal-border px-3 py-2 card-white font-black uppercase text-sm">
+                <summary className="list-none cursor-pointer brutal-border px-3 py-2 font-black uppercase text-sm text-white" style={{ background: 'var(--ng-navy)' }}>
                   Menu
                 </summary>
-                <div className="absolute right-0 top-full mt-1 w-48 card-white brutal-border brutal-shadow z-50 flex flex-col">
+                <div className="absolute right-0 top-full mt-1 w-48 brutal-border brutal-shadow z-50 flex flex-col" style={{ background: 'var(--ng-navy)', borderColor: 'var(--ng-gold)' }}>
                   <MobileNavLink href="/the-tape">The Tape</MobileNavLink>
                   <MobileNavLink href="/news">News</MobileNavLink>
                   <MobileNavLink href="/tape-views">Tape Views</MobileNavLink>
@@ -161,10 +161,10 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   return (
     <Link
       href={href}
-      className="relative px-1 py-2 font-black uppercase text-sm text-ink transition-colors duration-200 group"
+      className="relative px-1 py-2 font-black uppercase text-sm text-white transition-colors duration-200 group"
     >
       {children}
-      <span className="absolute bottom-0 left-0 w-full h-1 bg-ink transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left" />
+      <span className="absolute bottom-0 left-0 w-full h-1 bg-[var(--ng-gold)] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left" />
     </Link>
   );
 }
@@ -173,7 +173,7 @@ function MobileNavLink({ href, children }: { href: string; children: React.React
   return (
     <Link
       href={href}
-      className="px-4 py-3 font-black uppercase text-sm brutal-border-b border-b-3 border-ink last:border-b-0 hover:bg-accent-yellow"
+      className="px-4 py-3 font-black uppercase text-sm brutal-border-b border-b-3 border-[var(--ng-gold)] last:border-b-0 text-white hover:bg-[var(--ng-gold)] hover:text-[var(--ng-navy)]"
     >
       {children}
     </Link>
