@@ -457,7 +457,7 @@ const organizationJsonLd = {
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 section-padding">
           <div className="flex items-center justify-between mb-5">
             <SectionTitle>Latest News</SectionTitle>
-            <Link href="/news" className="text-small font-black uppercase hover:text-accent-coral">
+            <Link href="/news" className="text-small font-black uppercase hover:underline transition-colors" style={{ color: 'var(--ng-navy-text)' }}>
               All News →
             </Link>
           </div>
