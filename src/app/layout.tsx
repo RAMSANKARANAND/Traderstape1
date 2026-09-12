@@ -62,18 +62,24 @@ export default function RootLayout({
         <header className="border-b-[3px] border-[var(--ng-gold)] sticky top-0 z-40 h-[72px] flex items-center" style={{ background: 'var(--ng-navy)' }}>
           <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full" aria-label="Main navigation">
             <div className="flex items-center justify-between h-full">
-              <Link href="/" className="px-3 py-1 transition-colors duration-100 focus:outline-none" style={{ display: 'inline-flex', alignItems: 'center', gap: '7px' }}>
-                <span style={{ fontSize: '20px', fontWeight: 500, verticalAlign: 'middle' }}>
-                  <span style={{ color: '#ffffff' }}>trader</span>
-                  <span style={{ color: 'var(--ng-gold)' }}>stape</span>
+              <Link href="/" className="px-3 py-1 transition-colors duration-100 focus:outline-none" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: '3px' }}>
+                  <span style={{ fontSize: '20px', fontWeight: 500 }}>
+                    <span style={{ color: '#ffffff' }}>trader</span>
+                    <span style={{ color: 'var(--ng-gold)' }}>stape</span>
+                  </span>
+                  <span style={{ color: '#e8c766', fontSize: '13px', fontWeight: 500 }}>™</span>
                 </span>
-                <span style={{ color: 'var(--ng-gold-on-navy)', fontSize: '10px', verticalAlign: 'middle' }}>™</span>
-                <span style={{ position: 'relative', width: '22px', height: '22px', background: 'var(--ng-gold)', borderRadius: '50%', overflow: 'hidden', display: 'inline-block', verticalAlign: 'middle' }}>
-                  <span className="currency-cycle" style={{ animationDelay: '0s' }}>₹</span>
-                  <span className="currency-cycle" style={{ animationDelay: '1s' }}>$</span>
-                  <span className="currency-cycle" style={{ animationDelay: '2s' }}>€</span>
-                  <span className="currency-cycle" style={{ animationDelay: '3s' }}>¥</span>
-                </span>
+                <div className="logo-candles" style={{ display: 'flex', alignItems: 'flex-end', gap: '2px', height: '16px' }}>
+                  <div className="candle-1" style={{ width: '3px', borderRadius: '1px', background: '#4ade80' }}></div>
+                  <div className="candle-2" style={{ width: '3px', borderRadius: '1px', background: '#f87171' }}></div>
+                  <div className="candle-3" style={{ width: '3px', borderRadius: '1px', background: '#4ade80' }}></div>
+                  <div className="candle-4" style={{ width: '3px', borderRadius: '1px', background: '#f87171' }}></div>
+                </div>
+                <div style={{ position: 'relative', width: '12px', height: '14px' }}>
+                  <span className="logo-arrow-up" style={{ position: 'absolute', inset: 0, color: '#4ade80', fontSize: '12px' }}>▲</span>
+                  <span className="logo-arrow-down" style={{ position: 'absolute', inset: 0, color: '#f87171', fontSize: '12px' }}>▼</span>
+                </div>
               </Link>
 
               {/* Desktop Nav */}
@@ -110,18 +116,24 @@ export default function RootLayout({
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div>
-                <h3 className="font-black text-lg uppercase mb-3 text-accent-yellow" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '20px', fontWeight: 500 }}>
-                    <span style={{ color: 'var(--ng-navy)' }}>trader</span>
-                    <span style={{ color: 'var(--ng-gold)' }}>stape</span>
+                <h3 className="font-black text-lg uppercase mb-3" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px' }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: '3px' }}>
+                    <span style={{ fontSize: '20px', fontWeight: 500 }}>
+                      <span style={{ color: '#ffffff' }}>trader</span>
+                      <span style={{ color: 'var(--ng-gold)' }}>stape</span>
+                    </span>
+                    <span style={{ color: '#e8c766', fontSize: '13px', fontWeight: 500 }}>™</span>
                   </span>
-                  <span style={{ color: 'var(--text-secondary)', fontSize: '11px', verticalAlign: 'super' }}>™</span>
-                  <span style={{ position: 'relative', width: '22px', height: '22px', background: 'var(--ng-gold)', borderRadius: '50%', overflow: 'hidden', display: 'inline-block' }}>
-                    <span className="currency-cycle" style={{ animationDelay: '0s' }}>₹</span>
-                    <span className="currency-cycle" style={{ animationDelay: '1s' }}>$</span>
-                    <span className="currency-cycle" style={{ animationDelay: '2s' }}>€</span>
-                    <span className="currency-cycle" style={{ animationDelay: '3s' }}>¥</span>
-                  </span>
+                  <div className="logo-candles" style={{ display: 'flex', alignItems: 'flex-end', gap: '2px', height: '16px' }}>
+                    <div className="candle-1" style={{ width: '3px', borderRadius: '1px', background: '#4ade80' }}></div>
+                    <div className="candle-2" style={{ width: '3px', borderRadius: '1px', background: '#f87171' }}></div>
+                    <div className="candle-3" style={{ width: '3px', borderRadius: '1px', background: '#4ade80' }}></div>
+                    <div className="candle-4" style={{ width: '3px', borderRadius: '1px', background: '#f87171' }}></div>
+                  </div>
+                  <div style={{ position: 'relative', width: '12px', height: '14px' }}>
+                    <span className="logo-arrow-up" style={{ position: 'absolute', inset: 0, color: '#4ade80', fontSize: '12px' }}>▲</span>
+                    <span className="logo-arrow-down" style={{ position: 'absolute', inset: 0, color: '#f87171', fontSize: '12px' }}>▼</span>
+                  </div>
                 </h3>
                 <p className="text-sm font-bold opacity-80">
                   Market levels, forex rates, and trading news for educational purposes.
