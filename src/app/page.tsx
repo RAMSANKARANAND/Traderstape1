@@ -218,17 +218,17 @@ const organizationJsonLd = {
           )}
           
            {/* ── Card 2: Market Snapshot ── */}
-           <div className="card-sky p-5 flex flex-col gap-0 h-full">
+           <div className="ng-card p-5 flex flex-col gap-0 h-full">
              <div className="flex items-center justify-between mb-3">
-               <Badge variant="live" className="text-[10px]">LIVE</Badge>
+               <Badge variant="live" className="ng-pill-navy text-[10px]">LIVE</Badge>
                <h3 className="text-card-title font-black uppercase tracking-tight ml-auto">Market Snapshot</h3>
              </div>
              {indian.slice(0, 5).map((quote) => (
                <div key={quote.symbol} className="flex items-center justify-between border-b border-ink/10 py-2 last:border-0">
-                 <span className="text-small font-black uppercase opacity-60 tracking-wide">{quote.symbol.replace(/^\^/, "").replace(".NS", "")}</span>
+                 <span className="text-small font-black uppercase opacity-60 tracking-wide" style={{ color: 'var(--ng-navy-text)' }}>{quote.symbol.replace(/^\^/, "").replace(".NS", "")}</span>
                  <div className="text-right">
-                   <span className="text-card-title font-black tabular-nums mr-2">{formatPrice(quote.price)}</span>
-                   <span className={`text-small font-bold tabular-nums ${quote.change >= 0 ? "text-accent-bullish" : "text-accent-bearish"}`}>
+                   <span className="text-card-title font-black tabular-nums mr-2" style={{ color: 'var(--ng-navy-text)' }}>{formatPrice(quote.price)}</span>
+                   <span className={`text-small font-bold tabular-nums ${quote.change >= 0 ? "ng-pill-positive" : "ng-pill-negative"}`}>
                      {quote.change >= 0 ? "+" : ""}{quote.changePercent?.toFixed(2)}%
                    </span>
                  </div>
@@ -240,14 +240,16 @@ const organizationJsonLd = {
           {latestTapeView ? (
             <Link
               href={`/tape-views/${latestTapeView.slug}`}
-              className="card-gold p-5 flex flex-col min-h-[220px] h-full hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[5px_5px_0_#111] transition-all duration-100"
+              className="ng-card-navy p-5 flex flex-col min-h-[220px] h-full hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[5px_5px_0_#111] transition-all duration-100"
             >
               <div className="flex items-center gap-2 mb-3">
-                <Badge variant="flat" className="text-[10px]">{latestTapeView.category}</Badge>
+                <Badge variant="flat" className="ng-pill-gold text-[10px]">{latestTapeView.category}</Badge>
                 <span className="text-small font-black uppercase opacity-60">{latestTapeView.instrument}</span>
                 <Badge
                   variant={latestTapeView.bias === "BULLISH" ? "bullish" : latestTapeView.bias === "BEARISH" ? "bearish" : "neutral"}
-                  className="text-[10px] ml-auto"
+                  className={latestTapeView.bias === "BULLISH" ? "ng-pill-positive"
+                                  : latestTapeView.bias === "BEARISH" ? "ng-pill-negative"
+                                  : "ng-pill-neutral"}
                 >
                   {latestTapeView.bias}
                 </Badge>
@@ -275,7 +277,7 @@ const organizationJsonLd = {
                 {latestTapeView.todayView}
               </p>
               <div className="mt-3">
-                <span className="inline-block bg-ink text-bg brutal-border px-3.5 py-1.5 font-black uppercase text-[11px] tracking-wide hover:bg-accent-coral hover:text-white transition-colors">
+                <span className="inline-block ng-btn-gold text-bg px-3.5 py-1.5 font-black uppercase text-[11px] tracking-wide hover:bg-accent-coral hover:text-white transition-colors">
                   Read Analysis →
                 </span>
               </div>

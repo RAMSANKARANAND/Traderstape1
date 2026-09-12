@@ -34,7 +34,7 @@ export function MorningMarketBriefCard({ data, lastUpdated, onReadFull }: Mornin
   const sentimentVariantKey = sentimentVariant[data.sentiment] ?? "neutral";
 
   return (
-    <div className="card-lavender flex flex-col p-5 gap-4 h-full card-lift">
+    <div className="ng-card flex flex-col p-5 gap-4 h-full card-lift">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -48,7 +48,7 @@ export function MorningMarketBriefCard({ data, lastUpdated, onReadFull }: Mornin
 
       {/* Market Sentiment + Confidence */}
       <div className="flex flex-wrap items-center gap-3">
-        <Badge variant={sentimentVariantKey}>{data.sentiment}</Badge>
+        <Badge className="ng-pill-gold">{data.sentiment}</Badge>
         <div className="flex items-center gap-2">
           <div className="w-32 h-2 border-2 border-ink bg-white">
             <div
