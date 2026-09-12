@@ -62,8 +62,18 @@ export default function RootLayout({
         <header className="card-white border-b-[3px] border-ink shadow-[3px_3px_0_#000] sticky top-0 z-40 h-[72px] flex items-center">
           <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full" aria-label="Main navigation">
             <div className="flex items-center justify-between h-full">
-              <Link href="/" className="card-white brutal-border brutal-shadow px-3 py-1 font-black text-2xl uppercase tracking-tighter hover:bg-ink hover:text-white transition-colors duration-100">
-                TradersTape
+              <Link href="/" className="card-white brutal-border brutal-shadow px-3 py-1 hover:bg-ink hover:text-white transition-colors duration-100" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '20px', fontWeight: 500 }}>
+                  <span style={{ color: 'var(--ng-navy)' }}>trader</span>
+                  <span style={{ color: 'var(--ng-gold)' }}>stape</span>
+                </span>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '11px', verticalAlign: 'super' }}>™</span>
+                <span style={{ position: 'relative', width: '22px', height: '22px', background: 'var(--ng-gold)', borderRadius: '50%', overflow: 'hidden', display: 'inline-block' }}>
+                  <span className="currency-cycle" style={{ animationDelay: '0s' }}>₹</span>
+                  <span className="currency-cycle" style={{ animationDelay: '1s' }}>$</span>
+                  <span className="currency-cycle" style={{ animationDelay: '2s' }}>€</span>
+                  <span className="currency-cycle" style={{ animationDelay: '3s' }}>¥</span>
+                </span>
               </Link>
 
               {/* Desktop Nav */}
@@ -100,7 +110,19 @@ export default function RootLayout({
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div>
-                <h3 className="font-black text-lg uppercase mb-3 text-accent-yellow">TradersTape</h3>
+                <h3 className="font-black text-lg uppercase mb-3 text-accent-yellow" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '20px', fontWeight: 500 }}>
+                    <span style={{ color: 'var(--ng-navy)' }}>trader</span>
+                    <span style={{ color: 'var(--ng-gold)' }}>stape</span>
+                  </span>
+                  <span style={{ color: 'var(--text-secondary)', fontSize: '11px', verticalAlign: 'super' }}>™</span>
+                  <span style={{ position: 'relative', width: '22px', height: '22px', background: 'var(--ng-gold)', borderRadius: '50%', overflow: 'hidden', display: 'inline-block' }}>
+                    <span className="currency-cycle" style={{ animationDelay: '0s' }}>₹</span>
+                    <span className="currency-cycle" style={{ animationDelay: '1s' }}>$</span>
+                    <span className="currency-cycle" style={{ animationDelay: '2s' }}>€</span>
+                    <span className="currency-cycle" style={{ animationDelay: '3s' }}>¥</span>
+                  </span>
+                </h3>
                 <p className="text-sm font-bold opacity-80">
                   Market levels, forex rates, and trading news for educational purposes.
                 </p>
