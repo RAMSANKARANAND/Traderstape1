@@ -103,8 +103,8 @@ export function MorningMarketBriefCard({ data, lastUpdated, onReadFull }: Mornin
                 risk.level === "High"
                   ? "bearish"
                   : risk.level === "Medium"
-                  ? "breaking"
-                  : "neutral"
+                    ? "gold"
+                    : "neutral"
               }
               className="text-[10px]"
             >
@@ -125,7 +125,7 @@ export function MorningMarketBriefCard({ data, lastUpdated, onReadFull }: Mornin
 
       {/* CTA */}
       <div className="mt-auto">
-        <Button variant="primary" size="sm" onClick={onReadFull}>
+        <Button variant="primary" size="sm" className="ng-btn-gold" onClick={onReadFull}>
           Read Full Market Brief
         </Button>
       </div>
