@@ -259,10 +259,10 @@ const organizationJsonLd = {
                 <div className="grid grid-cols-2 gap-2">
                   {global.map((quote) => (
                     <div key={quote.symbol} className="flex items-center justify-between">
-                      <span className="text-[11px] font-black uppercase truncate pr-2">
+                      <span className="text-[11px] font-black uppercase truncate pr-2" style={{ color: 'var(--ng-gold-on-navy)' }}>
                         {quote.symbol.replace(/^\^/, "")}
                       </span>
-                      <span className="text-[11px] font-black tabular-nums">
+                      <span className="text-[11px] font-black tabular-nums" style={{ color: 'var(--ng-gold-on-navy)' }}>
                         {formatPrice(quote.price)}
                       </span>
                     </div>
@@ -270,10 +270,10 @@ const organizationJsonLd = {
                 </div>
               </div>
 
-              <h3 className="text-card-title font-black uppercase leading-tight mb-2 line-clamp-2">
+              <h3 className="text-card-title font-black uppercase leading-tight mb-2 line-clamp-2" style={{ color: 'var(--ng-gold-on-navy)' }}>
                 {latestTapeView.title}
               </h3>
-              <p className="text-small font-bold leading-relaxed opacity-70 line-clamp-3 flex-1">
+              <p className="text-small font-bold leading-relaxed line-clamp-3 flex-1" style={{ color: 'rgba(255,255,255,0.85)' }}>
                 {latestTapeView.todayView}
               </p>
               <div className="mt-3">
