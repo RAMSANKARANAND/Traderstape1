@@ -343,16 +343,16 @@ const organizationJsonLd = {
         </div>
       </section>
 
-      {/* Market Breadth strip — unchanged */}
+      {/* Market Breadth strip */}
       <section className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-2 animate-fade-in-up">
-        <div className="card-sky p-3 md:p-4">
+        <div className="ng-card p-3 md:p-4">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-6">
             <div className="flex flex-wrap items-center gap-3 font-black text-sm">
-              <span className="text-accent-bullish">{marketQuotes.filter(q => q.direction === "up").length} Advancing</span>
+              <span style={{ color: 'var(--ng-positive)' }}>{marketQuotes.filter(q => q.direction === "up").length} Advancing</span>
               <span className="text-ink/40">/</span>
-              <span className="text-accent-bearish">{marketQuotes.filter(q => q.direction === "down").length} Declining</span>
+              <span style={{ color: 'var(--ng-negative)' }}>{marketQuotes.filter(q => q.direction === "down").length} Declining</span>
               <span className="text-ink/40">/</span>
-              <span className="text-text-muted">{marketQuotes.filter(q => q.direction === "flat").length} Unchanged</span>
+              <span style={{ color: 'var(--ng-navy-text)' }}>{marketQuotes.filter(q => q.direction === "flat").length} Unchanged</span>
             </div>
             <div className="w-full md:w-1/2 h-2 bg-ink/10 rounded-full overflow-hidden">
               {(() => {
@@ -362,8 +362,8 @@ const organizationJsonLd = {
                 const advancingPct = total > 0 ? (advancing / total) * 100 : 0;
                 return (
                   <div className="h-full flex">
-                    <div className="bg-accent-bullish" style={{ width: `${advancingPct}%` }} />
-                    <div className="bg-accent-bearish" style={{ width: `${100 - advancingPct}%` }} />
+                    <div style={{ background: 'var(--ng-positive)', width: `${advancingPct}%` }} />
+                    <div style={{ background: 'var(--ng-negative)', width: `${100 - advancingPct}%` }} />
                   </div>
                 );
               })()}
