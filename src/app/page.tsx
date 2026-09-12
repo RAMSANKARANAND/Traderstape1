@@ -260,20 +260,20 @@ const organizationJsonLd = {
 
               {/* White body content */}
               <div className="p-3.5 flex flex-col flex-1">
-                <div className="mb-3">
-                  <div className="grid grid-cols-2 gap-2">
-                    {global.map((quote) => (
-                      <div key={quote.symbol} className="flex items-center justify-between">
-                        <span className="text-[11px] font-black uppercase truncate pr-2" style={{ color: 'var(--ng-navy-text)' }}>
-                          {quote.symbol.replace(/^\^/, "")}
-                        </span>
-                        <span className="text-[11px] font-black tabular-nums" style={{ color: 'var(--ng-navy-text)' }}>
-                          {formatPrice(quote.price)}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                 <div className="mb-3">
+                   <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
+                     {global.map((quote) => (
+                       <div key={quote.symbol} className="flex items-center justify-between">
+                         <span className="text-[13px] font-black uppercase truncate pr-2" style={{ color: 'var(--ng-navy-text)' }}>
+                           {quote.symbol.replace(/^\^/, "")}
+                         </span>
+                         <span className="text-[13px] font-black tabular-nums" style={{ color: 'var(--ng-navy-text)' }}>
+                           {formatPrice(quote.price)}
+                         </span>
+                       </div>
+                     ))}
+                   </div>
+                 </div>
 
                 <h3 className="text-card-title font-black uppercase leading-tight mb-2 line-clamp-2" style={{ color: 'var(--ng-navy-text)' }}>
                   {latestTapeView.title}
