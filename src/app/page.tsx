@@ -240,11 +240,12 @@ const organizationJsonLd = {
           {latestTapeView ? (
             <Link
               href={`/tape-views/${latestTapeView.slug}`}
-              className="ng-card-navy p-5 flex flex-col min-h-[220px] h-full hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[5px_5px_0_#111] transition-all duration-100"
+              className="ng-card overflow-hidden flex flex-col min-h-[220px] h-full hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[5px_5px_0_#111] transition-all duration-100"
             >
-              <div className="flex items-center gap-2 mb-3">
+              {/* Navy header strip with badges */}
+              <div className="flex items-center gap-2 px-3.5 py-2.5" style={{ background: 'var(--ng-navy)' }}>
                 <Badge variant="flat" className="ng-pill-gold text-[10px]">{latestTapeView.category}</Badge>
-                <span className="text-small font-black uppercase opacity-60">{latestTapeView.instrument}</span>
+                <span className="text-small font-black uppercase opacity-60" style={{ color: 'var(--ng-gold-on-navy)' }}>{latestTapeView.instrument}</span>
                 <Badge
                   variant={latestTapeView.bias === "BULLISH" ? "bullish" : latestTapeView.bias === "BEARISH" ? "bearish" : "neutral"}
                   className={latestTapeView.bias === "BULLISH" ? "ng-pill-positive"
@@ -255,31 +256,34 @@ const organizationJsonLd = {
                 </Badge>
               </div>
 
-              <div className="mb-3">
-                <div className="grid grid-cols-2 gap-2">
-                  {global.map((quote) => (
-                    <div key={quote.symbol} className="flex items-center justify-between">
-                      <span className="text-[11px] font-black uppercase truncate pr-2" style={{ color: 'var(--ng-gold-on-navy)' }}>
-                        {quote.symbol.replace(/^\^/, "")}
-                      </span>
-                      <span className="text-[11px] font-black tabular-nums" style={{ color: 'var(--ng-gold-on-navy)' }}>
-                        {formatPrice(quote.price)}
-                      </span>
-                    </div>
-                  ))}
+              {/* White body content */}
+              <div className="p-3.5 flex flex-col flex-1">
+                <div className="mb-3">
+                  <div className="grid grid-cols-2 gap-2">
+                    {global.map((quote) => (
+                      <div key={quote.symbol} className="flex items-center justify-between">
+                        <span className="text-[11px] font-black uppercase truncate pr-2" style={{ color: 'var(--ng-navy-text)' }}>
+                          {quote.symbol.replace(/^\^/, "")}
+                        </span>
+                        <span className="text-[11px] font-black tabular-nums" style={{ color: 'var(--ng-navy-text)' }}>
+                          {formatPrice(quote.price)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              <h3 className="text-card-title font-black uppercase leading-tight mb-2 line-clamp-2" style={{ color: 'var(--ng-gold-on-navy)' }}>
-                {latestTapeView.title}
-              </h3>
-              <p className="text-small font-bold leading-relaxed line-clamp-3 flex-1" style={{ color: 'rgba(255,255,255,0.85)' }}>
-                {latestTapeView.todayView}
-              </p>
-              <div className="mt-3">
-                <span className="inline-block ng-btn-gold text-bg px-3.5 py-1.5 font-black uppercase text-[11px] tracking-wide hover:bg-accent-coral hover:text-white transition-colors">
-                  Read Analysis →
-                </span>
+                <h3 className="text-card-title font-black uppercase leading-tight mb-2 line-clamp-2" style={{ color: 'var(--ng-navy-text)' }}>
+                  {latestTapeView.title}
+                </h3>
+                <p className="text-small font-bold leading-relaxed line-clamp-3 flex-1" style={{ color: 'var(--text-muted)' }}>
+                  {latestTapeView.todayView}
+                </p>
+                <div className="mt-3">
+                  <span className="inline-block ng-btn-gold text-bg px-3.5 py-1.5 font-black uppercase text-[11px] tracking-wide hover:bg-accent-coral hover:text-white transition-colors">
+                    Read Analysis →
+                  </span>
+                </div>
               </div>
             </Link>
           ) : (
