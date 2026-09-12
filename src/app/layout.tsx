@@ -62,13 +62,13 @@ export default function RootLayout({
         <header className="border-b-[3px] border-[var(--ng-gold)] sticky top-0 z-40 h-[72px] flex items-center" style={{ background: 'var(--ng-navy)' }}>
           <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full" aria-label="Main navigation">
             <div className="flex items-center justify-between h-full">
-              <Link href="/" className="px-3 py-1 transition-colors duration-100" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '20px', fontWeight: 500 }}>
+              <Link href="/" className="px-3 py-1 transition-colors duration-100 focus:outline-none" style={{ display: 'inline-flex', alignItems: 'center', gap: '7px' }}>
+                <span style={{ fontSize: '20px', fontWeight: 500, verticalAlign: 'middle' }}>
                   <span style={{ color: '#ffffff' }}>trader</span>
                   <span style={{ color: 'var(--ng-gold)' }}>stape</span>
                 </span>
-                <span style={{ color: 'var(--ng-gold-on-navy)', fontSize: '11px', verticalAlign: 'super' }}>™</span>
-                <span style={{ position: 'relative', width: '22px', height: '22px', background: 'var(--ng-gold)', borderRadius: '50%', overflow: 'hidden', display: 'inline-block' }}>
+                <span style={{ color: 'var(--ng-gold-on-navy)', fontSize: '10px', verticalAlign: 'middle' }}>™</span>
+                <span style={{ position: 'relative', width: '22px', height: '22px', background: 'var(--ng-gold)', borderRadius: '50%', overflow: 'hidden', display: 'inline-block', verticalAlign: 'middle' }}>
                   <span className="currency-cycle" style={{ animationDelay: '0s' }}>₹</span>
                   <span className="currency-cycle" style={{ animationDelay: '1s' }}>$</span>
                   <span className="currency-cycle" style={{ animationDelay: '2s' }}>€</span>
