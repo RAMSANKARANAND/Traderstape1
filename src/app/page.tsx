@@ -297,16 +297,16 @@ const organizationJsonLd = {
       {/* ───────────────────────── 2. Top Gainers/Losers widget ───────────────────────── */}
       <section className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4 animate-fade-in-up">
         <div className="flex flex-col md:flex-row gap-4 md:gap-8">
-          <div className="flex-1 card-mint p-4 md:p-5">
+          <div className="flex-1 ng-card p-4 md:p-5">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-[10px] font-black uppercase tracking-widest text-ink">▲ Top 5 Gainers</span>
+              <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'var(--ng-positive)' }}>▲ TOP 5 GAINERS</span>
             </div>
             <div className="space-y-2">
               {getTopMovers(marketQuotes, 5).gainers.length > 0 ? (
                 getTopMovers(marketQuotes, 5).gainers.map((quote) => (
                   <div key={quote.symbol} className="flex items-center justify-between px-2 py-1.5 text-sm font-bold">
-                    <span className="uppercase">{quote.name || quote.symbol}</span>
-                    <span className="text-ink">{formatPercent(quote.changePercent)}</span>
+                    <span className="uppercase" style={{ color: 'var(--ng-navy-text)' }}>{quote.name || quote.symbol}</span>
+                    <span className="ng-pill-positive">{formatPercent(quote.changePercent)}</span>
                   </div>
                 ))
               ) : (
@@ -314,16 +314,16 @@ const organizationJsonLd = {
               )}
             </div>
           </div>
-          <div className="flex-1 card-coral p-4 md:p-5">
+          <div className="flex-1 ng-card p-4 md:p-5">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-[10px] font-black uppercase tracking-widest text-ink">▼ Top 5 Losers</span>
+              <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'var(--ng-negative)' }}>▼ TOP 5 LOSERS</span>
             </div>
             <div className="space-y-2">
               {getTopMovers(marketQuotes, 5).losers.length > 0 ? (
                 getTopMovers(marketQuotes, 5).losers.map((quote) => (
                   <div key={quote.symbol} className="flex items-center justify-between px-2 py-1.5 text-sm font-bold">
-                    <span className="uppercase">{quote.name || quote.symbol}</span>
-                    <span className="text-ink">{formatPercent(quote.changePercent)}</span>
+                    <span className="uppercase" style={{ color: 'var(--ng-navy-text)' }}>{quote.name || quote.symbol}</span>
+                    <span className="ng-pill-negative">{formatPercent(quote.changePercent)}</span>
                   </div>
                 ))
               ) : (
@@ -335,7 +335,8 @@ const organizationJsonLd = {
         <div className="mt-4 text-center md:text-right">
           <Link
             href="/the-tape#movers"
-            className="inline-block text-small font-black uppercase text-accent-coral hover:underline transition-colors"
+            className="inline-block text-small font-black uppercase hover:underline transition-colors"
+            style={{ color: 'var(--ng-navy-text)' }}
           >
             View All Movers →
           </Link>
