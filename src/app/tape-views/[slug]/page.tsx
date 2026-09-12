@@ -1,5 +1,5 @@
 import { getTapeViewBySlug, getRelatedTapeViews } from "@/lib/db-raw";
-import { Badge } from "@/components/ui";
+import { Badge, ShareButtons } from "@/components/ui";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import { notFound } from "next/navigation";
@@ -54,7 +54,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const relatedPosts = await getRelatedTapeViews(post.category, post.id, 3);
 
   const shareUrl = `https://traderstape.com/tape-views/${slug}`;
-  const shareTitle = encodeURIComponent(post.title);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -213,56 +212,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         </div>
       )}
 
-      <div className="ng-card p-5 md:p-6 mb-6 md:mb-8">
-        <h2 className="text-lg md:text-xl font-black uppercase mb-3 md:mb-4" style={{ color: 'var(--ng-navy-text)' }}>Share Analysis</h2>
-        <div className="flex flex-wrap gap-2 md:gap-3">
-          <a
-            href={`https://wa.me/?text=${shareTitle}%20-%20${shareUrl}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block px-3 md:px-4 py-1.5 md:py-2 font-black uppercase text-xs brutal-border bg-bg hover:bg-accent-yellow transition-colors"
-            style={{ color: 'var(--ng-navy-text)' }}
-          >
-            WhatsApp
-          </a>
-          <a
-            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block px-3 md:px-4 py-1.5 md:py-2 font-black uppercase text-xs brutal-border bg-bg hover:bg-accent-yellow transition-colors"
-            style={{ color: 'var(--ng-navy-text)' }}
-          >
-            Facebook
-          </a>
-          <a
-            href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${shareTitle}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block px-3 md:px-4 py-1.5 md:py-2 font-black uppercase text-xs brutal-border bg-bg hover:bg-accent-yellow transition-colors"
-            style={{ color: 'var(--ng-navy-text)' }}
-          >
-            X / Twitter
-          </a>
-          <a
-            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block px-3 md:px-4 py-1.5 md:py-2 font-black uppercase text-xs brutal-border bg-bg hover:bg-accent-yellow transition-colors"
-            style={{ color: 'var(--ng-navy-text)' }}
-          >
-            LinkedIn
-          </a>
-          <a
-            href="https://www.instagram.com/traderstape"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block px-3 md:px-4 py-1.5 md:py-2 font-black uppercase text-xs brutal-border bg-bg hover:bg-accent-yellow transition-colors"
-            style={{ color: 'var(--ng-navy-text)' }}
-          >
-            Instagram
-          </a>
-        </div>
-      </div>
+      <ShareButtons title={post.title} url={shareUrl} />
 
       {relatedPosts.length > 0 && (
         <div className="mb-6 md:mb-8">

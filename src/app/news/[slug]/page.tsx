@@ -1,5 +1,5 @@
 import { getNewsPostBySlug } from "@/lib/db-raw";
-import { Badge } from "@/components/ui";
+import { Badge, ShareButtons } from "@/components/ui";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -63,6 +63,8 @@ export default async function ArticlePage({
     dateModified: post.updatedAt.toISOString(),
   };
 
+  const shareUrl = `https://traderstape.com/news/${slug}`;
+
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <script
@@ -111,10 +113,12 @@ export default async function ArticlePage({
           By {post.author.name}
         </p>
 
-  <div className="ng-card p-5 mb-8">
-    <p className="text-lg leading-relaxed text-base">{post.summary}</p>
-  </div>
-</article>
-</div>
-);
+        <div className="ng-card p-5 mb-8">
+          <p className="text-lg leading-relaxed text-base">{post.summary}</p>
+        </div>
+      </article>
+
+      <ShareButtons title={post.title} url={shareUrl} />
+    </div>
+  );
 }

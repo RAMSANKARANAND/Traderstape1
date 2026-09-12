@@ -4,3 +4,4 @@ export { Panel } from "./Panel";
 export { SectionTitle } from "./SectionTitle";
 export { Badge } from "./Badge";
 export { NewsCard } from "./NewsCard";
+export { ShareButtons } from "../ShareButtons";
