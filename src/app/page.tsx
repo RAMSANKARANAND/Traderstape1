@@ -372,15 +372,15 @@ const organizationJsonLd = {
         </div>
       </section>
 
-      {/* Trending Topics — unchanged */}
+      {/* ───────────────────────── Trending Topics ───────────────────────── */}
       {trendingCategories.length > 0 && (
         <section className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-2 animate-fade-in-up">
-          <div className="card-lavender p-3 md:p-4">
+          <div className="ng-card p-3 md:p-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-6">
-              <span className="text-[10px] font-black uppercase tracking-widest text-ink">Trending</span>
+              <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'var(--ng-navy-text)' }}>Trending</span>
               <div className="flex flex-wrap items-center gap-2">
-                {trendingCategories.slice(0, 4).map((item) => (
-                  <Badge key={item.category} variant="ai" className="text-[10px]">
+                {trendingCategories.slice(0, 4).map((item, i) => (
+                  <Badge key={item.category} variant="flat" className={i % 2 === 0 ? "ng-pill-gold" : "ng-pill-navy"}>
                     {item.category} ({item.count})
                   </Badge>
                 ))}
