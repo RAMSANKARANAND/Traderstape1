@@ -33,14 +33,8 @@ export const CRON_FEEDS: RssFeedConfig[] = [
   },
   {
     name: "ECB Press Releases",
-    url: "https://www.ecb.europa.eu/rss/press.html",
+    url: "https://www.ecb.europa.eu/rss/press.xml",
     category: "geopolitical",
-    enabled: true,
-  },
-  {
-    name: "ECB EUR/USD Reference Rate",
-    url: "https://www.ecb.europa.eu/rss/fxref-usd.html",
-    category: "forex",
     enabled: true,
   },
 ];
