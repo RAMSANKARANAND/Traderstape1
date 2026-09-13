@@ -48,6 +48,10 @@ model NewsPost {
   category       NewsCategory
   summary        String
   body           String
+  tldr           String?
+  keyFacts       String?
+  whyItMatters   String?
+  plainTitle     String?
   isBreaking     Boolean      @default(false)
   isFeatured     Boolean      @default(false)
   isTrending     Boolean      @default(false)

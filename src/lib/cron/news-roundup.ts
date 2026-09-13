@@ -112,7 +112,14 @@ export async function runNewsRoundup(): Promise<NewsRoundupResult> {
       continue;
     }
 
-    const data = aiRes.data as { summary?: string | null; category?: string | null };
+    const data = aiRes.data as {
+      summary?: string | null;
+      category?: string | null;
+      tldr?: string | null;
+      keyFacts?: string[] | null;
+      whyItMatters?: string | null;
+      plainTitle?: string | null;
+    };
     if (!data.summary || !data.category) {
       console.warn(`[News Roundup Cron] AI returned null summary/category for "${item.title}"`);
       stats.aiFailed++;
@@ -163,6 +170,10 @@ export async function runNewsRoundup(): Promise<NewsRoundupResult> {
       category: finalCategory,
       summary: data.summary,
       body: data.summary,
+      tldr: data.tldr ?? null,
+      keyFacts: data.keyFacts ? JSON.stringify(data.keyFacts) : null,
+      whyItMatters: data.whyItMatters ?? null,
+      plainTitle: data.plainTitle ?? null,
       authorId: systemUserId,
       publishedAt: item.publishedAt,
       isPublished: false,

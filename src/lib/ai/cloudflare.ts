@@ -1,4 +1,4 @@
-import type { AiRequest, AiResponse } from "./types";
+import type { AiRequest, AiResponse, AiAssistantResult } from "./types";
 import { NEWS_PROMPTS } from "./prompts/news";
 import { SEO_PROMPTS } from "./prompts/seo";
 import { TAPE_VIEW_PROMPTS } from "./prompts/tapeView";
@@ -237,20 +237,44 @@ export async function generateWithCloudflare(req: AiRequest): Promise<AiResponse
 case "generate-news-roundup-summary": {
       const validCats = ["Stocks", "Crypto", "Forex", "Geopolitical"];
 
-      // Case 1: raw is already a structured object with summary/category fields
-      if (raw && typeof raw === "object" && "summary" in raw && "category" in raw) {
-        const obj = raw as { summary: string | null; category: string | null };
+      // Helper: extract structured fields from a parsed object
+      function extractStructured(obj: Record<string, unknown>): AiAssistantResult | null {
+        const summary = obj.summary;
+        const category = obj.category;
         if (
-          typeof obj.summary === "string" &&
-          obj.summary.trim() !== "" &&
-          typeof obj.category === "string" &&
-          validCats.includes(obj.category)
+          typeof summary !== "string" ||
+          summary.trim() === "" ||
+          typeof category !== "string" ||
+          !validCats.includes(category)
         ) {
+          return null;
+        }
+        const result: AiAssistantResult = {
+          summary,
+          category,
+        };
+        // Optional fields — only set if present and valid
+        if (typeof obj.tldr === "string" && obj.tldr.trim() !== "") result.tldr = obj.tldr;
+        if (typeof obj.whyItMatters === "string" && obj.whyItMatters.trim() !== "") result.whyItMatters = obj.whyItMatters;
+        if (typeof obj.plainTitle === "string" && obj.plainTitle.trim() !== "") result.plainTitle = obj.plainTitle;
+        if (Array.isArray(obj.keyFacts) && obj.keyFacts.every((f: unknown) => typeof f === "string" && f.trim() !== "")) {
+          result.keyFacts = obj.keyFacts as string[];
+        }
+        return result;
+      }
+
+      // Case 1: raw is already a structured object (Cloudflare AI returns objects directly)
+      if (raw && typeof raw === "object" && !Array.isArray(raw)) {
+        const obj = raw as Record<string, unknown>;
+        // The model may wrap the structured data in a "response" key
+        const inner = (obj.response && typeof obj.response === "object") ? (obj.response as Record<string, unknown>) : obj;
+        const extracted = extractStructured(inner);
+        if (extracted) {
           return {
             success: true,
             mode: "cloudflare",
             message: "News roundup summary generated.",
-            data: { summary: obj.summary, category: obj.category },
+            data: extracted,
           };
         }
         return {
@@ -263,21 +287,14 @@ case "generate-news-roundup-summary": {
       // Case 2: raw is a string that needs JSON parsing
       if (typeof raw === "string") {
         try {
-          const parsed = JSON.parse(stripJsonFences(raw)) as {
-            summary: string | null;
-            category: "Stocks" | "Crypto" | "Forex" | "Geopolitical" | null;
-          };
-          if (
-            typeof parsed.summary === "string" &&
-            parsed.summary.trim() !== "" &&
-            typeof parsed.category === "string" &&
-            validCats.includes(parsed.category)
-          ) {
+          const parsed = JSON.parse(stripJsonFences(raw)) as Record<string, unknown>;
+          const extracted = extractStructured(parsed);
+          if (extracted) {
             return {
               success: true,
               mode: "cloudflare",
               message: "News roundup summary generated.",
-              data: { summary: parsed.summary, category: parsed.category },
+              data: extracted,
             };
           }
           return {

@@ -59,6 +59,10 @@ export interface NewsPost {
   category: NewsCategory;
   summary: string;
   body: string;
+  tldr: string | null;
+  keyFacts: string | null;
+  whyItMatters: string | null;
+  plainTitle: string | null;
   authorId: string;
   publishedAt: Date | null;
   isPublished: boolean;
@@ -307,7 +311,8 @@ export async function getPublishedNewsPosts(
   const take = options?.take;
 
   const selectColumns = `SELECT n.id, n.title, n.slug, n.category, n.summary, 
-        n.body, n.sourceName, n.authorId, n.publishedAt, n.isPublished, n.isBreaking, n.isFeatured,
+        n.body, n.tldr, n.keyFacts, n.whyItMatters, n.plainTitle,
+        n.sourceName, n.authorId, n.publishedAt, n.isPublished, n.isBreaking, n.isFeatured,
         n.isTrending, n.isEditorPick, n.seoTitle, n.seoDescription, n.ogImageUrl,
         n.createdAt, n.updatedAt,
         u.name as authorName`;
@@ -335,6 +340,10 @@ export async function getPublishedNewsPosts(
     category: row.category as NewsCategory,
     summary: row.summary as string,
     body: row.body as string ?? "",
+    tldr: (row.tldr as string) || null,
+    keyFacts: (row.keyFacts as string) || null,
+    whyItMatters: (row.whyItMatters as string) || null,
+    plainTitle: (row.plainTitle as string) || null,
     sourceName: (row.sourceName as string) || null,
     authorId: row.authorId as string,
     publishedAt: toDate(row.publishedAt),
@@ -375,6 +384,10 @@ export async function getNewsPostBySlug(
     category: row.category as NewsCategory,
     summary: row.summary as string,
     body: row.body as string,
+    tldr: (row.tldr as string) || null,
+    keyFacts: (row.keyFacts as string) || null,
+    whyItMatters: (row.whyItMatters as string) || null,
+    plainTitle: (row.plainTitle as string) || null,
     sourceName: (row.sourceName as string) || null,
     authorId: row.authorId as string,
     publishedAt: toDate(row.publishedAt),
@@ -396,13 +409,17 @@ export async function getNewsPostById(id: string): Promise<NewsPost | null> {
   const d1 = await getD1();
   const row = await d1.prepare("SELECT * FROM NewsPost WHERE id = ?").bind(id).first();
   if (!row) return null;
-return {
+  return {
     id: row.id as string,
     title: row.title as string,
     slug: row.slug as string,
     category: row.category as NewsCategory,
     summary: row.summary as string,
     body: row.body as string,
+    tldr: (row.tldr as string) || null,
+    keyFacts: (row.keyFacts as string) || null,
+    whyItMatters: (row.whyItMatters as string) || null,
+    plainTitle: (row.plainTitle as string) || null,
     sourceName: (row.sourceName as string) || null,
     authorId: row.authorId as string,
     publishedAt: toDate(row.publishedAt),
@@ -424,7 +441,8 @@ export async function getAllNewsPosts(): Promise<NewsPostWithAuthor[]> {
   const result = await d1
     .prepare(
       `SELECT n.id, n.title, n.slug, n.category, n.summary, 
-        n.body, n.sourceName, n.authorId, n.publishedAt, n.isPublished, n.isBreaking, n.isFeatured,
+        n.body, n.tldr, n.keyFacts, n.whyItMatters, n.plainTitle,
+        n.sourceName, n.authorId, n.publishedAt, n.isPublished, n.isBreaking, n.isFeatured,
         n.isTrending, n.isEditorPick, n.seoTitle, n.seoDescription, n.ogImageUrl,
         n.createdAt, n.updatedAt,
         u.name as authorName
@@ -440,6 +458,10 @@ export async function getAllNewsPosts(): Promise<NewsPostWithAuthor[]> {
     category: row.category as NewsCategory,
     summary: row.summary as string,
     body: row.body as string,
+    tldr: (row.tldr as string) || null,
+    keyFacts: (row.keyFacts as string) || null,
+    whyItMatters: (row.whyItMatters as string) || null,
+    plainTitle: (row.plainTitle as string) || null,
     sourceName: (row.sourceName as string) || null,
     authorId: row.authorId as string,
     publishedAt: toDate(row.publishedAt),
@@ -487,6 +509,10 @@ export async function createNewsPost(data: {
   category: NewsCategory;
   summary: string;
   body: string;
+  tldr?: string | null;
+  keyFacts?: string | null;
+  whyItMatters?: string | null;
+  plainTitle?: string | null;
   authorId: string;
   seoTitle?: string | null;
   seoDescription?: string | null;
@@ -500,8 +526,8 @@ export async function createNewsPost(data: {
   const now = new Date().toISOString();
   await d1
     .prepare(
-      `INSERT INTO NewsPost (id, title, slug, category, summary, body, authorId, publishedAt, isPublished, isBreaking, isFeatured, isTrending, isEditorPick, seoTitle, seoDescription, ogImageUrl, sourceName, createdAt, updatedAt)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO NewsPost (id, title, slug, category, summary, body, tldr, keyFacts, whyItMatters, plainTitle, authorId, publishedAt, isPublished, isBreaking, isFeatured, isTrending, isEditorPick, seoTitle, seoDescription, ogImageUrl, sourceName, createdAt, updatedAt)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, ?, ?, ?, ?, ?, ?)`,
     )
     .bind(
       id,
@@ -510,6 +536,10 @@ export async function createNewsPost(data: {
       data.category,
       data.summary,
       data.body,
+      data.tldr ?? null,
+      data.keyFacts ?? null,
+      data.whyItMatters ?? null,
+      data.plainTitle ?? null,
       data.authorId,
       data.publishedAt ? data.publishedAt.toISOString() : null,
       data.isPublished ? 1 : 0,

@@ -21,6 +21,10 @@ export interface AiRequest {
 export interface AiAssistantResult {
   content?: string;
   summary?: string;
+  tldr?: string | null;
+  keyFacts?: string[] | null;
+  whyItMatters?: string | null;
+  plainTitle?: string | null;
   seoTitle?: string;
   metaDescription?: string;
   tags?: string[];

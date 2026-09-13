@@ -65,6 +65,21 @@ export default async function ArticlePage({
 
   const shareUrl = `https://traderstape.com/news/${slug}`;
 
+  // Parse keyFacts from JSON string if present
+  let keyFactsArr: string[] = [];
+  if (post.keyFacts) {
+    try {
+      const parsed = JSON.parse(post.keyFacts);
+      if (Array.isArray(parsed) && parsed.every((f: unknown) => typeof f === "string")) {
+        keyFactsArr = parsed as string[];
+      }
+    } catch {
+      // keyFacts is not valid JSON — treat as null
+    }
+  }
+
+  const displayTitle = post.plainTitle || post.title;
+
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <script
@@ -109,9 +124,56 @@ export default async function ArticlePage({
           {post.title}
         </h1>
 
+        {post.plainTitle && post.plainTitle !== post.title && (
+          <p className="text-lg font-bold opacity-70 mb-2" style={{ color: 'var(--ng-navy-text)' }}>
+            {post.plainTitle}
+          </p>
+        )}
+
         <p className="text-lg font-bold opacity-70 mb-8">
           By {post.author.name}
         </p>
+
+        {/* TL;DR — prominent callout above the full summary */}
+        {post.tldr && (
+          <div className="ng-card-warn mb-6">
+            <p className="text-sm font-black uppercase tracking-wide mb-1" style={{ color: 'var(--ng-gold)' }}>
+              TL;DR
+            </p>
+            <p className="text-base font-bold leading-relaxed" style={{ color: 'var(--ng-navy-text)' }}>
+              {post.tldr}
+            </p>
+          </div>
+        )}
+
+        {/* Key Facts — bulleted list, only rendered if non-empty */}
+        {keyFactsArr.length > 0 && (
+          <div className="ng-card p-5 mb-6">
+            <h3 className="text-sm font-black uppercase tracking-wide mb-3" style={{ color: 'var(--ng-navy-text)' }}>
+              Key Facts
+            </h3>
+            <ul className="space-y-2">
+              {keyFactsArr.map((fact, i) => (
+                <li key={i} className="flex items-start gap-2 text-base font-bold leading-relaxed" style={{ color: 'var(--ng-navy-text)' }}>
+                  <span className="text-[var(--ng-gold)] mt-1 shrink-0">•</span>
+                  <span>{fact}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Why It Matters — visually distinct callout */}
+        {post.whyItMatters && (
+          <div className="ng-card p-5 mb-6" style={{ borderLeft: '4px solid var(--ng-gold)' }}>
+            <p className="text-sm font-black uppercase tracking-wide mb-1" style={{ color: 'var(--ng-gold)' }}>
+              Why It Matters
+            </p>
+            <p className="text-base font-bold leading-relaxed" style={{ color: 'var(--ng-navy-text)' }}>
+              {post.whyItMatters}
+            </p>
+          </div>
+        )}
 
         <div className="ng-card p-5 mb-8">
           <p className="text-lg leading-relaxed text-base">{post.summary}</p>
