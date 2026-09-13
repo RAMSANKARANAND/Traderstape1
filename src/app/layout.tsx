@@ -112,7 +112,7 @@ export default function RootLayout({
         </main>
 
         {/* Footer */}
-        <footer className="bg-ink text-bg brutal-border-t border-t-3 border-ink mt-auto">
+        <footer className="border-t-[3px] border-[var(--ng-gold)] mt-auto" style={{ background: 'var(--ng-navy)' }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div>
@@ -135,12 +135,12 @@ export default function RootLayout({
                     <span className="logo-arrow-down" style={{ position: 'absolute', inset: 0, color: '#f87171', fontSize: '12px' }}>▼</span>
                   </div>
                 </h3>
-                <p className="text-sm font-bold opacity-80">
+                <p className="text-sm font-bold opacity-80" style={{ color: '#ffffff' }}>
                   Market levels, forex rates, and trading news for educational purposes.
                 </p>
               </div>
               <div>
-                <h3 className="font-black text-lg uppercase mb-3 text-accent-yellow">Quick Links</h3>
+                <h3 className="font-black text-lg uppercase mb-3" style={{ color: 'var(--ng-gold)' }}>Quick Links</h3>
                 <ul className="space-y-2">
                   <li><FooterLink href="/the-tape">The Tape</FooterLink></li>
                   <li><FooterLink href="/news">News</FooterLink></li>
@@ -149,16 +149,16 @@ export default function RootLayout({
                 </ul>
               </div>
               <div>
-                <h3 className="font-black text-lg uppercase mb-3 text-accent-yellow">Disclaimer</h3>
-                <p className="text-xs font-bold opacity-80 leading-relaxed">
+                <h3 className="font-black text-lg uppercase mb-3" style={{ color: 'var(--ng-gold)' }}>Disclaimer</h3>
+                <p className="text-xs font-bold opacity-80 leading-relaxed" style={{ color: '#ffffff' }}>
                   TradersTape is for educational purposes only. Nothing on this site is financial advice.
                   Always do your own research before making investment decisions. Past performance is not
                   indicative of future results.
                 </p>
               </div>
             </div>
-            <div className="mt-8 pt-6 brutal-border-t border-t-3 border-bg/20 text-center">
-              <p className="text-xs font-bold opacity-60">
+            <div className="mt-8 pt-6 border-t border-t-[3px] border-[var(--ng-border)] text-center">
+              <p className="text-xs font-bold opacity-60" style={{ color: '#ffffff' }}>
                 &copy; 2026 TradersTape. For educational purposes only.
               </p>
             </div>
@@ -196,7 +196,8 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
   return (
     <Link
       href={href}
-      className="text-sm font-bold hover:text-accent-yellow transition-colors duration-100"
+      className="text-sm font-bold hover:text-[var(--ng-gold)] transition-colors duration-100"
+      style={{ color: '#ffffff' }}
     >
       {children}
     </Link>
