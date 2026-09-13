@@ -620,6 +620,14 @@ body::before {
   font-weight: 500;
 }
 
+.ng-card-warn {
+  background: var(--ng-card-bg);
+  border: 1px solid var(--ng-border);
+  border-left: 4px solid var(--ng-gold);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+}
+
 @keyframes candle-hgreen1 { 0%, 100% { height: 10px; } 50% { height: 6px; } }
 @keyframes candle-hred1 { 0%, 100% { height: 14px; } 50% { height: 9px; } }
 @keyframes candle-hgreen2 { 0%, 100% { height: 7px; } 50% { height: 13px; } }

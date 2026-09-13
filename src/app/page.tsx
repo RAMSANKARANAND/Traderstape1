@@ -532,17 +532,17 @@ const global = marketQuotes.filter((q) =>
       )}
 
       {/* ───────────────────────── 5. The Tape CTA ───────────────────────── */}
-      <section className="bg-ink text-bg border-t-[3px] border-ink border-b-[3px] border-ink">
+      <section className="border-t-[3px] border-b-[3px] border-[var(--ng-gold)]" style={{ background: 'var(--ng-navy)' }}>
         <div className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 text-center">
-          <h2 className="text-display font-black uppercase leading-tight mb-2">
-            Enter <span className="text-accent-coral">The Tape</span>
+          <h2 className="text-display font-black uppercase leading-tight mb-2" style={{ color: '#ffffff' }}>
+            Enter <span style={{ color: 'var(--ng-gold)' }}>The Tape</span>
           </h2>
-          <p className="text-body font-bold max-w-2xl mx-auto mb-5 opacity-80">
+          <p className="text-body font-bold max-w-2xl mx-auto mb-5 opacity-80" style={{ color: '#ffffff' }}>
             Real-time market intelligence across NSE, forex, crypto, commodities, and global markets.
           </p>
           <Link
             href="/the-tape"
-            className="inline-block bg-accent-coral text-white brutal-border brutal-shadow px-6 py-3 font-black uppercase text-small tracking-wide hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[5px_5px_0_#fff] transition-all duration-150"
+            className="inline-block ng-btn-gold px-6 py-3 font-black uppercase text-small tracking-wide hover:bg-accent-coral hover:text-white transition-colors duration-150"
           >
             🚀 Launch The Tape
           </Link>
@@ -556,9 +556,9 @@ const global = marketQuotes.filter((q) =>
 
       {/* ───────────────────────── 7. Educational Disclaimer ───────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10">
-        <div className="card-coral brutal-border brutal-shadow p-5 md:p-6">
-          <h3 className="text-heading font-black uppercase mb-2">⚠ Educational Disclaimer</h3>
-          <p className="text-body font-bold leading-relaxed">
+        <div className="ng-card-warn">
+          <h3 className="text-heading font-black uppercase mb-2" style={{ color: 'var(--ng-navy-text)' }}>⚠ Educational Disclaimer</h3>
+          <p className="text-body font-bold leading-relaxed" style={{ color: 'var(--ng-navy-text)' }}>
             TradersTape is for educational purposes only. Nothing on this site is financial advice.
             Always conduct your own research and consult with a licensed financial advisor before
             making investment decisions. Trading involves substantial risk of loss.
