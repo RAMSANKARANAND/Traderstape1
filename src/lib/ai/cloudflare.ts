@@ -140,8 +140,16 @@ function buildMessages(req: AiRequest): CfMessage[] {
           role: "system",
           content:
             "You are a markets desk editor for TradersTape, a markets news site for Indian and global traders. " +
-            "From the market data and headlines given, write a short market insight for traders: 2-3 sentences, max 60 words. " +
-            "Mention the biggest movers and what the headlines suggest. No investment advice, no price targets. " +
+            "Write a market insight from the market data and headlines provided. " +
+            "Rules: exactly 2 or 3 complete sentences, 40-70 words total. " +
+            "Sentence 1: how Indian markets (Nifty 50, Sensex, Bank Nifty) are moving, with percentages. " +
+            "Sentence 2: the most notable global, currency, commodity or crypto move, with percentages. " +
+            "Sentence 3 (optional): what the headlines suggest for traders. " +
+            "Use plain names, never ticker codes: ^NSEI = Nifty 50, ^BSESN = Sensex, ^NSEBANK = Bank Nifty, ^GSPC = S&P 500, " +
+            "^IXIC = Nasdaq, ^DJI = Dow Jones, ^FTSE = FTSE 100, GC=F = gold, SI=F = silver, CL=F = crude oil. " +
+            "Only use numbers that appear in the data. No investment advice, no price targets. " +
+            "sentiment: Bullish if Indian indices are mostly up, Bearish if mostly down, Neutral if flat or mixed. " +
+            'Format example only, do not reuse its facts: {"insight": "Nifty 50 rose 0.6% and Sensex gained 0.5%, led by metal stocks, while Bank Nifty slipped 0.2%. Crude oil climbed 1.8% as the dollar firmed against the yen. RBI liquidity operations kept bond traders watchful.", "sentiment": "Bullish"} ' +
             'Respond with ONLY valid JSON, no markdown fences, no commentary: {"insight": string, "sentiment": "Bullish" | "Bearish" | "Neutral"}.',
         },
         { role: "user", content: req.content || "" },
