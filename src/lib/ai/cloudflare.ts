@@ -134,6 +134,19 @@ function buildMessages(req: AiRequest): CfMessage[] {
         { role: "user", content: p.user({ title: req.title, category: req.category, content: req.content }) },
       ];
     }
+    case "generate-tape-insight": {
+      return [
+        {
+          role: "system",
+          content:
+            "You are a markets desk editor for TradersTape, a markets news site for Indian and global traders. " +
+            "From the market data and headlines given, write a short market insight for traders: 2-3 sentences, max 60 words. " +
+            "Mention the biggest movers and what the headlines suggest. No investment advice, no price targets. " +
+            'Respond with ONLY valid JSON, no markdown fences, no commentary: {"insight": string, "sentiment": "Bullish" | "Bearish" | "Neutral"}.',
+        },
+        { role: "user", content: req.content || "" },
+      ];
+    }
     default:
       return [
         { role: "system", content: "You are a helpful assistant for TradersTape." },
@@ -317,6 +330,28 @@ case "generate-news-roundup-summary": {
         mode: "cloudflare",
         message: "Unexpected AI response shape for news roundup summary.",
       };
+    }
+    case "generate-tape-insight": {
+      const validSentiments = ["Bullish", "Bearish", "Neutral"];
+      let obj: Record<string, unknown> | null = null;
+      if (raw && typeof raw === "object" && !Array.isArray(raw)) {
+        const r = raw as Record<string, unknown>;
+        obj = r.response && typeof r.response === "object" ? (r.response as Record<string, unknown>) : r;
+      }
+      if ((!obj || typeof obj.insight !== "string") && safeRaw) {
+        try {
+          obj = JSON.parse(stripJsonFences(safeRaw)) as Record<string, unknown>;
+        } catch {
+          obj = { insight: safeRaw.trim(), sentiment: "Neutral" };
+        }
+      }
+      const insight = obj && typeof obj.insight === "string" ? obj.insight.trim() : "";
+      if (!insight) {
+        return { success: false, mode: "cloudflare", message: "AI returned empty tape insight." };
+      }
+      const s = obj && typeof obj.sentiment === "string" ? obj.sentiment : "Neutral";
+      const sentiment = validSentiments.includes(s) ? s : "Neutral";
+      return { success: true, mode: "cloudflare", message: "Tape insight generated.", data: { insight, sentiment } };
     }
     default:
       return {

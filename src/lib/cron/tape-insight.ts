@@ -58,7 +58,7 @@ export async function runTapeInsight(): Promise<{ success: true; insight: string
       .prepare(
         `INSERT INTO TapeInsight (id, sentiment, summary, createdAt) VALUES (?, ?, ?, ?)`
       )
-      .bind(id, "Neutral", insightText, now)
+      .bind(id, (aiRes.data as { sentiment?: string })?.sentiment || "Neutral", insightText, now)
       .run();
 
     return { success: true, insight: insightText, id };

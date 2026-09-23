@@ -32,6 +32,7 @@ export interface AiAssistantResult {
   keywords?: string[];
   category?: string;
   insight?: string;
+  sentiment?: string;
 }
 
 export interface AiResponse {
