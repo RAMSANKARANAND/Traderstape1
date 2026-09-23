@@ -119,7 +119,7 @@ export interface TapeViewWithAuthor extends TapeView {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /** Get the D1 binding from the Cloudflare context. */
-async function getD1() {
+export async function getD1() {
   const { env } = await getCloudflareContext({ async: true });
   return env.traderstape as D1Database;
 }

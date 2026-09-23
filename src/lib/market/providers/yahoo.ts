@@ -34,6 +34,15 @@ const YAHOO_INDICES = [
   { symbol: "^FTSE", name: "FTSE 100" },
   { symbol: "^GDAXI", name: "DAX" },
   { symbol: "^HSI", name: "HANG SENG" },
+  { symbol: "^CNXAUTO", name: "AUTO" },
+  { symbol: "^CNXIT", name: "IT" },
+  { symbol: "^CNXPHARMA", name: "PHARMA" },
+  { symbol: "^CNXFMCG", name: "FMCG" },
+  { symbol: "^CNXMETAL", name: "METAL" },
+  { symbol: "^CNXENERGY", name: "ENERGY" },
+  { symbol: "^CNXREALTY", name: "REALTY" },
+  { symbol: "^CNXPSE", name: "PSE" },
+  { symbol: "^CNXMEDIA", name: "MEDIA" },
 ];
 
 const YAHOO_STOCKS = [

@@ -13,22 +13,22 @@ const formatChange = (change: number): string => {
 };
 
 const TickerItem = React.memo(({ name, changePercent, isStale }: { name: string; changePercent: number; isStale?: boolean }) => {
-  const colorClass =
-    changePercent > 0
-      ? "text-green-600"
-      : changePercent < 0
-      ? "text-red-600"
-      : "text-gray-500";
+  const gainColor = "text-green-600";
+  const lossColor = "text-red-600";
+
+  const changeClass = changePercent > 0
+    ? gainColor
+    : changePercent < 0
+      ? lossColor
+      : "text-[%239ca3]";
 
   return (
-    <div
-      className={`flex items-center gap-2 px-4 whitespace-nowrap ${colorClass}`}
-      aria-label={`${name} ${formatChange(changePercent)}`}
-    >
+    <span className={`font-serif font-bold ${changeClass}`}>
       <span>{name}</span>
-      <span>{formatChange(changePercent)}</span>
-      {isStale && <span className="text-[8px] font-bold text-yellow-600 uppercase">stale</span>}
-    </div>
+      <span className="font-feature-settings 'tnum' text-[11px]">
+        {formatChange(changePercent)}
+      </span>
+    </span>
   );
 });
 
@@ -45,13 +45,13 @@ export const LiveTicker = React.memo(function LiveTicker({ quotes }: LiveTickerP
 
   return (
     <div
-      className="overflow-hidden whitespace-nowrap h-11 bg-white flex items-center border-t border-b border-[#111]"
-      style={{ height: "44px" }}
+      className="w-full bg-[var(--color-bg)] border-t border-b border-[var(--color-text)] overflow-hidden whitespace-nowrap"
+      style={{ height: "36px" }}
       aria-label="Live Market Ticker"
       role="region"
     >
       <div
-        className="flex gap-2 w-max animate-marquee"
+        className="flex gap-2 w-max animate-ticker"
         onMouseEnter={(e) => {
           (e.currentTarget as HTMLElement).style.animationPlayState = "paused";
         }}
@@ -59,9 +59,9 @@ export const LiveTicker = React.memo(function LiveTicker({ quotes }: LiveTickerP
           (e.currentTarget as HTMLElement).style.animationPlayState = "running";
         }}
       >
-        {duplicatedItems.reduce((acc, item, index) => {
+        {duplicatedItems.reduce<React.ReactNode[]>((acc, item, index) => {
           if (index === 0) return [item];
-          return [...acc, <span key={`sep-${index}`} className="text-gray-400 select-none">|</span>, item];
+          return [...acc, <span key={`sep-${index}`} className="text-[#6b7280] select-none">•</span>, item];
         }, [] as React.ReactNode[])}
       </div>
     </div>

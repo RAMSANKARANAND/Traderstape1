@@ -12,13 +12,13 @@ export function MarketDetailCard({ quote }: MarketDetailCardProps) {
   const changeColor = quote.changePercent >= 0 ? "var(--ng-positive)" : "var(--ng-negative)";
 
   return (
-    <div className="ng-card flex flex-col justify-between h-full p-4 gap-4">
+    <div className="bg-white border border-[#cccccc] rounded-lg shadow-sm p-4 flex flex-col justify-between h-full gap-4">
       <div className="flex justify-between items-start gap-2">
         <span className="font-black uppercase text-sm tracking-tight leading-tight" style={{ color: 'var(--ng-navy-text)' }}>{quote.name}</span>
         <div className="flex flex-col items-end gap-1">
           <StatusBadge status={quote.direction === "up" ? "bullish" : quote.direction === "down" ? "bearish" : "neutral"} />
           {quote.marketState && (
-            <span className={`ng-pill-navy text-[10px] font-black uppercase ${quote.marketState === "LIVE" ? "" : ""}`}>
+<span className={`${quote.marketState === "LIVE" ? "bg-[var(--color-accent-500)] text-[var(--color-bg)] px-2 py-1 rounded text-xs font-bold uppercase" : "ng-pill-navy"}`}>
               ● {quote.marketState}
             </span>
           )}
@@ -78,6 +78,8 @@ function Row({ label, value }: { label: string; value: string }) {
 
 function BadgeProvider({ provider }: { provider: string }) {
   return (
-    <span className="ng-pill-navy inline-block px-1.5 py-0.5">{provider}</span>
+    <span className="inline-block px-3 py-2 text-xs font-bold rounded-full bg-[var(--color-neutral-100)] text-[var(--color-neutral-700)]">
+      {provider}
+    </span>
   );
 }

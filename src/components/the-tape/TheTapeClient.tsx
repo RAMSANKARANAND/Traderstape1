@@ -126,24 +126,24 @@ export function TheTapeClient({ initialQuotes }: TheTapeClientProps) {
     <div className="min-h-screen bg-bg p-4 md:p-8 page-enter">
       <header className="mb-12 max-w-7xl mx-auto">
         <div className="flex flex-wrap items-center gap-4 mb-2">
-          <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none" style={{ color: 'var(--ng-navy-text)' }}>
+          <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none" style={{ color: 'var(--color-text)' }}>
             The Tape
           </h1>
-          <Badge variant="default" className="ng-pill-gold text-[10px] font-black uppercase animate-pulse">
-            LIVE
-          </Badge>
+<Badge variant="default" className="bg-[var(--color-accent-500)] text-[var(--color-bg)] px-2 py-1 rounded text-xs font-bold uppercase animate-pulse">
+             LIVE
+           </Badge>
         </div>
-        <p className="text-xl md:text-2xl font-medium text-text-secondary mb-6" style={{ color: 'var(--ng-navy-text)' }}>
-          Real-time Market Intelligence
-        </p>
-        <div className="flex flex-wrap items-center gap-3 text-xs font-black uppercase tracking-widest text-text-secondary">
-          <span className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-accent-bullish rounded-full animate-pulse" />
-            Market Open
-          </span>
-          <span className="opacity-40">|</span>
-          <span style={{ color: 'var(--ng-navy-text)' }}>{lastUpdated}</span>
-        </div>
+<p className="text-xl md:text-2xl font-medium text-text-secondary mb-6" style={{ color: 'var(--color-text)' }}>
+  Real-time Market Intelligence
+</p>
+<div className="flex flex-wrap items-center gap-3 text-xs font-black uppercase tracking-widest text-text-secondary">
+  <span className="flex items-center gap-2">
+    <span className="w-2 h-2 bg-accent-bullish rounded-full animate-pulse" />
+    Market Open
+  </span>
+  <span className="opacity-40">|</span>
+  <span style={{ color: 'var(--color-text)' }}>{lastUpdated}</span>
+</div>
       </header>
 
       {error && (
@@ -165,7 +165,7 @@ export function TheTapeClient({ initialQuotes }: TheTapeClientProps) {
           <SectionHeader title="📡 Tape Live" description="A real-time snapshot of today's major financial markets." />
           <div className="space-y-8">
             <div>
-              <h3 className="text-sm font-black uppercase tracking-widest mb-3" style={{ color: 'var(--ng-navy-text)' }}>Indian Indices</h3>
+              <h3 className="text-sm font-black uppercase tracking-widest mb-3" style={{ color: 'var(--color-text)' }}>Indian Indices</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {getFiltered(INDIAN_INDICES).map((q) => (
                   <MarketDetailCard key={q.symbol} quote={q} />
@@ -174,7 +174,7 @@ export function TheTapeClient({ initialQuotes }: TheTapeClientProps) {
             </div>
 
             <div>
-              <h3 className="text-sm font-black uppercase tracking-widest mb-3" style={{ color: 'var(--ng-navy-text)' }}>Forex</h3>
+              <h3 className="text-sm font-black uppercase tracking-widest mb-3" style={{ color: 'var(--color-text)' }}>Forex</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {getFiltered(FOREX).map((q) => (
                   <MarketDetailCard key={q.symbol} quote={q} />
@@ -183,7 +183,7 @@ export function TheTapeClient({ initialQuotes }: TheTapeClientProps) {
             </div>
 
             <div>
-              <h3 className="text-sm font-black uppercase tracking-widest mb-3" style={{ color: 'var(--ng-navy-text)' }}>Metals</h3>
+              <h3 className="text-sm font-black uppercase tracking-widest mb-3" style={{ color: 'var(--color-text)' }}>Metals</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {getFiltered(METALS).map((q) => (
                   <MarketDetailCard key={q.symbol} quote={q} />
@@ -192,7 +192,7 @@ export function TheTapeClient({ initialQuotes }: TheTapeClientProps) {
             </div>
 
             <div>
-              <h3 className="text-sm font-black uppercase tracking-widest mb-3" style={{ color: 'var(--ng-navy-text)' }}>Crypto</h3>
+              <h3 className="text-sm font-black uppercase tracking-widest mb-3" style={{ color: 'var(--color-text)' }}>Crypto</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {getFiltered(CRYPTO).map((q) => (
                   <MarketDetailCard key={q.symbol} quote={q} />
@@ -254,10 +254,7 @@ export function TheTapeClient({ initialQuotes }: TheTapeClientProps) {
         {/* Section 4: Tape Insight */}
         <section className="pb-20">
           <SectionHeader title="Tape Insight" description="AI-driven synthesis of current market conditions." />
-          <InsightCard
-            title="Market Sentiment Analysis"
-            content="AI-generated market commentary will appear here once live data is connected. Currently, the tape suggests a bullish bias in equities offset by volatility in the currency markets."
-          />
+          <InsightCard title="Market Sentiment Analysis" />
         </section>
       </main>
 

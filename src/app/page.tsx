@@ -241,151 +241,227 @@ const global = marketQuotes.filter((q) =>
             <MorningMarketBriefCard data={finalMorningBrief} />
           )}
           
-           {/* ── Card 2: Market Snapshot ── */}
-           <div className="ng-card flex flex-col h-full">
-             <div className="flex items-center gap-2 px-3.5 py-2.5" style={{ background: 'var(--ng-navy)' }}>
-               <Badge variant="flat" className="ng-pill-gold text-[10px]">LIVE</Badge>
-               <span className="text-card-title font-black uppercase tracking-tight" style={{ color: '#ffffff' }}>Market Snapshot</span>
-             </div>
+{/* ── Card 2: Market Snapshot ── */}
+            <div className="flex flex-col h-full bg-white border border-[#cccccc] rounded-lg shadow-sm">
+              <div className="flex items-center gap-2 px-3.5 py-2.5 bg-[var(--color-surface)] border-b border-[var(--color-surface)]/20">
+                <Badge variant="flat" className="bg-[var(--color-accent-500)] text-[var(--color-bg)] border-[0px] text-[10px]">LIVE</Badge>
+                <span className="text-card-title font-black uppercase tracking-tight" style={{ color: 'var(--color-text)' }}>Market Snapshot</span>
+              </div>
               <div className="flex flex-col flex-1">
-                <div className="px-3.5 py-2">
-                  <h4 className="text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: 'var(--ng-navy-text)' }}>Indices &amp; Equities</h4>
-                  <div className="space-y-1">
-                    {indices.map((quote) => (
-                      <div key={quote.symbol} className="flex items-center justify-between border-b border-ink/10 py-1.5 last:border-0">
-                        <span className="text-small font-black uppercase opacity-60 tracking-wide" style={{ color: 'var(--ng-navy-text)' }}>{getSnapshotLabel(quote.symbol)}</span>
-                        <div className="text-right">
-                          <span className="text-card-title font-black tabular-nums mr-2" style={{ color: 'var(--ng-navy-text)' }}>{formatPrice(quote.price)}</span>
-                          <span className={`text-small font-bold tabular-nums ${quote.changePercent >= 0 ? "ng-pill-positive" : "ng-pill-negative"}`}>
-                            {quote.changePercent >= 0 ? "+" : ""}{quote.changePercent?.toFixed(2)}%
-                          </span>
-                        </div>
-                      </div>
-                    ))}
+<div className="px-3.5 py-2">
+                   <h4 className="text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: 'var(--color-text)' }}>Indices & Equities</h4>
+                   <div className="space-y-1">
+{indices.map((quote) => (
+                       <div key={quote.symbol} className="flex items-center justify-between border-b border-[var(--color-surface)]/20 py-1.5 last:border-0">
+                         <span className="text-small font-black uppercase tracking-wide" style={{ color: 'var(--color-accent-800)' }}>{getSnapshotLabel(quote.symbol)}</span>
+                         <div className="text-right">
+                           <span className="text-card-title font-black tabular-nums mr-2" style={{ color: 'var(--color-text)' }}>{formatPrice(quote.price)}</span>
+                           <span className={`text-small font-bold tabular-nums ${quote.changePercent >= 0 ? "ng-pill-positive" : "ng-pill-negative"}`}>
+                             {quote.changePercent >= 0 ? "+" : ""}{quote.changePercent?.toFixed(2)}%
+                           </span>
+                         </div>
+                       </div>
+                     ))}
                   </div>
                 </div>
 
-                <div className="px-3.5 pt-3 border-t border-ink/10">
-                  <h4 className="text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: 'var(--ng-navy-text)' }}>Metals &amp; Currency</h4>
-                  <div className="space-y-1">
-                    {commodities.map((quote) => (
-                      <div key={quote.symbol} className="flex items-center justify-between border-b border-ink/10 py-1.5 last:border-0">
-                        <span className="text-small font-black uppercase opacity-60 tracking-wide" style={{ color: 'var(--ng-navy-text)' }}>{getSnapshotLabel(quote.symbol)}</span>
-                        <div className="text-right">
-                          <span className="text-card-title font-black tabular-nums mr-2" style={{ color: 'var(--ng-navy-text)' }}>{formatPrice(quote.price)}</span>
-                          <span className={`text-small font-bold tabular-nums ${quote.changePercent >= 0 ? "ng-pill-positive" : "ng-pill-negative"}`}>
-                            {quote.changePercent >= 0 ? "+" : ""}{quote.changePercent?.toFixed(2)}%
-                          </span>
-                        </div>
-                      </div>
-                    ))}
+<div className="px-3.5 pt-3 border-t border-[var(--color-surface)]/20">
+                   <h4 className="text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: 'var(--color-text)' }}>Metals & Currency</h4>
+                   <div className="space-y-1">
+{commodities.map((quote) => (
+                       <div key={quote.symbol} className="flex items-center justify-between border-b border-[var(--color-surface)]/20 py-1.5 last:border-0">
+                         <span className="text-small font-black uppercase tracking-wide" style={{ color: 'var(--color-accent-800)' }}>{getSnapshotLabel(quote.symbol)}</span>
+                         <div className="text-right">
+                           <span className="text-card-title font-black tabular-nums mr-2" style={{ color: 'var(--color-text)' }}>{formatPrice(quote.price)}</span>
+                           <span className={`text-small font-bold tabular-nums ${quote.changePercent >= 0 ? "ng-pill-positive" : "ng-pill-negative"}`}>
+                             {quote.changePercent >= 0 ? "+" : ""}{quote.changePercent?.toFixed(2)}%
+                           </span>
+                         </div>
+                       </div>
+                     ))}
                   </div>
                 </div>
               </div>
 
-              {/* CTA */}
-              <div className="px-3.5 py-2.5 border-t border-ink/10">
-                <Link href="/the-tape" className="inline-block ng-btn-gold text-bg px-3.5 py-1.5 font-black uppercase text-[11px] tracking-wide hover:bg-accent-coral hover:text-white transition-colors">
-                  View Full Market Data →
-                </Link>
-              </div>
+{/* CTA */}
+               <div className="px-3.5 py-2.5 border-t border-[var(--color-surface)]/20">
+                 <Link href="/the-tape" className="inline-block btn-hero-cyan px-3.5 py-1.5 font-black uppercase text-[11px] tracking-wide hover:bg-accent-600 hover:text-white transition-colors">
+                   View Full Market Data →
+                 </Link>
+               </div>
             </div>
 
           {/* ── Card 3: Featured Tape View ── */}
-          {latestTapeView ? (
-            <Link
-              href={`/tape-views/${latestTapeView.slug}`}
-              className="ng-card overflow-hidden flex flex-col min-h-[220px] h-full hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[5px_5px_0_#111] transition-all duration-100"
-            >
-              {/* Navy header strip with badges */}
-              <div className="flex items-center gap-2 px-3.5 py-2.5" style={{ background: 'var(--ng-navy)' }}>
-                <Badge variant="flat" className="ng-pill-gold text-[10px]">{latestTapeView.category}</Badge>
-                <span className="text-small font-black uppercase opacity-60" style={{ color: 'var(--ng-gold-on-navy)' }}>{latestTapeView.instrument}</span>
-                <Badge
-                  variant={latestTapeView.bias === "BULLISH" ? "bullish" : latestTapeView.bias === "BEARISH" ? "bearish" : "neutral"}
-                  className={latestTapeView.bias === "BULLISH" ? "ng-pill-positive"
-                                  : latestTapeView.bias === "BEARISH" ? "ng-pill-negative"
-                                  : "ng-pill-neutral"}
-                >
-                  {latestTapeView.bias}
-                </Badge>
-              </div>
+{latestTapeView ? (
+             <Link
+               href={`/tape-views/${latestTapeView.slug}`}
+               className="flex flex-col h-full bg-white border border-[#cccccc] rounded-lg shadow-sm"
+             >
+               {/* Header strip */}
+               <div className="flex items-center gap-2 px-3.5 py-2.5 bg-[var(--color-surface)] border-b border-[var(--color-surface)]/20">
+                 <Badge variant="flat" className="bg-[var(--color-accent-500)] text-[var(--color-bg)] border-[0px] text-[10px]">{latestTapeView.category}</Badge>
+                 <span className="text-small font-bold uppercase" style={{ color: 'var(--color-text)' }}>{latestTapeView.instrument}</span>
+                 <Badge
+                   variant={latestTapeView.bias === "BULLISH" ? "bullish" : latestTapeView.bias === "BEARISH" ? "bearish" : "neutral"}
+                   className="bg-[var(--color-accent-500)] text-[var(--color-bg)] border-[0px] text-[10px]"
+                 >
+                   {latestTapeView.bias}
+                 </Badge>
+               </div>
 
-              {/* White body content */}
-              <div className="p-3.5 flex flex-col flex-1">
-                 <div className="mb-3">
-                   <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
-                     {global.map((quote) => (
-                       <div key={quote.symbol} className="flex items-center justify-between">
-                         <span className="text-[13px] font-black uppercase truncate pr-2" style={{ color: 'var(--ng-navy-text)' }}>
-                           {quote.symbol.replace(/^\^/, "")}
-                         </span>
-                         <span className="text-[13px] font-black tabular-nums" style={{ color: 'var(--ng-navy-text)' }}>
-                           {formatPrice(quote.price)}
-                         </span>
-                       </div>
-                     ))}
-                   </div>
-                 </div>
+               {/* White body content */}
+               <div className="p-3.5 flex flex-col flex-1">
+                  <div className="mb-3">
+                    <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
+                      {global.map((quote) => (
+                        <div key={quote.symbol} className="flex items-center justify-between">
+                          <span className="text-[13px] font-black uppercase truncate pr-2" style={{ color: 'var(--color-accent-800)' }}>
+                            {quote.symbol.replace(/^\^/, "")}
+                          </span>
+                          <span className="text-[13px] font-black tabular-nums" style={{ color: 'var(--color-text)' }}>
+                            {formatPrice(quote.price)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
 
-                <h3 className="text-card-title font-black uppercase leading-tight mb-2 line-clamp-2" style={{ color: 'var(--ng-navy-text)' }}>
-                  {latestTapeView.title}
-                </h3>
-                <p className="text-small font-bold leading-relaxed line-clamp-3 flex-1" style={{ color: 'var(--text-muted)' }}>
-                  {latestTapeView.todayView}
-                </p>
-                <div className="mt-3">
-                  <span className="inline-block ng-btn-gold text-bg px-3.5 py-1.5 font-black uppercase text-[11px] tracking-wide hover:bg-accent-coral hover:text-white transition-colors">
-                    Read Analysis →
-                  </span>
-                </div>
-              </div>
-            </Link>
-          ) : (
-            <div className="card-white p-5 flex flex-col min-h-[120px] items-center justify-center">
-              <p className="text-body font-black uppercase opacity-40 text-center">No analysis available</p>
-            </div>
-          )}
+                  <h3 className="text-card-title font-black uppercase leading-tight mb-2 line-clamp-2" style={{ color: 'var(--color-text)' }}>
+                    {latestTapeView.title}
+                  </h3>
+                  <p className="text-small font-bold leading-relaxed line-clamp-3 flex-1" style={{ color: 'var(--color-text)' }}>
+                    {latestTapeView.todayView}
+                  </p>
+                  <div className="mt-3">
+                    <span className="inline-block btn-hero-cyan px-3.5 py-1.5 font-black uppercase text-[11px] tracking-wide hover:bg-accent-600 hover:text-white transition-colors">
+                      Read Analysis →
+                    </span>
+                  </div>
+               </div>
+             </Link>
+           ) : (
+             <div className="flex flex-col h-full bg-white border border-[#cccccc] rounded-lg shadow-sm p-6 items-center justify-center">
+               <p className="text-body font-black uppercase opacity-40 text-center" style={{ color: 'var(--color-neutral-600)' }}>
+                 No analysis available
+               </p>
+             </div>
+           )}
         </div>
       </section>
 
-      {/* ───────────────────────── 2. Top Gainers/Losers widget ───────────────────────── */}
+{/* ───────────────────────── 1. Sector Performance Heatmap ───────────────────────── */}
+        <section className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4 animate-fade-in-up">
+          <div className="flex flex-col h-full bg-white border border-[#cccccc] rounded-lg shadow-sm">
+            {/* Header */}
+            <div className="flex items-center gap-2 px-3.5 py-2.5 bg-[var(--color-surface)] border-b border-[var(--color-surface)]/20">
+              <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'var(--color-text)' }}>Sector Performance</span>
+            </div>
+            
+ {/* Sector Tiles Grid */}
+             <div className="p-3.5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+               {/* Filter and map sector quotes */}
+               {(() => {
+                 const sectorQuotes = marketQuotes.filter(quote => 
+                   [
+                     "^CNXAUTO", "^CNXIT", "^CNXPHARMA", "^CNXFMCG", 
+                     "^CNXMETAL", "^CNXENERGY", "^CNXREALTY", 
+                     "^CNXPSE", "^CNXMEDIA"
+                   ].includes(quote.symbol)
+                 );
+                 if (sectorQuotes.length === 0) {
+                   return <p className="text-center py-4 text-[var(--color-neutral-600)]">Sector data unavailable</p>;
+                 }
+                 return sectorQuotes.map((quote) => {
+                   const changePercent = quote.changePercent || 0;
+                   
+                   // Determine color intensity based on change magnitude
+                   let bgColor = '', textColor = '';
+                   
+                   if (changePercent >= 2) {
+                     // Strong gains: dark green
+                     bgColor = 'bg-green-800';
+                     textColor = 'text-white';
+                   } else if (changePercent >= 0.5) {
+                     // Moderate gains: medium green
+                     bgColor = 'bg-green-500';
+                     textColor = 'text-white';
+                   } else if (changePercent > 0) {
+                     // Slight gains: light green
+                     bgColor = 'bg-green-100';
+                     textColor = 'text-green-800';
+                   } else if (changePercent >= -0.5) {
+                     // Slight losses: light red
+                     bgColor = 'bg-red-100';
+                     textColor = 'text-red-800';
+                   } else if (changePercent >= -2) {
+                     // Moderate losses: medium red
+                     bgColor = 'bg-red-500';
+                     textColor = 'text-white';
+                   } else {
+                     // Strong losses: dark red
+                     bgColor = 'bg-red-800';
+                     textColor = 'text-white';
+                   }
+                   
+                   return (
+                     <div key={quote.symbol} className={`p-3 rounded-lg text-center ${bgColor} ${textColor}`}>
+                       <div className="font-bold text-sm mb-1">
+                         {quote.symbol.replace(/^\^CNX/, '')}
+                       </div>
+                       <div className="text-lg font-bold">
+                         {changePercent >= 0 ? '+' : ''}{changePercent.toFixed(2)}%
+                       </div>
+                     </div>
+                   );
+                 });
+               })()}
+             </div>
+          </div>
+        </section>
+
+       {/* ───────────────────────── 2. Top Gainers/Losers widget ───────────────────────── */}
       <section className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4 animate-fade-in-up">
         <div className="flex flex-col md:flex-row gap-4 md:gap-8">
-          <div className="flex-1 ng-card p-4 md:p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'var(--ng-positive)' }}>▲ TOP 5 GAINERS</span>
-            </div>
-            <div className="space-y-2">
-              {getTopMovers(marketQuotes, 5).gainers.length > 0 ? (
-                getTopMovers(marketQuotes, 5).gainers.map((quote) => (
-                  <div key={quote.symbol} className="flex items-center justify-between px-2 py-1.5 text-sm font-bold">
-                    <span className="uppercase" style={{ color: 'var(--ng-navy-text)' }}>{quote.name || quote.symbol}</span>
-                    <span className="ng-pill-positive">{formatPercent(quote.changePercent)}</span>
-                  </div>
-                ))
-              ) : (
-                <p className="text-body font-black uppercase opacity-40 text-center py-4">No gainers data</p>
-              )}
-            </div>
-          </div>
-          <div className="flex-1 ng-card p-4 md:p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'var(--ng-negative)' }}>▼ TOP 5 LOSERS</span>
-            </div>
-            <div className="space-y-2">
-              {getTopMovers(marketQuotes, 5).losers.length > 0 ? (
-                getTopMovers(marketQuotes, 5).losers.map((quote) => (
-                  <div key={quote.symbol} className="flex items-center justify-between px-2 py-1.5 text-sm font-bold">
-                    <span className="uppercase" style={{ color: 'var(--ng-navy-text)' }}>{quote.name || quote.symbol}</span>
-                    <span className="ng-pill-negative">{formatPercent(quote.changePercent)}</span>
-                  </div>
-                ))
-              ) : (
-                <p className="text-body font-black uppercase opacity-40 text-center py-4">No losers data</p>
-              )}
-            </div>
-          </div>
+<div className="flex-1 bg-white border border-gray-300 rounded-lg shadow-sm p-4 md:p-5">
+             <div className="flex items-center gap-2 mb-3">
+               <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'var(--color-text)' }}>▲ TOP 5 GAINERS</span>
+             </div>
+             <div className="space-y-2">
+               {getTopMovers(marketQuotes, 5).gainers.length > 0 ? (
+                 getTopMovers(marketQuotes, 5).gainers.map((quote) => (
+                   <div key={quote.symbol} className="flex items-center px-2 py-1.5 text-sm font-bold">
+                     <span className="flex-1 uppercase" style={{ color: 'var(--color-accent-800)' }}>{quote.name || quote.symbol}</span>
+                     <span className="w-[80px] text-right font-bold" style={{ color: 'var(--color-text)' }}>{formatPrice(quote.price)}</span>
+                     <span className={`w-[60px] text-right ${quote.changePercent >= 0 ? 'ng-pill-positive' : 'ng-pill-negative'}`}>
+                       {formatPercent(quote.changePercent)}
+                     </span>
+                   </div>
+                 ))
+               ) : (
+                 <p className="text-body font-black uppercase opacity-40 text-center py-4">No gainers data</p>
+               )}
+             </div>
+           </div>
+<div className="flex-1 bg-white border border-gray-300 rounded-lg shadow-sm p-4 md:p-5">
+             <div className="flex items-center gap-2 mb-3">
+               <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'var(--color-text)' }}>▼ TOP 5 LOSERS</span>
+             </div>
+             <div className="space-y-2">
+               {getTopMovers(marketQuotes, 5).losers.length > 0 ? (
+                 getTopMovers(marketQuotes, 5).losers.map((quote) => (
+                   <div key={quote.symbol} className="flex items-center px-2 py-1.5 text-sm font-bold">
+                     <span className="flex-1 uppercase" style={{ color: 'var(--color-accent-800)' }}>{quote.name || quote.symbol}</span>
+                     <span className="w-[80px] text-right font-bold" style={{ color: 'var(--color-text)' }}>{formatPrice(quote.price)}</span>
+                     <span className={`w-[60px] text-right ${quote.changePercent >= 0 ? 'ng-pill-positive' : 'ng-pill-negative'}`}>
+                       {formatPercent(quote.changePercent)}
+                     </span>
+                   </div>
+                 ))
+               ) : (
+                 <p className="text-body font-black uppercase opacity-40 text-center py-4">No losers data</p>
+               )}
+             </div>
+           </div>
         </div>
         <div className="mt-4 text-center md:text-right">
           <Link
@@ -398,52 +474,7 @@ const global = marketQuotes.filter((q) =>
         </div>
       </section>
 
-      {/* Market Breadth strip */}
-      <section className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-2 animate-fade-in-up">
-        <div className="ng-card p-3 md:p-4">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-6">
-            <div className="flex flex-wrap items-center gap-3 font-black text-sm">
-              <span style={{ color: 'var(--ng-positive)' }}>{marketQuotes.filter(q => q.direction === "up").length} Advancing</span>
-              <span className="text-ink/40">/</span>
-              <span style={{ color: 'var(--ng-negative)' }}>{marketQuotes.filter(q => q.direction === "down").length} Declining</span>
-              <span className="text-ink/40">/</span>
-              <span style={{ color: 'var(--ng-navy-text)' }}>{marketQuotes.filter(q => q.direction === "flat").length} Unchanged</span>
-            </div>
-            <div className="w-full md:w-1/2 h-2 bg-ink/10 rounded-full overflow-hidden">
-              {(() => {
-                const advancing = marketQuotes.filter(q => q.direction === "up").length;
-                const declining = marketQuotes.filter(q => q.direction === "down").length;
-                const total = advancing + declining;
-                const advancingPct = total > 0 ? (advancing / total) * 100 : 0;
-                return (
-                  <div className="h-full flex">
-                    <div style={{ background: 'var(--ng-positive)', width: `${advancingPct}%` }} />
-                    <div style={{ background: 'var(--ng-negative)', width: `${100 - advancingPct}%` }} />
-                  </div>
-                );
-              })()}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ───────────────────────── Trending Topics ───────────────────────── */}
-      {trendingCategories.length > 0 && (
-        <section className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-2 animate-fade-in-up">
-          <div className="ng-card p-3 md:p-4">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-6">
-              <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'var(--ng-navy-text)' }}>Trending</span>
-              <div className="flex flex-wrap items-center gap-2">
-                {trendingCategories.slice(0, 4).map((item, i) => (
-                  <Badge key={item.category} variant="flat" className={i % 2 === 0 ? "ng-pill-gold" : "ng-pill-navy"}>
-                    {item.category} ({item.count})
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
+{/* ───────────────────────── 2. Top Gainers/Losers widget ───────────────────────── */}
 
       {/* ───────────────────────── 2. Featured Story ───────────────────────── */}
       {featuredPost && (
@@ -507,47 +538,56 @@ const global = marketQuotes.filter((q) =>
         </section>
       )}
 
-      {/* ───────────────────────── 4. Latest News ───────────────────────── */}
-      {latestNews.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 section-padding">
-          <div className="flex items-center justify-between mb-5">
-            <SectionTitle>Latest News</SectionTitle>
-            <Link href="/news" className="text-small font-black uppercase hover:underline transition-colors" style={{ color: 'var(--ng-navy-text)' }}>
-              All News →
-            </Link>
-          </div>
-          <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch ${finalMorningBrief ? "lg:grid-cols-3" : "lg:grid-cols-2"}`}>
-            {latestNews.map((post) => (
-              <NewsCard
-                key={post.id}
-                title={post.title}
-                slug={post.slug}
-                category={post.category}
-                summary={post.summary}
-                publishedAt={post.publishedAt}
-              />
-            ))}
-          </div>
-        </section>
-      )}
+{/* ───────────────────────── 4. Latest News ───────────────────────── */}
+       {latestNews.length > 0 && (
+         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 section-padding">
+           <div className="flex items-center justify-between mb-5">
+             <SectionTitle>Latest News</SectionTitle>
+             <Link href="/news" className="text-small font-black uppercase hover:underline transition-colors" style={{ color: 'var(--color-accent-700)' }}>
+               All News →
+             </Link>
+           </div>
+           <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch ${finalMorningBrief ? "lg:grid-cols-3" : "lg:grid-cols-2"}`}>
+             {latestNews.map((post) => (
+               <NewsCard
+                 key={post.id}
+                 title={post.title}
+                 slug={post.slug}
+                 category={post.category}
+                 summary={post.summary}
+                 publishedAt={post.publishedAt}
+               />
+             ))}
+           </div>
+         </section>
+       )}
 
-      {/* ───────────────────────── 5. The Tape CTA ───────────────────────── */}
-      <section className="border-t-[3px] border-b-[3px] border-[var(--ng-gold)]" style={{ background: 'var(--ng-navy)' }}>
-        <div className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 text-center">
-          <h2 className="text-display font-black uppercase leading-tight mb-2" style={{ color: '#ffffff' }}>
-            Enter <span style={{ color: 'var(--ng-gold)' }}>The Tape</span>
-          </h2>
-          <p className="text-body font-bold max-w-2xl mx-auto mb-5 opacity-80" style={{ color: '#ffffff' }}>
-            Real-time market intelligence across NSE, forex, crypto, commodities, and global markets.
-          </p>
-          <Link
-            href="/the-tape"
-            className="inline-block ng-btn-gold px-6 py-3 font-black uppercase text-small tracking-wide hover:bg-accent-coral hover:text-white transition-colors duration-150"
-          >
-            🚀 Launch The Tape
-          </Link>
-        </div>
-      </section>
+{/* ───────────────────────── 5. The Tape CTA ───────────────────────── */}
+       <section className="border-t border-b border-[var(--color-surface)]">
+         <div className="max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+           <div className="flex flex-col md:flex-row">
+             {/* Left Panel: Light Text */}
+             <div className="flex-1 bg-[var(--color-bg)] flex flex-col items-start justify-center p-6 md:p-8">
+               <h1 className="mb-3 text-[28px] font-serif font-semibold text-[var(--color-text)]">
+                 Enter <span className="text-[var(--color-accent-700)]">the tape</span>
+               </h1>
+               <p className="text-[12px] text-[var(--color-neutral-500)] max-w-sm">
+                 Real-time market intelligence across NSE, forex, crypto, commodities, and global markets.
+               </p>
+               <Link
+                 href="/the-tape"
+                 className="mt-6 inline-block btn-hero-cyan px-5 py-2.5 font-black uppercase text-[11px] tracking-wide hover:bg-accent-600 hover:text-white transition-colors"
+               >
+                 Launch The Tape
+               </Link>
+             </div>
+             
+{/* Right Panel: Cassette Photo */}
+              <div className="flex-1 bg-[url('/images/hero-cassette.jpg')] bg-contain bg-center bg-no-repeat bg-[#020608]">
+              </div>
+           </div>
+         </div>
+       </section>
 
       {/* ───────────────────────── 6. Newsletter ───────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 section-padding">
@@ -556,14 +596,17 @@ const global = marketQuotes.filter((q) =>
 
       {/* ───────────────────────── 7. Educational Disclaimer ───────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10">
-        <div className="ng-card-warn">
-          <h3 className="text-heading font-black uppercase mb-2" style={{ color: 'var(--ng-navy-text)' }}>⚠ Educational Disclaimer</h3>
-          <p className="text-body font-bold leading-relaxed" style={{ color: 'var(--ng-navy-text)' }}>
-            TradersTape is for educational purposes only. Nothing on this site is financial advice.
-            Always conduct your own research and consult with a licensed financial advisor before
-            making investment decisions. Trading involves substantial risk of loss.
-          </p>
+        <div className="flex items-center gap-3 mb-3">
+          <span className="rounded-lg p-2" style={{ background: 'var(--color-surface)', borderLeft: '4px solid var(--color-accent-700)' }}>
+            <svg className="w-5 h-5 text-[var(--color-text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path className="stroke-width-2" d="M12 19l9 9l-9 9M21 10c0 7-7 11-7 11S5 17 5 10S13 3 13 3zm-9 9c-4.3 0-7.7-2.7-9.1-6h18.2c-1.4 3.3-4.8 6-9.1 6zm9.1-12.7c-2.2 2.2-5.1 3.3-7.9 3.3s-5.7-1.1-7.9-3.3" strokeWidth={1.5} transform="translate(-1400 1200) rotate(-45)"/></svg>
+          </span>
+          <h3 className="text-heading font-black uppercase mb-2" style={{ color: 'var(--color-text)' }}>⚠ Educational Disclaimer</h3>
         </div>
+        <p className="text-body font-bold leading-relaxed" style={{ color: 'var(--color-text)' }}>
+          TradersTape is for educational purposes only. Nothing on this site is financial advice.
+          Always conduct your own research and consult with a licensed financial advisor before
+          making investment decisions. Trading involves substantial risk of loss.
+        </p>
       </section>
     </div>
   );

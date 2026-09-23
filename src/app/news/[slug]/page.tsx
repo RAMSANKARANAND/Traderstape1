@@ -78,8 +78,6 @@ export default async function ArticlePage({
     }
   }
 
-  const displayTitle = post.plainTitle || post.title;
-
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <script
@@ -87,97 +85,99 @@ export default async function ArticlePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <Link
-        href="/news"
-        className="inline-block mb-6 font-black uppercase text-sm hover:text-[var(--ng-gold)] transition-colors duration-100"
-        style={{ color: 'var(--ng-navy-text)' }}
-      >
-        ← Back to News
-      </Link>
+<Link
+  href="/news"
+  className="inline-block mb-6 font-black uppercase text-sm hover:text-[var(--color-accent-700)] transition-colors duration-100"
+  style={{ color: 'var(--color-text)' }}
+>
+  ← Back to News
+</Link>
 
-      {isPreview && (
-        <div className="mb-4 p-3 bg-accent-yellow text-ink rounded-md font-bold">
-          Preview Mode - Draft Post
-        </div>
-      )}
+{isPreview && (
+  <div className="mb-4 p-3 bg-[var(--color-accent-2-100)] text-[var(--color-accent-2-700)] rounded-md font-bold">
+    Preview Mode - Draft Post
+  </div>
+)}
 
       <article>
-        <div className="flex items-center gap-3 mb-4">
-          <Badge variant="flat" className="ng-pill-navy text-[10px]">{post.category}</Badge>
-          {post.publishedAt && (
-            <span className="text-xs font-bold uppercase" style={{ color: 'var(--ng-navy-text)' }}>
-              {new Date(post.publishedAt).toLocaleDateString("en-IN", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
-            </span>
-          )}
-          {post.sourceName && (
-            <span className="text-xs font-bold uppercase opacity-70" style={{ color: 'var(--ng-navy-text)' }}>
-              Source: {post.sourceName}
-            </span>
-          )}
-        </div>
+<div className="flex items-center gap-3 mb-4">
+  <Badge variant="default" className="whitespace-nowrap bg-accent-100 text-accent-700 border-transparent">
+    {post.category}
+  </Badge>
+  {post.publishedAt && (
+    <span className="text-xs font-bold uppercase" style={{ color: 'var(--color-text)' }}>
+      {new Date(post.publishedAt).toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })}
+    </span>
+  )}
+  {post.sourceName && (
+    <span className="text-xs font-bold uppercase opacity-70" style={{ color: 'var(--color-neutral-600)' }}>
+      Source: {post.sourceName}
+    </span>
+  )}
+</div>
 
-        <h1 className="text-3xl md:text-4xl font-black uppercase leading-tight mb-4" style={{ color: 'var(--ng-navy-text)' }}>
-          {post.title}
-        </h1>
+<h1 className="text-3xl md:text-4xl font-black uppercase leading-tight mb-4" style={{ color: 'var(--color-text)' }}>
+  {post.title}
+</h1>
 
-        {post.plainTitle && post.plainTitle !== post.title && (
-          <p className="text-lg font-bold opacity-70 mb-2" style={{ color: 'var(--ng-navy-text)' }}>
-            {post.plainTitle}
-          </p>
-        )}
+{post.plainTitle && post.plainTitle !== post.title && (
+  <p className="text-lg font-bold opacity-70 mb-2" style={{ color: 'var(--color-neutral-600)' }}>
+    {post.plainTitle}
+  </p>
+)}
 
-        <p className="text-lg font-bold opacity-70 mb-8">
-          By {post.author.name}
-        </p>
+<p className="text-lg font-bold opacity-70 mb-8" style={{ color: 'var(--color-neutral-600)' }}>
+  By {post.author.name}
+</p>
 
         {/* TL;DR — prominent callout above the full summary */}
-        {post.tldr && (
-          <div className="ng-card-warn mb-6">
-            <p className="text-sm font-black uppercase tracking-wide mb-1" style={{ color: 'var(--ng-gold)' }}>
-              TL;DR
-            </p>
-            <p className="text-base font-bold leading-relaxed" style={{ color: 'var(--ng-navy-text)' }}>
-              {post.tldr}
-            </p>
-          </div>
-        )}
+{post.tldr && (
+  <div className="border-l-4 border-[var(--color-accent-700)] bg-[var(--color-accent-100)] p-4 mb-6">
+    <p className="text-sm font-black uppercase tracking-wide mb-1" style={{ color: 'var(--color-accent-700)' }}>
+      TL;DR
+    </p>
+    <p className="text-base font-bold leading-relaxed" style={{ color: 'var(--color-text)' }}>
+      {post.tldr}
+    </p>
+  </div>
+)}
 
         {/* Key Facts — bulleted list, only rendered if non-empty */}
-        {keyFactsArr.length > 0 && (
-          <div className="ng-card p-5 mb-6">
-            <h3 className="text-sm font-black uppercase tracking-wide mb-3" style={{ color: 'var(--ng-navy-text)' }}>
-              Key Facts
-            </h3>
-            <ul className="space-y-2">
-              {keyFactsArr.map((fact, i) => (
-                <li key={i} className="flex items-start gap-2 text-base font-bold leading-relaxed" style={{ color: 'var(--ng-navy-text)' }}>
-                  <span className="text-[var(--ng-gold)] mt-1 shrink-0">•</span>
-                  <span>{fact}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+{keyFactsArr.length > 0 && (
+  <div className="bg-white border border-[#cccccc] rounded-lg shadow-sm p-6 mb-6">
+    <h3 className="text-sm font-black uppercase tracking-wide mb-3" style={{ color: 'var(--color-text)' }}>
+      Key Facts
+    </h3>
+    <ul className="space-y-2">
+      {keyFactsArr.map((fact, i) => (
+        <li key={i} className="flex items-start gap-2 text-base font-bold leading-relaxed" style={{ color: 'var(--color-text)' }}>
+          <span className="text-[var(--color-text)] mt-1 shrink-0">•</span>
+          <span>{fact}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
 
         {/* Why It Matters — visually distinct callout */}
-        {post.whyItMatters && (
-          <div className="ng-card p-5 mb-6" style={{ borderLeft: '4px solid var(--ng-gold)' }}>
-            <p className="text-sm font-black uppercase tracking-wide mb-1" style={{ color: 'var(--ng-gold)' }}>
-              Why It Matters
-            </p>
-            <p className="text-base font-bold leading-relaxed" style={{ color: 'var(--ng-navy-text)' }}>
-              {post.whyItMatters}
-            </p>
-          </div>
-        )}
+{post.whyItMatters && (
+  <div className="bg-white border border-[#cccccc] rounded-lg shadow-sm p-6 mb-6" style={{ borderLeft: '4px solid var(--color-accent-700)' }}>
+    <p className="text-sm font-black uppercase tracking-wide mb-1" style={{ color: 'var(--color-accent-700)' }}>
+      Why It Matters
+    </p>
+    <p className="text-base font-bold leading-relaxed" style={{ color: 'var(--color-text)' }}>
+      {post.whyItMatters}
+    </p>
+  </div>
+)}
 
-        <div className="ng-card p-5 mb-8">
-          <p className="text-lg leading-relaxed text-base">{post.summary}</p>
-        </div>
+<div className="bg-white border border-[#cccccc] rounded-lg shadow-sm p-5 mb-8">
+  <p className="text-lg leading-relaxed text-base">{post.summary}</p>
+</div>
       </article>
 
       <ShareButtons title={post.title} url={shareUrl} />

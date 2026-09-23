@@ -18,7 +18,7 @@ interface NewsPageProps {
 
 const categories = [
   { value: "", label: "All" },
-  { value: "STOCKS", label: "Stocks", color: "card-sky", badge: "forex" },
+  { value: "STOCKS", label: "Stocks", color: "card-sky", badge: "crypto" },
   { value: "CRYPTO", label: "Crypto", color: "card-gold", badge: "gold" },
   { value: "FOREX", label: "Forex", color: "card-mint", badge: "bullish" },
   { value: "GEOPOLITICAL", label: "Geopolitical", color: "card-coral", badge: "bearish" },
@@ -37,8 +37,8 @@ function formatDate(date: Date | null): string {
 }
 
 const tabVariant = (cat: typeof categories[0], active: boolean) => {
-  if (active) return "ng-btn-navy";
-  return "bg-white border-[1px] border-[var(--ng-border)] text-[var(--ng-navy-text)] font-black uppercase text-sm hover:border-[var(--ng-gold)] transition-all duration-100";
+  if (active) return "bg-[var(--color-accent-500)] text-[var(--color-bg)]";
+  return "border border-[#cccccc] text-[var(--color-text)] font-black uppercase text-sm hover:bg-[var(--color-accent-100)] transition-all duration-100";
 };
 
 export default async function NewsPage({ searchParams }: NewsPageProps) {
@@ -69,7 +69,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <SectionTitle className="mb-2">Trading News</SectionTitle>
+      <SectionTitle className="mb-2" style={{ color: 'var(--color-text)' }}>Trading News</SectionTitle>
       <p className="text-sm font-bold opacity-60 mb-8 uppercase tracking-wide">
         Curated trading news for educational purposes
       </p>
@@ -87,21 +87,21 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
         ))}
       </div>
 
-      {posts.length === 0 ? (
-        <div className="text-center py-12 brutal-border brutal-shadow p-8">
-          <p className="text-lg font-black uppercase">No news articles found</p>
-          <p className="text-sm font-bold opacity-60 mt-2">
-            {category ? "No articles in this category yet." : "Check back soon for new articles."}
-          </p>
-        </div>
-      ) : (
+{posts.length === 0 ? (
+  <div className="text-center py-12 bg-white border border-[#cccccc] rounded-lg shadow-sm p-8">
+    <p className="text-lg font-black uppercase">No news articles found</p>
+    <p className="text-sm font-bold opacity-60 mt-2">
+      {category ? "No articles in this category yet." : "Check back soon for new articles."}
+    </p>
+  </div>
+) : (
         <div className="space-y-14">
           {/* ── 1. Breaking News (Hero) ── */}
           {breakingPost && (
             <section>
               <div className="flex items-center gap-3 mb-4">
                 <Badge variant="down">Breaking</Badge>
-                <h2 className="text-xl font-black uppercase tracking-wide">Breaking News</h2>
+                <h2 className="text-xl font-black uppercase tracking-wide" style={{ color: 'var(--color-text)' }}>Breaking News</h2>
               </div>
               <BreakingHero post={breakingPost} />
             </section>
@@ -112,7 +112,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
             <section>
               <div className="flex items-center gap-3 mb-4">
                 <Badge variant="flat">Featured</Badge>
-                <h2 className="text-xl font-black uppercase tracking-wide">Featured Story</h2>
+                <h2 className="text-xl font-black uppercase tracking-wide" style={{ color: 'var(--color-text)' }}>Featured Story</h2>
               </div>
               <FeaturedHero post={featuredPost} />
             </section>
@@ -121,9 +121,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
           {/* ── 3. Latest News ── */}
           {latest.length > 0 && (
             <section>
-              <h2 className="text-xl font-black uppercase tracking-wide mb-4 brutal-border-b border-b-3 border-ink pb-2">
-                Latest News
-              </h2>
+<h2 className="text-xl font-black uppercase tracking-wide mb-4" style={{ color: 'var(--color-text)' }}>Latest News</h2>
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
                   {latest.map((post) => (
                   <NewsCard
@@ -144,9 +142,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
             <section>
               <div className="flex items-center gap-3 mb-4">
                 <Badge variant="up">Trending</Badge>
-                <h2 className="text-xl font-black uppercase tracking-wide brutal-border-b border-b-3 border-ink pb-2 flex-1">
-                  Trending
-                </h2>
+<h2 className="text-xl font-black uppercase tracking-wide mb-4" style={{ color: 'var(--color-text)' }}>Trending</h2>
               </div>
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
                   {trending.map((post) => (
@@ -168,9 +164,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
             <section>
               <div className="flex items-center gap-3 mb-4">
                 <Badge variant="default">Editor's Picks</Badge>
-                <h2 className="text-xl font-black uppercase tracking-wide brutal-border-b border-b-3 border-ink pb-2 flex-1">
-                  Editor's Picks
-                </h2>
+<h2 className="text-xl font-black uppercase tracking-wide mb-4" style={{ color: 'var(--color-text)' }}>Editor's Picks</h2>
               </div>
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
                   {editorPicks.map((post) => (
@@ -198,22 +192,24 @@ function BreakingHero({ post }: { post: PostWithAuthor }) {
   return (
     <Link
       href={`/news/${post.slug}`}
-      className="block card-coral brutal-shadow p-6 md:p-8 hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[6px_6px_0_#111] transition-all duration-100"
+      className="block bg-white border border-[#cccccc] rounded-lg shadow-sm p-6 md:p-8 hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[6px_6px_0_#111] transition-all duration-100"
     >
       <div className="flex flex-wrap items-center gap-3 mb-4">
-        <Badge variant="bearish">Breaking</Badge>
-        <Badge variant="forex">{post.category}</Badge>
+        <Badge variant="down">Breaking</Badge>
+        <Badge variant="default" className="whitespace-nowrap bg-accent-100 text-accent-700 border-transparent">
+          {post.category}
+        </Badge>
         <span className="text-xs font-bold uppercase opacity-60 ml-auto">
           {formatDate(post.publishedAt)}
         </span>
       </div>
-      <h3 className="text-2xl md:text-4xl font-black uppercase leading-tight mb-3">
+      <h3 className="text-2xl md:text-4xl font-black uppercase leading-tight mb-3" style={{ color: 'var(--color-text)' }}>
         {post.title}
       </h3>
-      <p className="text-sm md:text-base font-bold opacity-80 leading-relaxed max-w-3xl mb-4">
+      <p className="text-sm md:text-base font-bold opacity-80 leading-relaxed max-w-3xl mb-4" style={{ color: 'var(--color-text)' }}>
         {post.summary}
       </p>
-      <span className="text-xs font-black uppercase opacity-60 hover:opacity-100 transition-opacity">
+      <span className="text-xs font-black uppercase opacity-60 hover:opacity-100 transition-opacity" style={{ color: 'var(--color-accent-700)' }}>
         Read full story →
       </span>
     </Link>
@@ -224,22 +220,24 @@ function FeaturedHero({ post }: { post: PostWithAuthor }) {
   return (
     <Link
       href={`/news/${post.slug}`}
-      className="block card-gold brutal-shadow p-6 md:p-8 hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[6px_6px_0_#111] transition-all duration-100"
+      className="block bg-white border border-[#cccccc] rounded-lg shadow-sm p-6 md:p-8 hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[6px_6px_0_#111] transition-all duration-100"
     >
       <div className="flex flex-wrap items-center gap-3 mb-4">
         <Badge variant="flat">Featured</Badge>
-        <Badge variant="forex">{post.category}</Badge>
+        <Badge variant="default" className="whitespace-nowrap bg-accent-100 text-accent-700 border-transparent">
+          {post.category}
+        </Badge>
         <span className="text-xs font-bold uppercase opacity-60 ml-auto">
           {formatDate(post.publishedAt)}
         </span>
       </div>
-      <h3 className="text-2xl md:text-3xl font-black uppercase leading-tight mb-3">
+      <h3 className="text-2xl md:text-3xl font-black uppercase leading-tight mb-3" style={{ color: 'var(--color-text)' }}>
         {post.title}
       </h3>
-      <p className="text-sm md:text-base font-bold opacity-80 leading-relaxed max-w-3xl mb-4">
+      <p className="text-sm md:text-base font-bold opacity-80 leading-relaxed max-w-3xl mb-4" style={{ color: 'var(--color-text)' }}>
         {post.summary}
       </p>
-      <span className="text-xs font-black uppercase opacity-60 hover:opacity-100 transition-opacity">
+      <span className="text-xs font-black uppercase opacity-60 hover:opacity-100 transition-opacity" style={{ color: 'var(--color-accent-700)' }}>
         Read full story →
       </span>
     </Link>

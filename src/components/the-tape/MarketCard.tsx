@@ -21,7 +21,7 @@ export function MarketCard({ quote, aiInsight }: MarketCardProps) {
   const cardClass = isPositive ? "card-mint" : isNegative ? "card-coral" : "card-white";
 
   return (
-    <div className={`${cardClass} flex flex-col h-full p-4 gap-3 card-lift`}>
+    <div className={`${cardClass} border border-[#cccccc] rounded-lg shadow-sm p-4 flex flex-col h-full gap-3`}>
       {/* Header */}
       <div className="flex justify-between items-start">
         <div>
