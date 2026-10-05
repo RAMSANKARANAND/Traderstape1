@@ -18,7 +18,7 @@ interface CfRunResponse {
   errors?: { message: string }[];
 }
 
-async function callCloudflareAI(messages: CfMessage[]): Promise<unknown> {
+async function callCloudflareAI(messages: CfMessage[], opts: { json?: boolean } = {}): Promise<unknown> {
   const accountId = process.env.WORKERS_AI_ACCOUNT_ID;
   const apiToken = process.env.WORKERS_AI_API_TOKEN;
 
@@ -34,7 +34,7 @@ async function callCloudflareAI(messages: CfMessage[]): Promise<unknown> {
       Authorization: `Bearer ${apiToken}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ messages }),
+    body: JSON.stringify({ messages, max_tokens: 1024, ...(opts.json ? { response_format: { type: "json_object" } } : {}) }),
   });
 
   if (!res.ok) {
@@ -173,7 +173,7 @@ function normalizeNewlines(text: string): string {
 
 export async function generateWithCloudflare(req: AiRequest): Promise<AiResponse> {
   const messages = buildMessages(req);
-  const raw = await callCloudflareAI(messages);
+  const raw = await callCloudflareAI(messages, { json: req.action === "generate-news-roundup-summary" || req.action === "generate-tape-insight" });
   const safeRaw = getStringFromRaw(raw);
 
   switch (req.action) {
