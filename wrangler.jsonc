@@ -1,6 +1,7 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"main": "./worker.ts",
+  "observability": { "enabled": true, "head_sampling_rate": 1 },
 	"name": "traderstape1new",
 	"compatibility_date": "2026-07-23",
 	"compatibility_flags": [
