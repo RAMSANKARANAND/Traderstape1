@@ -149,7 +149,7 @@ function buildMessages(req: AiRequest): CfMessage[] {
             "^IXIC = Nasdaq, ^DJI = Dow Jones, ^FTSE = FTSE 100, GC=F = gold, SI=F = silver, CL=F = crude oil. " +
             "Only use numbers that appear in the data. No investment advice, no price targets. " +
             "sentiment: Bullish if Indian indices are mostly up, Bearish if mostly down, Neutral if flat or mixed. " +
-            'Format example only, do not reuse its facts: {"insight": "Nifty 50 rose 0.6% and Sensex gained 0.5%, led by metal stocks, while Bank Nifty slipped 0.2%. Crude oil climbed 1.8% as the dollar firmed against the yen. RBI liquidity operations kept bond traders watchful.", "sentiment": "Bullish"} ' +
+            'Format example only, do not reuse its facts: {"insight": "Nifty 50 rose 0.6% and Sensex gained 0.5%, led by metal stocks, while Bank Nifty slipped 0.2%. Crude oil climbed 1.8% as the dollar firmed against the yen. <one line on the most relevant headline>.", "sentiment": "Bullish"} ' +
             'Respond with ONLY valid JSON, no markdown fences, no commentary: {"insight": string, "sentiment": "Bullish" | "Bearish" | "Neutral"}.',
         },
         { role: "user", content: req.content || "" },
